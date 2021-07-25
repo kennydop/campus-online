@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Header from "../components/Header";
+import Login from './login';
 export default function Home() {
   return (
     <div>
@@ -7,10 +8,10 @@ export default function Home() {
         <title>Campus Online</title>
       </Head>
 
-      {/*Header*/}
-      <Header />
-
+      {/*Header
+      <Header />*/}
       <main>
+        <Login />
         {/*Sidebar*/}
         {/*Feed*/}
         {/*Widgets*/}

@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components{
+    .infofield{
+        @apply outline-none bg-gray-100 placeholder-gray-500 items-center rounded-full;
+    }
+}
+
+.infofield{
+    width: 20rem;
+    height: 3rem;
+    margin-bottom: 2rem;
+    padding-left: 2rem;
+}

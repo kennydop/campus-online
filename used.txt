@@ -1,0 +1,6 @@
+react.js (html,css,javascript)
+next.js
+tailwind css
+flexbox
+hero icons
+nextauth.js
