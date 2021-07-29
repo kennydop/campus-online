@@ -4,13 +4,8 @@
 
 @layer components{
     .infofield{
-        @apply outline-none bg-gray-100 placeholder-gray-500 items-center rounded-full;
+        @apply outline-none bg-gray-100 placeholder-gray-500 rounded-full focus:border-pink-500 w-20 h-3 mb-2 pl-2;
     }
 }
 
-.infofield{
-    width: 20rem;
-    height: 3rem;
-    margin-bottom: 2rem;
-    padding-left: 2rem;
-}
+

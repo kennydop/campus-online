@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "next/image"
 import campus_online_logo from "../images/campus-online-logo.png"
 import {
     BellIcon,

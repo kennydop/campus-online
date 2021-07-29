@@ -1,28 +1,32 @@
-import Image from "next/image";
-import campus_online_logo from "../images/campus-online-logo.png"
-
 function Login() {
     return (
-        <div className="flex">
-            <div className = "hidden md:flex text-pink-500 w-1/2 h-full">
-            </div>
-            <div className="m-auto md:m-0 h-full">
-                <div className="flex items-center justify-center my-auto mx-auto mb-3">
-                        <Image src = {campus_online_logo}
-                        width = {192} 
-                        height = {34.5} 
-                        layout = "fixed"
-                        alt = "campus online logo"/>
-                </div>
-                <form className="flex flex-col">
-                        <input className = "infofield" type = "text" placeholder = "Username"/>
-                        <input className = "infofield" type = "password" placeholder = "Password"/>
-                    <button className="bg-pink-500 text-white rounded-full h-12" type = 'submit'>Log In</button>
-                </form>
-                <p className="pt-1 m-auto text-gray-500 text-center">Not a User? <span className="text-pink-500 cursor-pointer">Sign Up</span></p>
-            </div>
-
+<div>
+    <div className="w-screen h-screen flex flex-col justify-center items-center lg:grid lg:grid-cols-2">
+      <img src="../images/campus-online-login-left-side-image.jpg" className="hidden lg:block w-1/2 hover:scale-150 transition-all duration-500 transform mx-auto"/>
+      <form className=" pr-5 md:pr-0 flex flex-col justify-center items-center w-1/2">
+        <img src="../images/campus-online-logo.png" className="w-192" />
+        <div className="relative">
+          <i className="fa fa-user absolute text-primarycolor text-xl"></i>
+          <input
+            type="text"
+            placeholder="Username"
+            className="pl-8 border-b-2 font-display focus:outline-none focus:border-primarycolor transition-all duration-500 capitalize text-lg"
+          />
         </div>
+        <div className="relative mt-8">
+          <i className="fa fa-lock absolute text-primarycolor text-xl"></i>
+          <input
+            type="password"
+            placeholder="Password"
+            className="pl-8 border-b-2 font-display focus:outline-none focus:border-primarycolor transition-all duration-500 capitalize text-lg"
+          />
+        </div>
+        <a href="#" className="self-center mt-4 text-gray-500">Forgot password?</a>
+        <a href="#" className="py-3 px-20 bg-pink-500 rounded-full text-white font-bold uppercase text-lg mt-4 transform hover:translate-y-1 transition-all duration-500">Login</a>
+      </form>
+    </div>
+  </div>
+
     )
 }
 
