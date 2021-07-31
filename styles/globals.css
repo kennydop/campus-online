@@ -4,8 +4,35 @@
 
 @layer components{
     .infofield{
-        @apply outline-none bg-gray-100 placeholder-gray-500 rounded-full focus:border-pink-500 w-20 h-3 mb-2 pl-2;
+        @apply outline-none bg-gray-100 placeholder-gray-500 rounded-full focus:border-pink-500 w-80 h-12 mb-5 pl-11;
     }
+
+    .infobutton{
+        @apply h-12 w-40 bg-pink-500 rounded-full text-white  hover:translate-y-1 transform transition-all duration-500;
+    }
+
+    .infoicons{
+        @apply absolute text-gray-500 w-6 text-center mt-3 ml-3;
+    }
+    .footerlinks{
+        @apply text-gray-500 mx-5 my-8
+    }
+    .h85p{
+        height: 85%
+    }
+}
+
+.profilePic{
+    background-image: url("../images/IMG_8569.jpg");
+    width: 10rem;
+    height: 10rem;
+    border-radius: 100%;
+}
+.addProfilePic{
+    justify-content: center;
+    text-align: center;
+    width: 10rem;
+    height: 10rem;
 }
 
 

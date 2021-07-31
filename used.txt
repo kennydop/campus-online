@@ -4,3 +4,4 @@ tailwind css
 flexbox
 hero icons
 nextauth.js
+firebase

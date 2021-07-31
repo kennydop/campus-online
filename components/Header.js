@@ -1,19 +1,21 @@
 import Image from "next/image"
 import campus_online_logo from "../images/campus-online-logo.png"
+// import {
+//     ChatIcon,
+//     ChevronDownIcon,
+//     ViewGridIcon,
+// }from "@heroicons/react/solid";
+
 import {
-    BellIcon,
-    ChatIcon,
-    ChevronDownIcon,
-    HomeIcon,
-    UserGroupIcon,
-    ViewGridIcon,
-}from "@heroicons/react/solid";
-import {
-    FlagIEon,
     PlayIcon,
     SearchIcon,
-    ShoppingCartIcon,
+    UserCircleIcon,
+    HomeIcon,
+    BellIcon,
+    ChatAlt2Icon,
+    UserGroupIcon,
 } from "@heroicons/react/outline";
+
 import HeaderIcon from "./HeaderIcon";
     
 
@@ -23,7 +25,7 @@ function Header() {
                 {/*left*/}
                 <div className = "flex items-center pb-2 md:pb-0 px-2 md:px-0 mx-auto justify-between">
                     <div className="md:hidden">
-                        <HeaderIcon Icon = {ViewGridIcon}/>
+                        <HeaderIcon Icon = {UserCircleIcon}/>
                     </div>
                     <div className="flex items-center">
                         <Image src = {campus_online_logo}
@@ -48,8 +50,8 @@ function Header() {
                 <HeaderIcon active Icon = {HomeIcon}/>
                 <HeaderIcon Icon = {BellIcon}/>
                 <HeaderIcon Icon = {UserGroupIcon}/>
-                <HeaderIcon Icon = {ChatIcon}/>
-                <ViewGridIcon className = "hidden md:flex cursor-pointer h-6 px-2 md:px-3 text-center mx-auto text-gray-500 hover:text-pink-500"/>
+                <HeaderIcon Icon = {ChatAlt2Icon}/>
+                <UserCircleIcon className = "hidden md:flex cursor-pointer h-6 px-2 md:px-3 text-center mx-auto text-gray-500 hover:text-pink-500"/>
             </div>
         </div>
     )
