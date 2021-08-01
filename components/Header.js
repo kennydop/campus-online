@@ -1,5 +1,7 @@
 import Image from "next/image"
 import campus_online_logo from "../images/campus-online-logo.png"
+import {signOut} from "next-auth/client";
+
 // import {
 //     ChatIcon,
 //     ChevronDownIcon,
@@ -48,10 +50,10 @@ function Header() {
             {/*right*/}
             <div className = "flex items-center justify-center md:justify-end">
                 <HeaderIcon active Icon = {HomeIcon}/>
-                <HeaderIcon Icon = {BellIcon}/>
                 <HeaderIcon Icon = {UserGroupIcon}/>
+                <HeaderIcon Icon = {BellIcon}/>
                 <HeaderIcon Icon = {ChatAlt2Icon}/>
-                <UserCircleIcon className = "hidden md:flex cursor-pointer h-6 px-2 md:px-3 text-center mx-auto text-gray-500 hover:text-pink-500"/>
+                <UserCircleIcon className = "hidden md:flex cursor-pointer h-6 px-2 md:px-3 text-center mx-auto text-gray-500 hover:text-pink-500" onClick={() => signOut()}/>
             </div>
         </div>
     )

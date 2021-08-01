@@ -10,6 +10,9 @@
     .infobutton{
         @apply h-12 w-40 bg-pink-500 rounded-full text-white  hover:translate-y-1 transform transition-all duration-500;
     }
+    .infobutton-white{
+        @apply h-12 w-40 border border-pink-500 bg-white rounded-full text-pink-500  hover:translate-y-1 transform transition-all duration-500;
+    }
 
     .infoicons{
         @apply absolute text-gray-500 w-6 text-center mt-3 ml-3;
@@ -17,22 +20,7 @@
     .footerlinks{
         @apply text-gray-500 mx-5 my-8
     }
-    .h85p{
-        height: 85%
-    }
 }
 
-.profilePic{
-    background-image: url("../images/IMG_8569.jpg");
-    width: 10rem;
-    height: 10rem;
-    border-radius: 100%;
-}
-.addProfilePic{
-    justify-content: center;
-    text-align: center;
-    width: 10rem;
-    height: 10rem;
-}
 
 
