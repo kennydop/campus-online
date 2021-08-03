@@ -5,3 +5,11 @@ flexbox
 hero icons
 nextauth.js
 firebase
+
+
+
+TODO
+.....
+
+CHANGE FACEBOOK_ID and FACEBOOK_SECRET TO ACTUAL ONE
+CHANGE NEXTAUTH_URL TO SITE URL

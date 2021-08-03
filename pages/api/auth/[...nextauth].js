@@ -13,6 +13,11 @@ const options = {
             clientSecret: process.env.FACEBOOK_SECRET
         }),
 
+        Providers.Twitter({
+            clientId: process.env.TWITTER_ID,
+            clientSecret: process.env.TWITTER_SECRET
+        })
+
         // Providers.Email({
         //     server: {
         //         host: "",
