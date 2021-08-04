@@ -1,5 +1,6 @@
 import Image from "next/image";
 import campus_online_logo from "../images/campus-online-logo.png";
+import Link from 'next/link';
 
 function Signup() {
     return (
@@ -37,7 +38,7 @@ function Signup() {
                     </select>
                 </label>
             </div>
-            <p className="self-center mb-6 text-sm text-gray-500">Already have an account? <a href="#" className = "text-pink-500 hover:font-bold">Login</a></p>
+            <p className="self-center mb-6 text-sm text-gray-500">Already have an account? <a className = "text-pink-500 hover:font-bold"> <Link href="/Login">Login</Link></a></p>
             <button className="infobutton" type = "submit">Sign Up</button>
             <div className = "flex my-5 items-center justify center">
                 <div className="mx-4 cursor-pointer hover:translate-y-1 transform transition-all duration-500;" onClick={() => signIn("facebook")}>

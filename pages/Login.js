@@ -3,7 +3,8 @@ import campus_online_logo from "../images/campus-online-logo.png";
 import { UserIcon, LockClosedIcon} from "@heroicons/react/outline";
 import {signIn, signOut, useSession} from "next-auth/client";
 import HomePage from './HomePage';
-import Signup from "./Signup";
+import Index from './index';
+import Link from 'next/link'
 function Login() {
   const [session, loading] = useSession();
 
@@ -38,7 +39,7 @@ function Login() {
                   />
                 </div>
                 <a href="#" className="self-center mb-1 text-sm text-gray-500 hover:font-bold">Forgot password?</a>
-                <p className="self-center mb-6 text-sm text-gray-500">Don't have an account? <a href = "/Signup" className = "text-pink-500 hover:font-bold">Create one</a></p>
+                <p className="self-center mb-6 text-sm text-gray-500">Don't have an account? <a className = "text-pink-500 hover:font-bold"> <Link href = "/Signup">Create one</Link></a></p>
                 <button className="infobutton" type = "submit">Login</button>
                 <div className = "flex my-5 items-center justify center">
                   <div className="mx-4 cursor-pointer hover:translate-y-1 transform transition-all duration-500;" onClick={() => signIn("facebook")}>
