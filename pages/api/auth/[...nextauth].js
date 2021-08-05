@@ -19,8 +19,12 @@ const options = {
         }),
 
         Providers.Credentials({
-            name: 'email',
-            async authorize() {
+            name: 'credentials',
+            credentials: {
+              username: { label: "Username", type: "text", placeholder: "jsmith" },
+              password: {  label: "Password", type: "password" }
+            },
+            async authorize(credentials) {
               // Authentication Logic: local function, external API call, etc
                 const user = { name: '', email: '', image: '' }
                 return user;
@@ -29,7 +33,13 @@ const options = {
     ],  
     session: { 
       jwt: true,
-    }, 
+    },
+    jwt: {
+        // A secret to use for key generation - you should set this explicitly
+        // Defaults to NextAuth.js secret if not explicitly specified.
+        secret: 'INp8IvdIyeMcoGAgFGoA61DdBglwwSqnXJZkgz8PSnw',    
+      }  
+     
 };
 
 export default (req,res) => NextAuth(req,res,options); 

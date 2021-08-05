@@ -5,6 +5,7 @@ import {signIn, signOut, useSession} from "next-auth/client";
 import HomePage from './HomePage';
 import Link from 'next/link'
 import { auth } from "../firebase/firebase";
+
 function Login() {
   const [session, loading] = useSession();
   const loginToApp = (e) => {

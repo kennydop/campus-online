@@ -35,10 +35,11 @@ function Signup() {
                 })
             }).catch((error)=>setError(error.message));
             
-            signIn('credentials').then(
+            signIn('credentials', {name, password}).then(
                 session.user.name = name,
-                session.user.email = email
-            ).then(router.push('/add_college')).then(alert(session.user.name));
+                session.user.email = email).then(
+                    router.push('/add_college')).then(
+                        alert(session.user.name));
         }
     }
     return (
