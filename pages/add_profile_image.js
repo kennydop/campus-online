@@ -1,30 +1,22 @@
-import Image from "next/image"
-import Avatar from "../images/avatar.jpg"
+import Image from "next/image";
+import Avatar from "../images/avatar.jpg";
 import { useState } from "react";
+import {auth, storage} from '../firebase/firebase';
+import {useSession} from "next-auth/client";
+import {useRouter} from 'next/router';
 
 function add_profile_image() {
 
-    // this.state={
-    //     profileImg: Avatar
-    // } 
-    // imageHandler=(e)=>{
-    //     const reader = new FileReader();
-    //     reader.onload = () => {
-    //     if(reader.readyState === 2){
-    //         this.setState({profileImg: reader.result})
-    //     }
-    //     reader.readAsDataURL(e.target.files[0])
-    // }
-
-    // const {profileImg} = this.state
-    // }
-
-    const [imgPreview, setImgPreview] = useState(null);
+  const [imgPreview, setImgPreview] = useState(null);
   const [error, setError] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [url, setURL] = useState("");
+  const [session] = useSession();
+  const router = useRouter();
 
   const handleImageChange = (e) => {
     setError(false);
-    const selected = e.target.files[0];
+    setSelected(e.target.files[0]);
     if (selected && selected.type.substr(0, 5) === "image") {
       let reader = new FileReader();
       reader.onloadend = () => {
@@ -35,6 +27,25 @@ function add_profile_image() {
       setError(true);
     }
   };
+
+  function handleUpload() {
+    const ref = storage.ref(`/avatars/${selected.name}`);
+    const uploadTask = ref.put(selected);
+    uploadTask.on("state_changed", () => {
+      ref
+        .getDownloadURL()
+        .then((url) => {
+          setSelected(null);
+          setURL(url);
+        });
+      });
+      alert(url);
+    auth.currentUser.updateProfile(photoURL = url)
+    
+    session.user.image = url;
+    
+    router.push('/')
+  }
     return (
         <div className = "h-screen flex flex-col items-center justify-center">
             <div className = "mb-6 text-center">
@@ -44,7 +55,7 @@ function add_profile_image() {
                 <h2 className = "text-lg text-gray-500 mb-3">Select A Profile Image</h2>
                 <div className = "mb-3 border-2 border-gray-500 rounded-full overflow-hidden">
                     <Image 
-                    src={!imgPreview ? Avatar : imgPreview}
+                    src={imgPreview ? imgPreview : Avatar}
                     width={180}
                     height={180}
                     className = "object-cover"
@@ -56,12 +67,12 @@ function add_profile_image() {
                 </label>
             </div>
             <div className = "items-center">
-            {error && <p className="errorMsg text-red-500 font-bold text-center mb-2">File not supported</p>}
+            {error && <p className="errorMsg">File not supported</p>}
             {!imgPreview && (
                 <button className = "infobutton">Skip</button>
             )}
             {imgPreview && (
-                <button className = "infobutton">Confirm</button>
+                <button className = "infobutton" onClick = {handleUpload}>Confirm</button>
             )}
             </div>
         </div>

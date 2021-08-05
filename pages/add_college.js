@@ -4,13 +4,15 @@ function add_college() {
     const router = useRouter();
     return (
         <div className = "h-screen flex flex-col items-center justify-center">
-            <div className = "mb-5"><h1 className = "text-lg font-bold text-gray-500">Finish Setting up your Account</h1></div>
+            <div className = "mb-10"><h1 className = "text-lg font-bold text-gray-500">Finish Setting up your Account</h1></div>
             <div className = "bg-gray-100 rounded-full space-between justify-center text-center">
                 <label className = "text-gray-500 mx-4"> Select College:
-                    <select name="college" required = "required" className = "bg-gray-100 text-gray-500 h-12 outline-none pl-5">
+                    <select name="college" required = "required" className = "bg-gray-100 text-gray-500 h-12 w-60 outline-none pl-5">
                         <option>Academic City College</option>
                         <option>Ashesi University</option>
                         <option>University of Cape Coast</option>
+                        <option>University of Ghana</option>
+                        <option>Kwame Nkrumah University of Science and Technology</option>
                     </select>
                 </label>
             </div>

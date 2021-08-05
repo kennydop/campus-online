@@ -4,7 +4,7 @@ tailwind css
 flexbox
 hero icons
 nextauth.js
-react router
+react hooks
 firebase
 
 

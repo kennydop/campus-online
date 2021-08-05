@@ -16,21 +16,20 @@ const options = {
         Providers.Twitter({
             clientId: process.env.TWITTER_ID,
             clientSecret: process.env.TWITTER_SECRET
-        })
+        }),
 
-        // Providers.Email({
-        //     server: {
-        //         host: "",
-        //         port: "",
-        //         auth: {
-        //             user: "",
-        //             pass: ""
-        //         }
-        //     },
-        //     from: ""
-        // })
-    
-    ]
+        Providers.Credentials({
+            name: 'email',
+            async authorize() {
+              // Authentication Logic: local function, external API call, etc
+                const user = { name: '', email: '', image: '' }
+                return user;
+            }
+          })    
+    ],  
+    session: { 
+      jwt: true,
+    }, 
 };
 
 export default (req,res) => NextAuth(req,res,options); 

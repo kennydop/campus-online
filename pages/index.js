@@ -1,7 +1,8 @@
 import Head from 'next/head'
-import {getSession, signIn, signOut, useSession} from "next-auth/client";
+import {getSession} from "next-auth/client";
 import HomePage from './HomePage'
 import Login from './Login';
+
 export default function Home({session}) {
   return (
     <div>

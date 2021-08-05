@@ -1,0 +1,6 @@
+IMPLEMENT SIGN UP AND LOG IN WITH USERNAME AND PASS
+    * check if email is correct
+
+LOGGING IN WITH SOCIAL HANDLES
+    * after login, if session.user.name is not found in firestore then redirect to login and print error 'account not found'
+    

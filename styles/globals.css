@@ -20,6 +20,10 @@
     .footerlinks{
         @apply text-gray-500 mx-5 my-8
     }
+
+    .errorMsg{
+        @apply text-red-500 font-bold text-center mb-2
+    }
 }
 
 
