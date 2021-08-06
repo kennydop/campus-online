@@ -37,7 +37,7 @@ const options = {
     jwt: {
         // A secret to use for key generation - you should set this explicitly
         // Defaults to NextAuth.js secret if not explicitly specified.
-        signingKey: process.env.JWT_SIGNING_PRIVATE_KEY,    
+        secret: process.env.JWT_SIGNING_PRIVATE_KEY,    
       }  
      
 };

@@ -7,7 +7,6 @@ import {useRouter} from 'next/router';
 import { auth } from "../firebase/firebase";
 import {signIn, signOut, useSession} from "next-auth/client";
 import add_college from './add_college';
-
 function Signup() {
 
     const [name, setName] = useState("");
@@ -17,7 +16,7 @@ function Signup() {
     const router = useRouter();
     const [session, loading] = useSession();
 
-    const register = ()=>{
+    async function register () {
         if(!name){
             setError("Please enter a Username");
         }
@@ -27,19 +26,23 @@ function Signup() {
         else if(!password){
             setError("Please enter a Password");
         }
-        else{
-            auth.createUserWithEmailAndPassword(email, password).then((userAuth)=>{
-                userAuth.user.updateProfile({
-                    displayName: name
-                    
-                })
-            }).catch((error)=>setError(error.message)).then(
-            signIn('credentials', {name, password}).then(
-                session.user.name = name,
-                session.user.email = email).then(
-                        alert(session.user.name))).then(
-                        <add_college/>)
+        if(session){
+            setError('Please log out first')
         }
+        else{
+           /* let goAhead = await auth.createUserWithEmailAndPassword(email, password).then((userAuth)=>{
+                                    userAuth.user.updateProfile({
+                                        displayName: name
+                                    })
+                                    return userAuth;
+                                }).catch((error)=>setError(error.message))
+
+            goAhead && */signIn('credentials', {redirect: false, name: name, password: password, /*callbackUrl: 'http://localhost:3000/add_college'*/}).then(
+                                session.user.name = name,
+                                session.user.email = email).then(
+                                    alert(session.user.name))
+        }
+
     }
     return (
     <div className="w-screen flex flex-col justify-center items-center">
@@ -51,6 +54,7 @@ function Signup() {
                         width = {192} 
                         height = {34.5} 
                         layout = "fixed"
+                        onClick = {signOut}
                         alt = "campus online logo"/>
                 </div>
                 <p className = "mb-4 text-lg font-bold text-gray-500">Create an Account</p>

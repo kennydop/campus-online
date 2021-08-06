@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import {getSession} from "next-auth/client";
+import {getSession, useSession} from "next-auth/client";
 import HomePage from './HomePage'
 import Login from './Login';
 
