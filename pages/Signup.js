@@ -6,7 +6,7 @@ import Link from 'next/link';
 import {useRouter} from 'next/router';
 import { auth } from "../firebase/firebase";
 import {signIn, signOut, useSession} from "next-auth/client";
-
+import add_college from './add_college';
 
 function Signup() {
 
@@ -15,7 +15,7 @@ function Signup() {
     const [password, setpassword] = useState("");
     const [error, setError] = useState(false);
     const router = useRouter();
-    const [session] = useSession();
+    const [session, loading] = useSession();
 
     const register = ()=>{
         if(!name){
@@ -33,13 +33,12 @@ function Signup() {
                     displayName: name
                     
                 })
-            }).catch((error)=>setError(error.message));
-            
+            }).catch((error)=>setError(error.message)).then(
             signIn('credentials', {name, password}).then(
                 session.user.name = name,
                 session.user.email = email).then(
-                    router.push('/add_college')).then(
-                        alert(session.user.name));
+                        alert(session.user.name))).then(
+                        <add_college/>)
         }
     }
     return (

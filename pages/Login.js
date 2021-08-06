@@ -8,9 +8,11 @@ import { auth } from "../firebase/firebase";
 
 function Login() {
   const [session, loading] = useSession();
+
   const loginToApp = (e) => {
     e.preventDefault();
   }
+  
     return (
         <main>
           {!session && (
