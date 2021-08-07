@@ -1,4 +1,5 @@
 import NextAuth from "next-auth"
+import { session } from "next-auth/client";
 import Providers from "next-auth/providers";
 
 const options = {
@@ -19,26 +20,32 @@ const options = {
         }),
 
         Providers.Credentials({
-            name: 'credentials',
+            name: 'Credentials',
             credentials: {
-              username: { label: "Username", type: "text", placeholder: "jsmith" },
+              username: { label: "Email", type: "text"},
               password: {  label: "Password", type: "password" }
             },
-            async authorize(credentials) {
+            async authorize(credentials, req) {
               // Authentication Logic: local function, external API call, etc
+              // Add logic here to look up the user from the credentials supplied 
                 const user = { name: '', email: '', image: '' }
-                return user;
+                if(user) {return user;}
+                else {
+                  alert('user returned null')
+                  return null; 
+                }
+                  //throw new Error('Check your credentials')}
             }
           })    
     ],  
-    session: { 
-      jwt: true,
-    },
-    jwt: {
-        // A secret to use for key generation - you should set this explicitly
-        // Defaults to NextAuth.js secret if not explicitly specified.
-        secret: process.env.JWT_SIGNING_PRIVATE_KEY,    
-      }  
+    // session: { 
+    //   jwt: true,
+    // },
+    // jwt: {
+    //     // A secret to use for key generation - you should set this explicitly
+    //     // Defaults to NextAuth.js secret if not explicitly specified.
+    //     secret: process.env.JWT_SIGNING_PRIVATE_KEY,    
+    //   }  
      
 };
 

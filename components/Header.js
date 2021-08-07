@@ -61,7 +61,6 @@ const [session] = useSession();
                     height={32}
                     layout="fixed"/>
                 </div>
-                {/* <UserCircleIcon className = "hidden md:flex cursor-pointer h-6 px-2 md:px-3 text-center mx-auto text-gray-500 hover:text-pink-500" onClick={() => signOut()}/> */}
         </div>
     </div>
     )

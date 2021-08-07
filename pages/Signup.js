@@ -5,8 +5,7 @@ import { UserIcon, MailIcon, LockClosedIcon} from "@heroicons/react/outline";
 import Link from 'next/link';
 import {useRouter} from 'next/router';
 import { auth } from "../firebase/firebase";
-import {signIn, signOut, useSession} from "next-auth/client";
-import add_college from './add_college';
+import {signIn, signOut, useSession, getSession, session} from "next-auth/client";
 function Signup() {
 
     const [name, setName] = useState("");
@@ -17,7 +16,10 @@ function Signup() {
     const [session, loading] = useSession();
 
     async function register () {
-        if(!name){
+        if(session){
+            setError('Please log out first')
+        }
+        else if(!name){
             setError("Please enter a Username");
         }
         else if(!email){
@@ -25,9 +27,6 @@ function Signup() {
         }
         else if(!password){
             setError("Please enter a Password");
-        }
-        if(session){
-            setError('Please log out first')
         }
         else{
            /* let goAhead = await auth.createUserWithEmailAndPassword(email, password).then((userAuth)=>{
@@ -37,10 +36,13 @@ function Signup() {
                                     return userAuth;
                                 }).catch((error)=>setError(error.message))
 
-            goAhead && */signIn('credentials', {redirect: false, name: name, password: password, /*callbackUrl: 'http://localhost:3000/add_college'*/}).then(
+            goAhead && */const waitForSession = await signIn('credentials', {redirect: false, name: name, password: password, /*callbackUrl: 'http://localhost:3000/add_college'*/})/*.then(
                                 session.user.name = name,
-                                session.user.email = email).then(
-                                    alert(session.user.name))
+                                session.user.email = email).then(*/
+                                    alert(waitForSession.status)
+                                    console.log(waitForSession)
+                                    var _session = await getSession().then(console.log).then(_session.user.name = name, _session.user.email = email).then(console.log)
+                                    // waitForSession && alert(session.user.name)
         }
 
     }
