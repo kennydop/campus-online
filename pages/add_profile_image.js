@@ -40,9 +40,9 @@ function add_profile_image() {
         });
       });
       alert(url);
-    // auth.currentUser.updateProfile(photoURL = url)
+    auth.currentUser.updateProfile(photoURL = url)
     
-    // session.user.image = url;
+    session.user.image = url;
     
     router.push('/')
   }

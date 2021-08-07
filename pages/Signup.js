@@ -4,7 +4,7 @@ import campus_online_logo from "../images/campus-online-logo.png";
 import { UserIcon, MailIcon, LockClosedIcon} from "@heroicons/react/outline";
 import Link from 'next/link';
 import {useRouter} from 'next/router';
-import { auth } from "../firebase/firebase";
+import { auth, db } from "../firebase/firebase";
 import {signIn, signOut, useSession, getSession, session} from "next-auth/client";
 function Signup() {
 
@@ -33,18 +33,10 @@ function Signup() {
                                     userAuth.user.updateProfile({
                                         displayName: name
                                     })
-                                    console.log(auth.currentUser)
-                                    const gA = userAuth;
-                                    console.log(gA)
-                                    return gA;
+                                    return userAuth;
                                 }).catch((error)=> {setError(error.message)})
                                     
-
-            goAhead && await signIn('credentials', {redirect: false, email: email, password: password, /*callbackUrl: 'http://localhost:3000/add_college'*/})
-            console.log(auth.currentUser.displayName)
-            var qw = await getSession().then(
-            console.log())
-
+            goAhead && await signIn('credentials', {email: email, password: password, callbackUrl: 'http://localhost:3000/add_college'})
         }
 
     }

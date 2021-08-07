@@ -1,7 +1,7 @@
 import NextAuth from "next-auth"
 import { session } from "next-auth/client";
 import Providers from "next-auth/providers";
-import { auth } from "../../../firebase/firebase";
+import { auth, db } from "../../../firebase/firebase";
 
 const options = {
     providers: [
@@ -30,15 +30,28 @@ const options = {
               // Authentication Logic: local function, external API call, etc
               // Add logic here to look up the user from the credentials supplied 
               const _user = await auth.currentUser
-              const user = { name: _user.displayName, email: _user.email }
-                if(user) {return Promise.resolve(user)}
-                else {
-                  alert('user returned null')
-                  return null; 
-                }
+              db.collection('users').doc(_user.uid).get().then((doc)=>{
+                if(doc.exists){
+                  const user = { name: _user.displayName, email: _user.email, image: _user.photoURL }
+                  if(user) {return user}
+                  else {
+                    alert('user returned null')
+                    return null; 
+                  }
                   //throw new Error('Check your credentials')}
+                }
+                else{
+                  const user = {email: _user.email}
+                  if(user) {return user}
+                  else {
+                    alert('user returned null')
+                    return null; 
+                  }
+                }
+              }
+              )
             }
-          })    
+      })    
     ],  
     // session: { 
     //   jwt: true,
