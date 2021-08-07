@@ -1,6 +1,7 @@
 import NextAuth from "next-auth"
 import { session } from "next-auth/client";
 import Providers from "next-auth/providers";
+import { auth } from "../../../firebase/firebase";
 
 const options = {
     providers: [
@@ -22,14 +23,15 @@ const options = {
         Providers.Credentials({
             name: 'Credentials',
             credentials: {
-              username: { label: "Email", type: "text"},
+              email: { label: "Email", type: "text"},
               password: {  label: "Password", type: "password" }
             },
             async authorize(credentials, req) {
               // Authentication Logic: local function, external API call, etc
               // Add logic here to look up the user from the credentials supplied 
-                const user = { name: '', email: '', image: '' }
-                if(user) {return user;}
+              const _user = await auth.currentUser
+              const user = { name: _user.displayName, email: _user.email }
+                if(user) {return Promise.resolve(user)}
                 else {
                   alert('user returned null')
                   return null; 

@@ -14,7 +14,7 @@ function Signup() {
     const [error, setError] = useState(false);
     const router = useRouter();
     const [session, loading] = useSession();
-
+    var _session = null;
     async function register () {
         if(session){
             setError('Please log out first')
@@ -29,20 +29,22 @@ function Signup() {
             setError("Please enter a Password");
         }
         else{
-           /* let goAhead = await auth.createUserWithEmailAndPassword(email, password).then((userAuth)=>{
+            let goAhead = await auth.createUserWithEmailAndPassword(email, password).then((userAuth)=>{
                                     userAuth.user.updateProfile({
                                         displayName: name
                                     })
-                                    return userAuth;
-                                }).catch((error)=>setError(error.message))
+                                    console.log(auth.currentUser)
+                                    const gA = userAuth;
+                                    console.log(gA)
+                                    return gA;
+                                }).catch((error)=> {setError(error.message)})
+                                    
 
-            goAhead && */const waitForSession = await signIn('credentials', {redirect: false, name: name, password: password, /*callbackUrl: 'http://localhost:3000/add_college'*/})/*.then(
-                                session.user.name = name,
-                                session.user.email = email).then(*/
-                                    alert(waitForSession.status)
-                                    console.log(waitForSession)
-                                    var _session = await getSession().then(console.log).then(_session.user.name = name, _session.user.email = email).then(console.log)
-                                    // waitForSession && alert(session.user.name)
+            goAhead && await signIn('credentials', {redirect: false, email: email, password: password, /*callbackUrl: 'http://localhost:3000/add_college'*/})
+            console.log(auth.currentUser.displayName)
+            var qw = await getSession().then(
+            console.log())
+
         }
 
     }
