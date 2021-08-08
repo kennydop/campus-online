@@ -2,7 +2,7 @@ import NextAuth from "next-auth"
 import { session } from "next-auth/client";
 import Providers from "next-auth/providers";
 import { auth, db } from "../../../firebase/firebase";
-
+import Avatar from '../../../images/avatar.jpg';
 const options = {
     providers: [
         Providers.Google({
@@ -24,32 +24,21 @@ const options = {
             name: 'Credentials',
             credentials: {
               email: { label: "Email", type: "text"},
-              password: {  label: "Password", type: "password" }
+              password: {  label: "Password", type: "password" },
+                isNewUser: {label: "New User", type: 'boolean'}
             },
             async authorize(credentials, req) {
               // Authentication Logic: local function, external API call, etc
-              // Add logic here to look up the user from the credentials supplied 
-              const _user = await auth.currentUser
-              db.collection('users').doc(_user.uid).get().then((doc)=>{
-                if(doc.exists){
-                  const user = { name: _user.displayName, email: _user.email, image: _user.photoURL }
-                  if(user) {return user}
-                  else {
-                    alert('user returned null')
-                    return null; 
-                  }
-                  //throw new Error('Check your credentials')}
-                }
-                else{
-                  const user = {email: _user.email}
-                  if(user) {return user}
-                  else {
-                    alert('user returned null')
-                    return null; 
-                  }
-                }
+              // Add logic here to look up the user from the credentials supplied
+              const userInfo = await auth.currentUser
+              if(credentials.isNewUser){
+                  const user = {email: credentials.email, image: Avatar}
+                  return user
+              }else{
+                const user = {name: userInfo.displayName, email: credentials.email, image: userInfo.photoURL}
+                return user
               }
-              )
+                  //throw new Error('Check your credentials')}               
             }
       })    
     ],  
@@ -63,5 +52,6 @@ const options = {
     //   }  
      
 };
+
 
 export default (req,res) => NextAuth(req,res,options); 

@@ -16,6 +16,7 @@ function Signup() {
     const [session, loading] = useSession();
     var _session = null;
     async function register () {
+        setError('');
         if(session){
             setError('Please log out first')
         }
@@ -36,7 +37,7 @@ function Signup() {
                                     return userAuth;
                                 }).catch((error)=> {setError(error.message)})
                                     
-            goAhead && await signIn('credentials', {email: email, password: password, callbackUrl: 'http://localhost:3000/add_college'})
+            goAhead && await signIn('credentials', {email: email, password: password, isNewUser: true, callbackUrl: 'http://localhost:3000/add_college'})
         }
 
     }

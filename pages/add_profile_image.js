@@ -4,6 +4,7 @@ import { useState } from "react";
 import {auth, storage} from '../firebase/firebase';
 import {useSession} from "next-auth/client";
 import {useRouter} from 'next/router';
+import NotAuthorized from "../components/notAuthorized";
 
 function add_profile_image() {
 
@@ -47,6 +48,8 @@ function add_profile_image() {
     router.push('/')
   }
     return (
+      <main>
+        {session && (
         <div className = "h-screen flex flex-col items-center justify-center">
             <div className = "mb-6 text-center">
                 <h1 className = "mb-5 text-lg font-bold text-gray-500">Finish Setting up your Account</h1>
@@ -76,6 +79,11 @@ function add_profile_image() {
             )}
             </div>
         </div>
+        )}
+        {!session && (
+          <NotAuthorized/>
+        )}
+      </main>
     )
 }
 

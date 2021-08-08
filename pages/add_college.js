@@ -1,30 +1,51 @@
-import {useRouter} from 'next/router'
-import {db, auth} from '../firebase/firebase'
-import { useState } from "react";
-
+import {useRouter} from 'next/router';
+import {db, auth, firebaseApp} from '../firebase/firebase';
+import { useState } from 'react';
+import {useSession} from 'next-auth/client';
+import NotAuthorized from '../components/notAuthorized'
 
 function add_college() {
     const router = useRouter();
     const [college, setCollege] = useState("");
-    const uid = auth.currentUser.uid
+    const [session, loading] = useSession();
+    db.collection("universities").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            var collegeOption = document.createElement("option")
+            collegeOption.innerHTML = doc.id
+            document.getElementById('colleges').appendChild(collegeOption)
+        });
+        setCollege('Academic City University College');
+    });
+
+    async function confirmCollege(){
+        db.collection("users").doc(auth.currentUser.uid).set({college: college});
+        // db.collection('universities').doc(college).set({registeredUsers: +1})
+        const collegeRef = db.collection('universities').doc(college);
+        const increment = firebaseApp.firestore.FieldValue.increment(1);
+        collegeRef.update({ registeredUsers: increment });
+        router.push('/add_profile_image'); 
+    }
     return (
+        <main>
+        {session && ( 
         <div className = "h-screen flex flex-col items-center justify-center">
             <div className = "mb-10"><h1 className = "text-lg font-bold text-gray-500">Finish Setting up your Account</h1></div>
             <div className = "bg-gray-100 rounded-full space-between justify-center text-center">
                 <label className = "text-gray-500 mx-4"> Select College:
-                    <select value={college} onChange = {e=>setCollege(e.target.value)} name="college" required = "required" className = "bg-gray-100 text-gray-500 h-12 w-60 outline-none pl-5">
-                        <option>Academic City College</option>
-                        <option>Ashesi University</option>
-                        <option>University of Cape Coast</option>
-                        <option>University of Ghana</option>
-                        <option>Kwame Nkrumah University of Science and Technology</option>
+                    <select id = 'colleges' value={college} onChange = {e=>setCollege(e.target.value)} required = "required" className = "bg-gray-100 text-gray-500 h-12 w-40 md:w-60 outline-none pl-4">
                     </select>
                 </label>
             </div>
             <div className = "mt-6">
-             <button type = "button" className = "infobutton" onClick={()=>{router.push('/add_profile_image'); db.collection("users").doc(uid).set({college: college})}}>Confirm</button>
+             <button type = "button" className = "infobutton" onClick={confirmCollege}>Confirm</button>
             </div>
         </div>
+        )}
+        {!session &&(
+            !loading &&
+            <NotAuthorized />
+        )}
+    </main>
     )
 }
 
