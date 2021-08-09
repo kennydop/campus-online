@@ -16,16 +16,21 @@ function add_college({colleges}) {
                 var collegeOption = document.createElement("option");
                 collegeOption.innerHTML = col;
                 document.getElementById('colleges').appendChild(collegeOption)
+                setCollege('Academic City University College')
             }
         });
     }
 
     async function confirmCollege(){
-        db.collection("users").doc(auth.currentUser.uid).set({college: college});
-        const collegeRef = db.collection('universities').doc(college);
-        const increment = firebaseApp.firestore.FieldValue.increment(1);
-        collegeRef.update({ registeredUsers: increment });
-        router.push('/add_profile_image'); 
+        if(college){
+            db.collection("users").doc(auth.currentUser.uid).set({college: college});
+            const collegeRef = db.collection('universities').doc(college);
+            const increment = firebaseApp.firestore.FieldValue.increment(1);
+            collegeRef.update({ registeredUsers: increment });
+            router.push('/add_profile_image'); 
+        }else{
+            alert('Please select your college');
+        }
     }
     return (
         <main>
@@ -59,8 +64,7 @@ function add_college({colleges}) {
             colleges.push(doc.id);
         });
     });
-    console.log(colleges)
-    // By returning { props: { posts } }, the Blog component
+        // By returning { props: { posts } }, the Blog component
     // will receive `posts` as a prop at build time
     return {
         props: {
