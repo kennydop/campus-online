@@ -1,52 +1,89 @@
-import Image from "next/image";
-import Avatar from "../images/avatar.jpg";
+import Image from "next/image"
+import Avatar from "../images/avatar.jpg"
 import { useState } from "react";
 import {auth, storage} from '../firebase/firebase';
-import {useSession} from "next-auth/client";
+import {getSession} from "next-auth/client";
 import {useRouter} from 'next/router';
 import NotAuthorized from "../components/notAuthorized";
-
-function add_profile_image() {
-
+function add_profile_image({session}) {
+    
   const [imgPreview, setImgPreview] = useState(null);
   const [error, setError] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const [url, setURL] = useState("");
-  const [session] = useSession();
+  var selected = null;
+  var _file = null;
+  var dataurl;
   const router = useRouter();
 
   const handleImageChange = (e) => {
     setError(false);
-    setSelected(e.target.files[0]);
+    selected = e.target.files[0];
     if (selected && selected.type.substr(0, 5) === "image") {
       let reader = new FileReader();
       reader.onloadend = () => {
         setImgPreview(reader.result);
       };
       reader.readAsDataURL(selected);
-    } else {
+      resizeImage(selected)
+    } 
+    else {
       setError(true);
     }
   };
 
+  function resizeImage(selected) {
+    _file = selected
+    console.log(_file)
+       if (_file) {
+         var _reader = new FileReader();
+   
+   // Set the image for the FileReader
+         _reader.onload = function (e) {
+           var img = document.createElement("img");
+           img.src = e.target.result;
+   
+   // Create your canvas
+           var canvas = document.createElement("canvas");
+           var ctx = canvas.getContext("2d");
+           ctx.drawImage(img, 0, 0);
+   
+           var MAX_WIDTH = 120;
+           var MAX_HEIGHT = 120;
+           var width = img.width;
+           var height = img.height;
+   
+   // Add the resizing logic
+           if (width > height) {
+             if (width > MAX_WIDTH) {
+               height *= MAX_WIDTH / width;
+               width = MAX_WIDTH;
+             }
+           } else {
+             if (height > MAX_HEIGHT) {
+               width *= MAX_HEIGHT / height;
+               height = MAX_HEIGHT;
+             }
+           }
+   
+   //Specify the resizing result
+           canvas.width = width;
+           canvas.height = height;
+           var ctx = canvas.getContext("2d");
+           ctx.drawImage(img, 0, 0, width, height);
+   
+          dataurl = canvas.toDataURL(_file.type);
+          //  document.getElementById("output").src = dataurl;
+         };
+         _reader.readAsDataURL(_file);
+       }
+    }
+
   function handleUpload() {
-    const ref = storage.ref(`/avatars/${selected.name}`);
-    const uploadTask = ref.put(selected);
-    uploadTask.on("state_changed", () => {
-      ref
-        .getDownloadURL()
-        .then((url) => {
-          setSelected(null);
-          setURL(url);
-        });
-      });
-      alert(url);
-    auth.currentUser.updateProfile(photoURL = url)
-    
-    session.user.image = url;
-    
-    router.push('/')
+    console.log(dataurl);
+    auth.currentUser.updateProfile({photoURL: dataurl})
+    session.user.image = dataurl;
+    router.replace('/')
   }
+
     return (
       <main>
         {session && (
@@ -55,7 +92,7 @@ function add_profile_image() {
                 <h1 className = "mb-5 text-lg font-bold text-gray-500">Finish Setting up your Account</h1>
             </div>
             <div className = "flex flex-col items-center mb-5">
-                <h2 className = "text-lg text-gray-500 mb-3">Select A Profile Image</h2>
+                <h2 className = "text-lg text-gray-500 mb-3" onClick={resizeImage}>Select A Profile Image</h2>
                 <div className = "mb-3 border-2 border-gray-500 rounded-full overflow-hidden">
                     <Image 
                     src={imgPreview ? imgPreview : Avatar}
@@ -72,7 +109,7 @@ function add_profile_image() {
             <div className = "items-center">
             {error && <p className="errorMsg">File not supported</p>}
             {!imgPreview && (
-                <button className = "infobutton">Skip</button>
+                <button className = "infobutton" onClick={()=> router.replace('/')}>Skip</button>
             )}
             {imgPreview && (
                 <button className = "infobutton" onClick = {handleUpload}>Confirm</button>
@@ -87,4 +124,13 @@ function add_profile_image() {
     )
 }
 
+export async function getServerSideProps(context){
+  //Get user
+  const session = await getSession(context)
+  return{
+    props:{
+      session
+    }
+  }
+}
 export default add_profile_image
