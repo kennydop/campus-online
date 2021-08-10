@@ -64,8 +64,7 @@ function add_college({colleges}) {
             colleges.push(doc.id);
         });
     });
-        // By returning { props: { posts } }, the Blog component
-    // will receive `posts` as a prop at build time
+    
     return {
         props: {
         colleges,

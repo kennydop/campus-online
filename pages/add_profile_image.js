@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Avatar from "../images/avatar.jpg"
 import { useState } from "react";
-import {auth, storage} from '../firebase/firebase';
+import {auth, db, storage} from '../firebase/firebase';
 import {getSession} from "next-auth/client";
 import {useRouter} from 'next/router';
 import NotAuthorized from "../components/notAuthorized";
@@ -11,7 +11,7 @@ function add_profile_image({session}) {
   const [error, setError] = useState(false);
   var selected = null;
   var _file = null;
-  var dataurl;
+  const [url, setUrl] = useState();
   const router = useRouter();
 
   const handleImageChange = (e) => {
@@ -32,7 +32,6 @@ function add_profile_image({session}) {
 
   function resizeImage(selected) {
     _file = selected
-    console.log(_file)
        if (_file) {
          var _reader = new FileReader();
    
@@ -70,18 +69,17 @@ function add_profile_image({session}) {
            var ctx = canvas.getContext("2d");
            ctx.drawImage(img, 0, 0, width, height);
    
-          dataurl = canvas.toDataURL(_file.type);
+          setUrl(canvas.toDataURL(_file.type));
+
           //  document.getElementById("output").src = dataurl;
          };
          _reader.readAsDataURL(_file);
        }
     }
 
-  function handleUpload() {
-    console.log(dataurl);
-    auth.currentUser.updateProfile({photoURL: dataurl})
-    session.user.image = dataurl;
-    router.replace('/')
+  async function handleUpload() {
+    const _user = auth.currentUser
+    await db.collection('users').doc(_user.uid).update({photoURL: url}).then(router.replace('/'))
   }
 
     return (

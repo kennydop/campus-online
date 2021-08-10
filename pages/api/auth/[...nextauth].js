@@ -2,7 +2,6 @@ import NextAuth from "next-auth"
 import { session } from "next-auth/client";
 import Providers from "next-auth/providers";
 import { auth, db } from "../../../firebase/firebase";
-import Avatar from '../../../images/avatar.jpg';
 const options = {
     providers: [
         Providers.Google({
@@ -25,17 +24,18 @@ const options = {
             credentials: {
               email: { label: "Email", type: "text"},
               password: {  label: "Password", type: "password" },
-                isNewUser: {label: "New User", type: 'boolean'}
+              username: {label: "Username", type: "text"},
+                isNewUser: {label: "New User", type: 'boolean'},
             },
             async authorize(credentials, req) {
               // Authentication Logic: local function, external API call, etc
               // Add logic here to look up the user from the credentials supplied
               const userInfo = await auth.currentUser
               if(credentials.isNewUser){
-                  const user = {email: credentials.email, image: Avatar}
+                  const user = {email: credentials.email, name: credentials.username}
                   return user
               }else{
-                const user = {name: userInfo.displayName, email: credentials.email, image: userInfo.photoURL}
+                const user = {name: userInfo.displayName, email: credentials.email, image: db.collection('users').doc(userInfo.uid).get({photoURL})}
                 return user
               }
                   //throw new Error('Check your credentials')}               

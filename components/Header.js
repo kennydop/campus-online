@@ -1,21 +1,34 @@
 import Image from "next/image"
 import campus_online_logo from "../images/campus-online-logo.png"
-import {session, signOut, useSession} from "next-auth/client";
-
-import {
-    SearchIcon,
-    UserCircleIcon,
-    HomeIcon,
-    BellIcon,
-    ChatAlt2Icon,
-    UserGroupIcon,
-} from "@heroicons/react/outline";
-
+import {signOut, useSession} from "next-auth/client";
+import Avatar from '../images/avatar.jpg';
+import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, UserGroupIcon,} 
+from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
+import { auth, db } from "../firebase/firebase";
     
+function Header({pp}) {
 
-function Header() {
-const [session] = useSession();
+    const [session] = useSession();
+
+    document.onload = () => {
+        var pp = null;
+        if(session.user.image){
+            console.log('session')
+            pp = session.user.image
+        }
+        else if(_image){
+            console.log('image')
+            console.log(image)
+            pp = image
+        }
+        else{
+            console.log('avatar')
+            pp = Avatar
+        }
+        avatars = document.getElementsByClassName('avatar')
+        avatars.forEach(avatar => {avatar.src = pp});
+    }
 
     return (
         <div className = "md:flex sticky top-0 z-50 bg-white items-center p-3 md:px-15 px-2 shadow-sm">
@@ -23,8 +36,8 @@ const [session] = useSession();
                 <div className = "flex items-center pb-2 md:pb-0 px-2 md:px-0 mx-auto justify-between">
                     <div className="md:hidden">
                         <Image onClick = {signOut}
-                            className = "rounded-full cursor-pointer px-2 text-center"
-                            src = {session.user.image}
+                            className = "avatar object-cover rounded-full cursor-pointer px-2 text-center"
+                            src
                             width={32}
                             height={32}
                             layout="fixed"/>
@@ -55,8 +68,8 @@ const [session] = useSession();
                 <HeaderIcon Icon = {ChatAlt2Icon}/>
                 <div className = "hidden md:flex px-5 text-center">
                     <Image onClick = {signOut}
-                    className = "rounded-full cursor-pointer"
-                    src = {session.user.image}
+                    className = "avatar object-cover rounded-full cursor-pointer"
+                    src
                     width={32}
                     height={32}
                     layout="fixed"/>
