@@ -1,11 +1,11 @@
 import Header from "../components/Header";
 
-function HomePage() {
+function Feed({photoUrl}) {
     return (
         <div>
-            <Header />
+            <Header photoUrl={photoUrl}/>
         </div>
     )
 }
 
-export default HomePage
+export default Feed

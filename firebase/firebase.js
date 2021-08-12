@@ -2,7 +2,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/storage";
-// import "firebase/analytics";
+import "firebase/analytics";
+import "firebase/performance";
 
 const firebaseConfig = {
 apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,15 +16,14 @@ measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 }
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
+    if(typeof window !== "undefined"){
+        if('measurementId' in firebaseConfig){
+            firebase.analytics();
+            firebase.performance();
+        }
+    }
 }
-// firebase.analytics()
-// catch(err){
-//     // we skip the "already exists" message which is
-//     // not an actual error when we're hot-reloading
-//     // if (!"already exist".test(err.message)) {
-//     console.error('Firebase initialization error', err.stack)
-//     // }
-// }
+
 const firebaseApp = firebase;
 const db = firebaseApp.firestore();
 const auth = firebase.auth();

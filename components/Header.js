@@ -7,27 +7,20 @@ from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
 import { auth, db } from "../firebase/firebase";
     
-function Header({pp}) {
-
+function Header({photoUrl}) {
     const [session] = useSession();
-
-    document.onload = () => {
-        var pp = null;
-        if(session.user.image){
-            console.log('session')
-            pp = session.user.image
-        }
-        else if(_image){
-            console.log('image')
-            console.log(image)
-            pp = image
-        }
-        else{
-            console.log('avatar')
-            pp = Avatar
-        }
-        avatars = document.getElementsByClassName('avatar')
-        avatars.forEach(avatar => {avatar.src = pp});
+    var pp = null;
+    if(session.user.image){
+        console.log('session')
+        pp = session.user.image
+    }
+    else if(photoUrl){
+        console.log('image')
+        pp = photoUrl
+    }
+    else{
+        console.log('avatar')
+        pp = Avatar
     }
 
     return (
@@ -37,7 +30,7 @@ function Header({pp}) {
                     <div className="md:hidden">
                         <Image onClick = {signOut}
                             className = "avatar object-cover rounded-full cursor-pointer px-2 text-center"
-                            src
+                            src = {pp}
                             width={32}
                             height={32}
                             layout="fixed"/>
@@ -69,7 +62,7 @@ function Header({pp}) {
                 <div className = "hidden md:flex px-5 text-center">
                     <Image onClick = {signOut}
                     className = "avatar object-cover rounded-full cursor-pointer"
-                    src
+                    src={pp}
                     width={32}
                     height={32}
                     layout="fixed"/>

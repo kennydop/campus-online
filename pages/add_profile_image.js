@@ -71,7 +71,6 @@ function add_profile_image({session}) {
    
           setUrl(canvas.toDataURL(_file.type));
 
-          //  document.getElementById("output").src = dataurl;
          };
          _reader.readAsDataURL(_file);
        }

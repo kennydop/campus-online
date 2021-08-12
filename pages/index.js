@@ -1,9 +1,10 @@
-import Head from 'next/head'
+import Head from 'next/head';
 import {getSession} from "next-auth/client";
-import HomePage from './HomePage'
-import Login from './Login';
+import Feed from './Feed';
+import Login from './api/auth/Login';
+import { auth, db } from '../firebase/firebase';
 
-export default function Home({session}) {
+export default function Home({session,photoUrl}) {
   return (
     <div>
       <Head>
@@ -15,7 +16,7 @@ export default function Home({session}) {
           <Login />
         )}        {
           session && (
-            <HomePage />
+            <Feed photoUrl={photoUrl}/>
           )
         }
       </main>
@@ -25,10 +26,24 @@ export default function Home({session}) {
 
 export async function getServerSideProps(context){
   //Get user
+  var photoUrl = null;
   const session = await getSession(context)
+  if(session){
+    if(!session.user.image){
+      const user = auth.currentUser
+      db.collection('users').doc(user.id).get().then((doc)=>{
+        console.log(doc)
+        for (let i = 0; i < doc.data().length; i++) {
+          if(doc.data()[i] === 'photoURL'){photoUrl = doc[i].get()}
+          
+        }
+      })
+    }
+  }
   return{
     props:{
-      session
+      session,
+      photoUrl,
     }
   }
 }

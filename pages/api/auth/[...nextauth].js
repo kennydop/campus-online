@@ -32,7 +32,7 @@ const options = {
               // Add logic here to look up the user from the credentials supplied
               const userInfo = await auth.currentUser
               if(credentials.isNewUser){
-                  const user = {email: credentials.email, name: credentials.username}
+                  const user = {email: credentials.email, name: credentials.username, uid: userInfo.uid}
                   return user
               }else{
                 const user = {name: userInfo.displayName, email: credentials.email, image: db.collection('users').doc(userInfo.uid).get({photoURL})}

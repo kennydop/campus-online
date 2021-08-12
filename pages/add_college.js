@@ -8,22 +8,22 @@ function add_college({colleges}) {
     const router = useRouter();
     const [college, setCollege] = useState("");
     const [session, loading] = useSession();
-
+    const [filledColleges, setfilledColleges] = useState(false)
     function fillColleges(){
-        var alreadyAdded = Array.from(document.querySelectorAll('#colleges option'));
         colleges.forEach(col => {
-                if(alreadyAdded.length===0){
+                if(!filledColleges){
                 var collegeOption = document.createElement("option");
                 collegeOption.innerHTML = col;
                 document.getElementById('colleges').appendChild(collegeOption)
                 setCollege('Academic City University College')
+                setfilledColleges(true);
             }
         });
     }
 
     async function confirmCollege(){
         if(college){
-            db.collection("users").doc(auth.currentUser.uid).set({college: college});
+            db.collection("users").doc(auth.currentUser.uid).set({college: college, username: session.user.name});
             const collegeRef = db.collection('universities').doc(college);
             const increment = firebaseApp.firestore.FieldValue.increment(1);
             collegeRef.update({ registeredUsers: increment });
