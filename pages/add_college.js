@@ -13,6 +13,7 @@ function add_college({colleges}) {
     const {user} = useUser;
     console.log(user);
 
+
     function fillColleges(){
         colleges.forEach(col => {
                 if(!filledColleges){
