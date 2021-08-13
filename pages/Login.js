@@ -18,13 +18,14 @@ function Login() {
           {!session && (
             <div className="w-screen flex flex-col justify-center items-center">
               <div className = "flex h-screen self-center">
-                <form className="flex flex-col justify-center items-center">
+                <form autoComplete='on' className="flex flex-col justify-center items-center">
                 <div className="mb-6" >
                 <Image 
                   src={campus_online_logo}
                   width = {192} 
                   height = {34.5} 
                   layout = "fixed"
+                  onClick = {signOut}
                   alt = "campus online logo"/>
                 </div>
                 <div className="relative">
@@ -32,6 +33,7 @@ function Login() {
                   <input
                     type="text"
                     placeholder="Email"
+                    autoComplete="email"
                     className="infofield"
                   />
                 </div>
@@ -40,6 +42,7 @@ function Login() {
                   <input
                     type="password"
                     placeholder="Password"
+                    autoComplete="current-password"
                     className="infofield"
                   />
                 </div>

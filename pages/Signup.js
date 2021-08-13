@@ -3,18 +3,21 @@ import { useState } from "react";
 import campus_online_logo from "../images/campus-online-logo.png";
 import { UserIcon, MailIcon, LockClosedIcon} from "@heroicons/react/outline";
 import Link from 'next/link';
-import {useRouter} from 'next/router';
 import { auth, db } from "../firebase/firebase";
 import {signIn, signOut, useSession, getSession, session} from "next-auth/client";
+import { setUserCookie, getUserFromCookie } from '../firebase/userCookies'
+import { mapUserData } from '../firebase/mapUserData'
+import { useUser } from "../firebase/useUser";
+
 function Signup() {
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setpassword] = useState("");
     const [error, setError] = useState(false);
-    const router = useRouter();
     const [session, loading] = useSession();
-    var _session = null;
+    const {user} = useUser;
+
     async function register () {
         setError('');
         if(session){
@@ -34,17 +37,19 @@ function Signup() {
                                     userAuth.user.updateProfile({
                                         displayName: name
                                     })
+                                    const userData = mapUserData(userAuth.user);
+                                    setUserCookie(userData);
                                     return userAuth;
                                 }).catch((error)=> {setError(error.message)})
                                     
-            goAhead && await signIn('credentials', {email: email, name: name, password: password, isNewUser: true, callbackUrl: 'http://localhost:3000/add_college'})
+            goAhead && await signIn('credentials', {redirect: false, email: email, name: name, password: password, isNewUser: true, callbackUrl: 'http://localhost:3000/add_college'})
         }
 
     }
     return (
     <div className="w-screen flex flex-col justify-center items-center">
         <div className = "flex self-center h-screen">
-            <form className="flex flex-col justify-center items-center">
+            <form autoComplete='on' className="flex flex-col justify-center items-center">
                 <div className="mt-4 mb-1" >
                     <Image 
                         src={campus_online_logo}
@@ -54,7 +59,7 @@ function Signup() {
                         onClick = {signOut}
                         alt = "campus online logo"/>
                 </div>
-                <p className = "mb-4 text-lg font-bold text-gray-500">Create an Account</p>
+                <p onClick={()=> console.log(user)} className = "mb-4 text-lg font-bold text-gray-500">Create an Account</p>
                 {error && <p className = "errorMsg" id = "injectError">{error}</p>}
                 <div>
                     <UserIcon className="infoicons"/>
@@ -63,6 +68,7 @@ function Signup() {
                     onChange={e=> setName(e.target.value)}
                     type="text"
                     placeholder="Create Username"
+                    autoComplete="username"
                     className="infofield"
                     />
                 </div>
@@ -73,6 +79,7 @@ function Signup() {
                     onChange={e=> setEmail(e.target.value)}
                     type="text"
                     placeholder="Enter Email"
+                    autoComplete="email"
                     className="infofield"
                     />
                 </div>
@@ -83,6 +90,7 @@ function Signup() {
                     onChange={e=> setpassword(e.target.value)}
                     type="password"
                     placeholder="Create Password"
+                    autoComplete="new-password"
                     className="infofield"/>
                 </div>
                 <p className="self-center mb-6 text-sm text-gray-500">Already have an account? <a className = "text-pink-500 hover:font-bold"> <Link href="/Login">Login</Link></a></p>

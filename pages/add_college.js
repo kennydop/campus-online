@@ -1,14 +1,18 @@
 import {useRouter} from 'next/router';
-import {db, auth, firebaseApp} from '../firebase/firebase';
+import {db, firebaseApp} from '../firebase/firebase';
 import { useState, useEffect } from 'react';
 import {useSession, getSession} from 'next-auth/client';
 import NotAuthorized from '../components/notAuthorized';
+import {useUser} from '../firebase/useUser';
 
 function add_college({colleges}) {
     const router = useRouter();
     const [college, setCollege] = useState("");
     const [session, loading] = useSession();
     const [filledColleges, setfilledColleges] = useState(false)
+    const {user} = useUser;
+    console.log(user);
+
     function fillColleges(){
         colleges.forEach(col => {
                 if(!filledColleges){
@@ -23,7 +27,7 @@ function add_college({colleges}) {
 
     async function confirmCollege(){
         if(college){
-            db.collection("users").doc(auth.currentUser.uid).set({college: college, username: session.user.name});
+            db.collection("users").doc(user.id).set({college: college, username: session.user.name, email: session.user.email, provider: 'Email'});
             const collegeRef = db.collection('universities').doc(college);
             const increment = firebaseApp.firestore.FieldValue.increment(1);
             collegeRef.update({ registeredUsers: increment });

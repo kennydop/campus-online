@@ -6,21 +6,37 @@ import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, UserGroupIcon,}
 from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
 import { auth, db } from "../firebase/firebase";
+import {useUser} from '../firebase/useUser'
+import { useRouter } from "next/router";
     
-function Header({photoUrl}) {
+function Header() {
     const [session] = useSession();
+    const {user, logout} = useUser();
+    const router = useRouter()
     var pp = null;
+
     if(session.user.image){
         console.log('session')
         pp = session.user.image
     }
-    else if(photoUrl){
-        console.log('image')
-        pp = photoUrl
-    }
+    // else if(user.photoUrl){
+    //     console.log('image')
+    //     pp = user.photoUrl
+    // }
     else{
         console.log('avatar')
         pp = Avatar
+    }
+
+    function logOut(){
+        if(!session.user.image){
+            signOut;
+            logout();
+            router.replace('/Login')
+        }
+        else{
+            signOut;
+        }
     }
 
     return (
@@ -28,7 +44,7 @@ function Header({photoUrl}) {
                 {/*left*/}
                 <div className = "flex items-center pb-2 md:pb-0 px-2 md:px-0 mx-auto justify-between">
                     <div className="md:hidden">
-                        <Image onClick = {signOut}
+                        <Image onClick = {logOut}
                             className = "avatar object-cover rounded-full cursor-pointer px-2 text-center"
                             src = {pp}
                             width={32}
@@ -60,7 +76,7 @@ function Header({photoUrl}) {
                 <HeaderIcon Icon = {BellIcon}/>
                 <HeaderIcon Icon = {ChatAlt2Icon}/>
                 <div className = "hidden md:flex px-5 text-center">
-                    <Image onClick = {signOut}
+                    <Image onClick = {logOut}
                     className = "avatar object-cover rounded-full cursor-pointer"
                     src={pp}
                     width={32}

@@ -5,6 +5,8 @@ import {auth, db, storage} from '../firebase/firebase';
 import {getSession} from "next-auth/client";
 import {useRouter} from 'next/router';
 import NotAuthorized from "../components/notAuthorized";
+import {useUser} from '../firebase/useUser';
+
 function add_profile_image({session}) {
     
   const [imgPreview, setImgPreview] = useState(null);
@@ -13,6 +15,8 @@ function add_profile_image({session}) {
   var _file = null;
   const [url, setUrl] = useState();
   const router = useRouter();
+  const {user} = useUser;
+
 
   const handleImageChange = (e) => {
     setError(false);
@@ -77,8 +81,7 @@ function add_profile_image({session}) {
     }
 
   async function handleUpload() {
-    const _user = auth.currentUser
-    await db.collection('users').doc(_user.uid).update({photoURL: url}).then(router.replace('/'))
+    await db.collection('users').doc(user.id).update({photoURL: url}).then(router.replace('/'))
   }
 
     return (
