@@ -6,7 +6,7 @@ import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, UserGroupIcon,} from "@he
 import HeaderIcon from "./HeaderIcon";
 import {useUser} from '../firebase/useUser'
 import { useRouter } from "next/router";
-import { getUserInfoFromCookie } from "../firebase/userCookies";
+import { getUserInfoFromCookie, removeUserInfoCookie } from "../firebase/userCookies";
     
 function Header() {
     const [session] = useSession();
@@ -14,6 +14,7 @@ function Header() {
     const router = useRouter()
     var pp = null;
     var d = getUserInfoFromCookie()
+    console.log(session)
 
     if(session.user.image){
         console.log('session')
@@ -29,8 +30,9 @@ function Header() {
     }
 
     function logOut(){
-            signOut;
+            signOut();
             logout();
+            removeUserInfoCookie();
             router.replace('/Login')
     }
 

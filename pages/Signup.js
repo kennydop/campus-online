@@ -3,7 +3,7 @@ import { useState } from "react";
 import campus_online_logo from "../images/campus-online-logo.png";
 import { UserIcon, MailIcon, LockClosedIcon} from "@heroicons/react/outline";
 import Link from 'next/link';
-import { auth, db } from "../firebase/firebase";
+import { auth } from "../firebase/firebase";
 import {signIn, signOut, useSession} from "next-auth/client";
 import { setUserCookie } from '../firebase/userCookies'
 import { mapUserData } from '../firebase/mapUserData'

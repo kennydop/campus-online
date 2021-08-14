@@ -25,7 +25,9 @@ export const getUserInfoFromCookie = () => {
 }
 
 export const setUserInfoCookie = (userInfo) => {
-    cookies.set('userInfo', JSON.stringify(userInfo))
+    cookies.set('userInfo', JSON.stringify(userInfo)),
+    {expires: new Date (9999, 1, 1).toUTCString()}
 }
 
 export const removeUserCookie = () => cookies.remove('auth')
+export const removeUserInfoCookie = () => cookies.remove('userInfo')

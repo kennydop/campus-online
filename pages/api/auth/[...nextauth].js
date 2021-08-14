@@ -1,5 +1,4 @@
 import NextAuth from "next-auth"
-import { session } from "next-auth/client";
 import Providers from "next-auth/providers";
 import { auth, db } from "../../../firebase/firebase";
 const options = {
@@ -38,7 +37,7 @@ const options = {
                 const user = {name: userInfo.displayName, email: credentials.email, image: db.collection('users').doc(userInfo.uid).get({photoURL})}
                 return user
               }
-                  //throw new Error('Check your credentials')}               
+              //throw new Error('Check your credentials')}               
             }
       })    
     ],  
