@@ -8,3 +8,13 @@ export const mapUserData = (user) => {
         photoUrl: photoUrl
     }
 }
+export const mapUserInfo = (userInfo) => {
+    const { college, email, photoURL, provider, username } = userInfo
+    return {
+        college,
+        email,
+        name: username,
+        provider,
+        photoUrl: photoURL,
+    }
+}

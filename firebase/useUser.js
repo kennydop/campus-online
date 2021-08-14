@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { auth } from './firebase'
-import { removeUserCookie, setUserCookie, getUserFromCookie } from './userCookies'
+import { removeUserCookie, setUserCookie, getUserFromCookie, getUserInfoFromCookie } from './userCookies'
 import { mapUserData } from './mapUserData'
 
 const useUser = () => {
     const [user, setUser] = useState()
+    const [userInfo, setUserInfo] = useState()
     const router = useRouter()
 
     const logout = async () => {
@@ -38,14 +39,21 @@ const useUser = () => {
             router.push('/')
             return
         }
-        setUser(userFromCookie)
+       setUser(userFromCookie)
 
-        return () => {
+       const userInfoFromCookie = getUserInfoFromCookie()
+       if (!userInfoFromCookie) {
+           return
+       }
+          setUserInfo(userInfoFromCookie)
+
+       return () => {
             cancelAuthListener()
         }
+
     }, [])
 
-    return { user, logout }
+    return { user, userInfo, logout }
 }
 
 export { useUser }

@@ -10,9 +10,7 @@ function add_college({colleges}) {
     const [college, setCollege] = useState("");
     const [session, loading] = useSession();
     const [filledColleges, setfilledColleges] = useState(false)
-    const {user} = useUser;
-    console.log(user);
-
+    const {user} = useUser();
 
     function fillColleges(){
         colleges.forEach(col => {
@@ -32,7 +30,7 @@ function add_college({colleges}) {
             const collegeRef = db.collection('universities').doc(college);
             const increment = firebaseApp.firestore.FieldValue.increment(1);
             collegeRef.update({ registeredUsers: increment });
-            router.push('/add_profile_image'); 
+            router.replace('/add_profile_image'); 
         }else{
             alert('Please select your college');
         }
@@ -62,7 +60,6 @@ function add_college({colleges}) {
 }
 
   export async function getStaticProps() {
-    // Call an external API endpoint to get posts
     var colleges = new Array();
     await db.collection("universities").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {

@@ -2,7 +2,7 @@ import Image from "next/image";
 import campus_online_logo from "../images/campus-online-logo.png";
 import { MailIcon, LockClosedIcon} from "@heroicons/react/outline";
 import {signIn, signOut, useSession} from "next-auth/client";
-import Feed from './Feed';
+import Campusonline from './campusonline';
 import Link from 'next/link'
 import { auth } from "../firebase/firebase";
 
@@ -80,7 +80,7 @@ function Login() {
           )}
           {
             session && (
-              <Feed />
+              <Campusonline />
             )
           }
         

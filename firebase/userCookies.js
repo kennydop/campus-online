@@ -16,4 +16,16 @@ export const setUserCookie = (user) => {
     })
 }
 
+export const getUserInfoFromCookie = () => {
+    const cookie = cookies.get('userInfo')
+    if (!cookie) {
+        return
+    }
+    return JSON.parse(cookie)
+}
+
+export const setUserInfoCookie = (userInfo) => {
+    cookies.set('userInfo', JSON.stringify(userInfo))
+}
+
 export const removeUserCookie = () => cookies.remove('auth')

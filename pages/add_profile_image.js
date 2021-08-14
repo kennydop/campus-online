@@ -6,6 +6,8 @@ import {getSession} from "next-auth/client";
 import {useRouter} from 'next/router';
 import NotAuthorized from "../components/notAuthorized";
 import {useUser} from '../firebase/useUser';
+import { mapUserInfo } from "../firebase/mapUserData";
+import { setUserInfoCookie } from "../firebase/userCookies";
 
 function add_profile_image({session}) {
     
@@ -15,7 +17,7 @@ function add_profile_image({session}) {
   var _file = null;
   const [url, setUrl] = useState();
   const router = useRouter();
-  const {user} = useUser;
+  const {user} = useUser();
 
 
   const handleImageChange = (e) => {
@@ -81,7 +83,12 @@ function add_profile_image({session}) {
     }
 
   async function handleUpload() {
-    await db.collection('users').doc(user.id).update({photoURL: url}).then(router.replace('/'))
+    const docRef = db.collection('users').doc(user.id);
+    await docRef.update({photoURL: url});
+    const _userInfo = (await docRef.get()).data()
+    const userInfo = mapUserInfo(_userInfo)
+    setUserInfoCookie(userInfo)
+    router.replace('/')
   }
 
     return (
@@ -92,7 +99,7 @@ function add_profile_image({session}) {
                 <h1 className = "mb-5 text-lg font-bold text-gray-500">Finish Setting up your Account</h1>
             </div>
             <div className = "flex flex-col items-center mb-5">
-                <h2 className = "text-lg text-gray-500 mb-3" onClick={resizeImage}>Select A Profile Image</h2>
+                <h2 className = "text-lg text-gray-500 mb-3">Select A Profile Image</h2>
                 <div className = "mb-3 border-2 border-gray-500 rounded-full overflow-hidden">
                     <Image 
                     src={imgPreview ? imgPreview : Avatar}

@@ -4,10 +4,9 @@ import campus_online_logo from "../images/campus-online-logo.png";
 import { UserIcon, MailIcon, LockClosedIcon} from "@heroicons/react/outline";
 import Link from 'next/link';
 import { auth, db } from "../firebase/firebase";
-import {signIn, signOut, useSession, getSession, session} from "next-auth/client";
-import { setUserCookie, getUserFromCookie } from '../firebase/userCookies'
+import {signIn, signOut, useSession} from "next-auth/client";
+import { setUserCookie } from '../firebase/userCookies'
 import { mapUserData } from '../firebase/mapUserData'
-import { useUser } from "../firebase/useUser";
 
 function Signup() {
 
@@ -16,7 +15,6 @@ function Signup() {
     const [password, setpassword] = useState("");
     const [error, setError] = useState(false);
     const [session, loading] = useSession();
-    const {user} = useUser;
 
     async function register () {
         setError('');
@@ -42,7 +40,7 @@ function Signup() {
                                     return userAuth;
                                 }).catch((error)=> {setError(error.message)})
                                     
-            goAhead && await signIn('credentials', {email: email, name: name, password: password, isNewUser: true, callbackUrl: 'http://localhost:3000/add_college'})
+                            goAhead && await signIn('credentials', {email: email, name: name, password: password, isNewUser: true, callbackUrl: 'http://localhost:3000/add_college'})
         }
 
     }
@@ -59,7 +57,7 @@ function Signup() {
                         onClick = {signOut}
                         alt = "campus online logo"/>
                 </div>
-                <p onClick={()=> console.log(user)} className = "mb-4 text-lg font-bold text-gray-500">Create an Account</p>
+                <p className = "mb-4 text-lg font-bold text-gray-500">Create an Account</p>
                 {error && <p className = "errorMsg" id = "injectError">{error}</p>}
                 <div>
                     <UserIcon className="infoicons"/>

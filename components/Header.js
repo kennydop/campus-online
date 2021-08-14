@@ -2,41 +2,36 @@ import Image from "next/image"
 import campus_online_logo from "../images/campus-online-logo.png"
 import {signOut, useSession} from "next-auth/client";
 import Avatar from '../images/avatar.jpg';
-import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, UserGroupIcon,} 
-from "@heroicons/react/outline";
+import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, UserGroupIcon,} from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
-import { auth, db } from "../firebase/firebase";
 import {useUser} from '../firebase/useUser'
 import { useRouter } from "next/router";
+import { getUserInfoFromCookie } from "../firebase/userCookies";
     
 function Header() {
     const [session] = useSession();
-    const {user, logout} = useUser();
+    const {userInfo, logout} = useUser();
     const router = useRouter()
     var pp = null;
+    var d = getUserInfoFromCookie()
 
     if(session.user.image){
         console.log('session')
         pp = session.user.image
     }
-    // else if(user.photoUrl){
-    //     console.log('image')
-    //     pp = user.photoUrl
-    // }
+    else if(d){
+        console.log('image')
+        pp = d.photoUrl
+    }
     else{
         console.log('avatar')
         pp = Avatar
     }
 
     function logOut(){
-        if(!session.user.image){
             signOut;
             logout();
             router.replace('/Login')
-        }
-        else{
-            signOut;
-        }
     }
 
     return (
@@ -87,5 +82,6 @@ function Header() {
     </div>
     )
 }
+
 
 export default Header
