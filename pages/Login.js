@@ -5,13 +5,46 @@ import {signIn, signOut, useSession} from "next-auth/client";
 import Campusonline from './campusonline';
 import Link from 'next/link'
 import { auth } from "../firebase/firebase";
+import { useState } from "react";
 
 function Login() {
   const [session, loading] = useSession();
+  const [email, setEmail] = useState("");
+  // const [name, setName] = useState("");
+  // const [photoUrl, setPhotoUrl] = useState("");
+  const [password, setpassword] = useState("");
+  const [error, setError] = useState(false);
 
-  const loginToApp = (e) => {
-    e.preventDefault();
-    
+  async function loginToApp(){
+    setError('')
+    if(!email){
+      setError("Please enter your Email");
+    }
+    else if(!password){
+      setError("Please enter a Password");
+    }else{
+      let goAhead = await auth.signInWithEmailAndPassword(email, password).then((userAuth)=>{
+        // setName(userAuth.user.displayName);
+        // setPhotoUrl(userAuth.user.photoURL);
+        return userAuth.user;
+      }).catch((error)=> {
+        switch (error.code) {
+          case 'auth/user-not-found':
+            setError('Account not found')
+            break;
+          case 'auth/wrong-password':
+            setError('Invalid password')
+            break;
+        
+          default:
+            setError(error.message)
+            console.log(error)
+            break;
+        }
+      })
+        
+      goAhead &&  await signIn('credentials', {username: goAhead.displayName, email: email, password: password, photoURL: goAhead.photoURL, callbackUrl: 'http://localhost:3000/'})
+    }
   }
   
     return (
@@ -29,9 +62,12 @@ function Login() {
                   onClick = {signOut}
                   alt = "campus online logo"/>
                 </div>
+                {error && <p className = "errorMsg" id = "injectError">{error}</p>}
                 <div className="relative">
                   <MailIcon className="infoicons"/>
                   <input
+                    value={email}
+                    onChange={e=> setEmail(e.target.value)}
                     type="text"
                     placeholder="Email"
                     autoComplete="email"
@@ -41,6 +77,8 @@ function Login() {
                 <div className="relative">
                   <LockClosedIcon className="infoicons"/>
                   <input
+                    value={password}
+                    onChange={e=> setpassword(e.target.value)}
                     type="password"
                     placeholder="Password"
                     autoComplete="current-password"
@@ -49,7 +87,7 @@ function Login() {
                 </div>
                 <a href="#" className="self-center mb-1 text-sm text-gray-500 hover:font-bold">Forgot password?</a>
                 <p className="self-center mb-6 text-sm text-gray-500">Don't have an account? <a className = "text-pink-500 hover:font-bold"> <Link href = "/Signup">Create one</Link></a></p>
-                <button className="infobutton" type = "submit" onClick = {loginToApp}>Login</button>
+                <button className="infobutton" type = "button" onClick = {loginToApp}>Login</button>
                 <div className = "flex flex-col mt-5 items-center justify center">
                   <p className = "self-center text-gray-500"> Or Login with</p>
                   <div className = "flex items-center justify center">

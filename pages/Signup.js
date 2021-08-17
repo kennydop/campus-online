@@ -12,6 +12,7 @@ function Signup() {
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [photoUrl, setPhotoUrl] = useState("");
     const [password, setpassword] = useState("");
     const [error, setError] = useState(false);
     const [session, loading] = useSession();
@@ -33,14 +34,13 @@ function Signup() {
         else{
             let goAhead = await auth.createUserWithEmailAndPassword(email, password).then((userAuth)=>{
                                     userAuth.user.updateProfile({
-                                        displayName: name
+                                        displayName: name,
+                                        photoURL: photoUrl
                                     })
-                                    const userData = mapUserData(userAuth.user);
-                                    setUserCookie(userData);
                                     return userAuth;
                                 }).catch((error)=> {setError(error.message)})
                                     
-                            goAhead && await signIn('credentials', {email: email, name: name, password: password, isNewUser: true, callbackUrl: 'http://localhost:3000/'})
+            goAhead && await signIn('credentials', {email: email, username: name, password: password, photoURL: photoUrl, callbackUrl: 'http://localhost:3000/'})
         }
 
     }
@@ -66,7 +66,7 @@ function Signup() {
                     onChange={e=> setName(e.target.value)}
                     type="text"
                     placeholder="Create Username"
-                    autoComplete="username"
+                    autoComplete="name"
                     className="infofield"
                     />
                 </div>
@@ -94,6 +94,8 @@ function Signup() {
                 <div>
                     <PhotographIcon className="infoicons"/>
                     <input
+                    value={photoUrl}
+                    onChange={e=> setPhotoUrl(e.target.value)}
                     type="text"
                     placeholder="Profile Photo URL"
                     className="infofield"/>

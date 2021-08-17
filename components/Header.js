@@ -1,38 +1,33 @@
 import Image from "next/image"
 import campus_online_logo from "../images/campus-online-logo.png"
 import {signOut, useSession} from "next-auth/client";
-import Avatar from '../images/avatar.jpg';
 import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, UserGroupIcon,} from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
-import {useUser} from '../firebase/useUser'
 import { useRouter } from "next/router";
-import { getUserInfoFromCookie, removeUserInfoCookie } from "../firebase/userCookies";
-    
+import { auth } from '../firebase/firebase'
 function Header() {
     const [session] = useSession();
-    const {userInfo, logout} = useUser();
     const router = useRouter()
     var pp = null;
-    var d = getUserInfoFromCookie()
     console.log(session)
 
     if(session.user.image){
+        if(session.user.image === 'null'){
+            console.log('null')
+            pp = 'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'
+        }else{
         console.log('session')
         pp = session.user.image
-    }
-    else if(d){
-        console.log('image')
-        pp = d.photoUrl
+        }
     }
     else{
         console.log('avatar')
-        pp = Avatar
+        pp = 'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'
     }
 
     function logOut(){
+            auth.signOut();
             signOut();
-            logout();
-            removeUserInfoCookie();
             router.replace('/Login')
     }
 
@@ -40,13 +35,10 @@ function Header() {
         <div className = "md:flex sticky top-0 z-50 bg-white items-center p-3 md:px-15 px-2 shadow-sm">
                 {/*left*/}
                 <div className = "flex items-center pb-2 md:pb-0 px-2 md:px-0 mx-auto justify-between">
-                    <div className="md:hidden">
-                        <Image onClick = {logOut}
-                            className = "avatar object-cover rounded-full cursor-pointer px-2 text-center"
-                            src = {pp}
-                            width={32}
-                            height={32}
-                            layout="fixed"/>
+                    <div className="md:hidden flex text-center">
+                        <img onClick = {logOut}
+                            className = "h-8 w-8 avatar object-cover rounded-full cursor-pointer text-center"
+                            src = {pp}/>
                     </div>
                     <div className="flex items-center cursor-pointer" href = "#">
                         <Image src = {campus_online_logo}
@@ -73,12 +65,9 @@ function Header() {
                 <HeaderIcon Icon = {BellIcon}/>
                 <HeaderIcon Icon = {ChatAlt2Icon}/>
                 <div className = "hidden md:flex px-5 text-center">
-                    <Image onClick = {logOut}
-                    className = "avatar object-cover rounded-full cursor-pointer"
-                    src={pp}
-                    width={32}
-                    height={32}
-                    layout="fixed"/>
+                    <img onClick = {logOut}
+                    className = "h-8 w-8 avatar object-cover rounded-full cursor-pointer"
+                    src={pp}/>
                 </div>
         </div>
     </div>
