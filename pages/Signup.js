@@ -5,8 +5,7 @@ import { UserIcon, MailIcon, LockClosedIcon, PhotographIcon} from "@heroicons/re
 import Link from 'next/link';
 import { auth } from "../firebase/firebase";
 import {signIn, signOut, useSession} from "next-auth/client";
-import { setUserCookie } from '../firebase/userCookies'
-import { mapUserData } from '../firebase/mapUserData'
+
 
 function Signup() {
 
@@ -45,10 +44,11 @@ function Signup() {
 
     }
     return (
-    <div className="w-screen flex flex-col justify-center items-center">
-        <div className = "flex self-center h-screen">
-            <form autoComplete='on' className="flex flex-col justify-center items-center">
-                <div className="mt-4 mb-1" >
+    <div className="w-screen flex flex-col justify-center items-center md:bg-blue-grey">
+        <div className = "flex self-center h-screen mt-4 mb-6">
+            <div className = 'self-center'>
+            <form autoComplete='on' className="authForm">
+                <div className="mb-4" >
                     <Image 
                         src={campus_online_logo}
                         width = {192} 
@@ -57,7 +57,6 @@ function Signup() {
                         onClick = {signOut}
                         alt = "campus online logo"/>
                 </div>
-                <p className = "mb-4 text-lg font-bold text-gray-500">Create an Account</p>
                 {error && <p className = "errorMsg" id = "injectError">{error}</p>}
                 <div>
                     <UserIcon className="infoicons"/>
@@ -117,9 +116,10 @@ function Signup() {
                     </div>
                 </div>
             </form>
+            </div>
         </div>
         <div>
-            <nav className="flex flex-row flex-wrap justify-center items-center">
+            <nav className="flex flex-row flex-wrap justify-center items-center ">
                 <a className = "text-gray-500 mx-3 my-1 text-sm" href="#">About</a>
                 <a className = "text-gray-500 mx-3 my-1 text-sm" href="#">Help</a>
                 <a className = "text-gray-500 mx-3 my-1 text-sm" href="#">Terms Of Service</a>

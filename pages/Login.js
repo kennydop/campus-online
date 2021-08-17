@@ -50,7 +50,7 @@ function Login() {
     return (
         <main>
           {!session && (
-            <div className="w-screen flex flex-col justify-center items-center bg-blue-grey">
+            <div className="w-screen flex flex-col justify-center items-center md:bg-blue-grey">
               <div className = "flex h-screen self-center">
                 <div className = 'self-center'>
                 <form autoComplete='on' className="authForm">

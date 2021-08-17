@@ -25,7 +25,7 @@
         @apply text-red-500 font-bold text-center mb-2;
     }
     .authForm{
-        @apply flex flex-col justify-center items-center p-8 bg-white rounded-lg shadow-md;
+        @apply flex flex-col justify-center items-center md:p-8 md:bg-white md:rounded-lg md:shadow-md;
     }
 }
 
