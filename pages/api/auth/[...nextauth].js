@@ -1,6 +1,7 @@
 import NextAuth from "next-auth"
 import Providers from "next-auth/providers";
 import { auth, db } from "../../../firebase/firebase";
+
 const options = {
     providers: [
         Providers.Google({

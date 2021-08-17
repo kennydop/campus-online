@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import campus_online_logo from "../images/campus-online-logo.png";
-import { UserIcon, MailIcon, LockClosedIcon} from "@heroicons/react/outline";
+import { UserIcon, MailIcon, LockClosedIcon, PhotographIcon} from "@heroicons/react/outline";
 import Link from 'next/link';
 import { auth } from "../firebase/firebase";
 import {signIn, signOut, useSession} from "next-auth/client";
@@ -40,7 +40,7 @@ function Signup() {
                                     return userAuth;
                                 }).catch((error)=> {setError(error.message)})
                                     
-                            goAhead && await signIn('credentials', {email: email, name: name, password: password, isNewUser: true, callbackUrl: 'http://localhost:3000/add_profile_imaage'})
+                            goAhead && await signIn('credentials', {email: email, name: name, password: password, isNewUser: true, callbackUrl: 'http://localhost:3000/'})
         }
 
     }
@@ -89,6 +89,13 @@ function Signup() {
                     type="password"
                     placeholder="Create Password"
                     autoComplete="new-password"
+                    className="infofield"/>
+                </div>
+                <div>
+                    <PhotographIcon className="infoicons"/>
+                    <input
+                    type="text"
+                    placeholder="Profile Photo URL"
                     className="infofield"/>
                 </div>
                 <p className="self-center mb-6 text-sm text-gray-500">Already have an account? <a className = "text-pink-500 hover:font-bold"> <Link href="/Login">Login</Link></a></p>
