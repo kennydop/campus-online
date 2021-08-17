@@ -50,9 +50,10 @@ function Login() {
     return (
         <main>
           {!session && (
-            <div className="w-screen flex flex-col justify-center items-center">
+            <div className="w-screen flex flex-col justify-center items-center bg-blue-grey">
               <div className = "flex h-screen self-center">
-                <form autoComplete='on' className="flex flex-col justify-center items-center">
+                <div className = 'self-center'>
+                <form autoComplete='on' className="authForm">
                 <div className="mb-6" >
                 <Image 
                   src={campus_online_logo}
@@ -103,6 +104,7 @@ function Login() {
                   </div>
                 </div>
               </form>
+              </div>
               </div>
               <div>
                 <nav className="flex flex-row flex-wrap justify-center items-center">
