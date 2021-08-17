@@ -47,19 +47,19 @@ function Header() {
                         layout = "fixed"
                         alt = "campus online logo"/>
                     </div>
-                    <div className="flex md:hidden items-center rounded-full bg-gray-100 p-2">
+                    <div className="flex md:hidden items-center rounded-full bg-blue-grey-50 p-2">
                     <SearchIcon className = "h-5 text-gray-500 cursor-pointer"/>
                     </div>
                 </div>
                 {/*centre*/}
                 <div className = "hidden md:flex md:justify-center flex-grow">
-                    <div className = "flex items-center rounded-full bg-gray-100 p-1.5">
+                    <div className = "flex items-center rounded-full bg-blue-grey-50 p-1.5">
                             <SearchIcon className = "h-3 sm:h-5 text-gray-500"/>
                             <input className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-500" type = "text" placeholder="Search"/>
                     </div>
                 </div>
             {/*right*/}
-            <div className = "flex items-center justify-center md:justify-end">
+            <div className = "hidden md:flex md:items-center md:justify-end">
                 <HeaderIcon active Icon = {HomeIcon}/>
                 <HeaderIcon Icon = {UserGroupIcon}/>
                 <HeaderIcon Icon = {BellIcon}/>
