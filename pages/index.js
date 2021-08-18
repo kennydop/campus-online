@@ -6,7 +6,7 @@ import { auth, db } from '../firebase/firebase';
 
 export default function Home({session}) {
   return (
-    <div>
+    <div className='h-screen bg-blue-grey-50 overflow-hidden'>
       <Head>
         <title>Campus Online</title>
       </Head>

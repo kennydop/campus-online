@@ -22,10 +22,14 @@ function campusonline() {
 
     return (
         <div>
-            <Header pp={pp}/>
-            <Sidebar />
-            <Feed />
-            <ButtomNavbar />
+            <div>
+                <Header pp={pp}/>
+                <ButtomNavbar />
+            </div>
+            <div className='flex flex-auto'>
+                <Sidebar />
+                <Feed />
+            </div>
         </div>
     )
 }
