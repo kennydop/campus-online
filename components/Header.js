@@ -1,30 +1,14 @@
 import Image from "next/image"
 import campus_online_logo from "../images/campus-online-logo.png"
-import {signOut, useSession} from "next-auth/client";
-import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, UserGroupIcon,} from "@heroicons/react/outline";
+import {signOut} from "next-auth/client";
+import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, MenuIcon} from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
 import { useRouter } from "next/router";
 import { auth } from '../firebase/firebase'
-function Header() {
-    const [session] = useSession();
+
+function Header({pp}) {
+    
     const router = useRouter()
-    var pp = null;
-    console.log(session)
-
-    if(session.user.image){
-        if(session.user.image === 'null'){
-            console.log('null')
-            pp = 'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'
-        }else{
-        console.log('session')
-        pp = session.user.image
-        }
-    }
-    else{
-        console.log('avatar')
-        pp = 'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'
-    }
-
     function logOut(){
             auth.signOut();
             signOut();
@@ -40,15 +24,15 @@ function Header() {
                             className = "h-8 w-8 avatar object-cover rounded-full cursor-pointer text-center"
                             src = {pp}/>
                     </div>
-                    <div className="flex items-center cursor-pointer" href = "#">
+                    <div className="flex items-center cursor-pointer px-4" href = "#">
                         <Image src = {campus_online_logo}
-                        width = {192} 
-                        height = {34.5} 
+                        width = {138.24} 
+                        height = {27.945} 
                         layout = "fixed"
                         alt = "campus online logo"/>
                     </div>
                     <div className="flex md:hidden items-center rounded-full bg-blue-grey-50 p-2">
-                    <SearchIcon className = "h-5 text-gray-500 cursor-pointer"/>
+                    <SearchIcon className = "h-5  cursor-pointer text-gray-500"/>
                     </div>
                 </div>
                 {/*centre*/}
@@ -61,9 +45,9 @@ function Header() {
             {/*right*/}
             <div className = "hidden md:flex md:items-center md:justify-end">
                 <HeaderIcon active Icon = {HomeIcon}/>
-                <HeaderIcon Icon = {UserGroupIcon}/>
                 <HeaderIcon Icon = {BellIcon}/>
                 <HeaderIcon Icon = {ChatAlt2Icon}/>
+                <HeaderIcon Icon = {MenuIcon}/>
                 <div className = "hidden md:flex px-5 text-center">
                     <img onClick = {logOut}
                     className = "h-8 w-8 avatar object-cover rounded-full cursor-pointer"

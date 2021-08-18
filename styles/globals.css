@@ -1,8 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer components{
+    *{
+        @apply font-default;
+    }
     .infofield{
         @apply outline-none bg-blue-grey placeholder-gray-500 rounded-full focus:ring-2 focus:ring-pink-500 w-80 h-12 mb-5 pr-5 pl-11;
     }
@@ -13,12 +18,11 @@
     .infobutton-white{
         @apply h-12 w-40 border border-pink-500 bg-white rounded-full text-pink-500  hover:translate-y-1 transform transition-all duration-500;
     }
-
     .infoicons{
         @apply absolute text-gray-500 w-6 text-center mt-3 ml-3;
     }
     .footerlinks{
-        @apply text-gray-500 mx-5 my-8;
+        @apply mx-5 my-8 text-gray-500;
     }
 
     .errorMsg{
@@ -27,6 +31,7 @@
     .authForm{
         @apply flex flex-col justify-center items-center md:p-8 md:bg-white md:rounded-lg md:shadow-md;
     }
+
 }
 
 
