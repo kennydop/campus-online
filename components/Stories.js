@@ -1,4 +1,3 @@
-import { useSession } from 'next-auth/client';
 import Story from './Story';
 
 const stories = [
@@ -38,9 +37,8 @@ const stories = [
 ]
 
 function Stories() {
-    const [session] = useSession()
     return (
-        <div className='flex space-x-6 justify-center mx-auto my-3'>
+        <div className='flex space-x-6 justify-center mx-auto my-3 whitespace-nowrap'>
             {stories.map((story)=>(<Story name={story.name} src={story.src} blurData={story.blurData}/>))}
         </div>
     )

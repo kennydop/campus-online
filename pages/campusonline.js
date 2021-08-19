@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import Feed from "../components/Feed"
 import Sidebar from "../components/Sidebar";
 import {signOut, useSession} from "next-auth/client";
+import RightSpace from "../components/RightSpace"
 
 
 function campusonline() {
@@ -29,6 +30,7 @@ function campusonline() {
             <div className='flex flex-auto'>
                 <Sidebar />
                 <Feed />
+                <RightSpace />
             </div>
         </div>
     )
