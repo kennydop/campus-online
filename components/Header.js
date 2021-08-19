@@ -16,7 +16,7 @@ function Header({pp}) {
     }
 
     return (
-        <div className = "md:flex sticky top-0 z-50 bg-white items-center p-3 md:px-15 px-2 shadow-md">
+        <div className = "md:flex sticky top-0 z-50 bg-white justify-center items-center p-2 md:px-15 px-2 shadow-md">
                 {/*left*/}
                 <div className = "flex items-center pb-2 md:pb-0 px-2 md:px-0 mx-auto justify-between">
                     <div className="md:hidden flex text-center">
