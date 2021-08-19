@@ -11,8 +11,6 @@ function Story({name, src, blurData}) {
                 <Image 
                 className='object-cover rounded-full hover:blur-xl'
                 src={src}
-                // height={54}
-                // width={54}
                 layout='fill'
                 placeholder='blur'
                 blurDataURL={blurData}
@@ -21,8 +19,8 @@ function Story({name, src, blurData}) {
                 }
             {!src &&
             <div className='relative'> 
-            <img className='object-cover rounded-full z-50 top-10 h-14 w-14'
-            src={session.user.image}/>
+            <img className='object-cover rounded-full h-14 w-14'
+                src={session.user.image}/>
             <div className='absolute right-0 top-0 rounded-full p-0.5 bg-pink-500'>
                 <PlusIcon className='text-blue-grey-50 w-3 h-3'/>
             </div>
