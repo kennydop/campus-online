@@ -27,7 +27,7 @@ function campusonline() {
                 <Header pp={pp}/>
                 <ButtomNavbar />
             </div>
-            <div className='flex flex-auto'>
+            <div className='flex flex-auto w-screen'>
                 <Sidebar />
                 <Feed />
                 <RightSpace />

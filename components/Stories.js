@@ -20,7 +20,7 @@ const stories = [
         blurData: 'L6S~hmtR%1%g~qQSD%Qmu4oy*yMx'
     },
     {
-        name: 'ben ji',
+        name: 'eustace',
         src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Flicensed-image.jfif?alt=media&token=2de6c6bb-9b09-416e-9473-744fb24b6dae',
         blurData: 'LkKuA=WZ}ssS}ZR+-Ao0EfjYNZoL'
     },
@@ -28,11 +28,6 @@ const stories = [
         name: 'ian wright',
         src: 'https://scontent.facc5-1.fna.fbcdn.net/v/t1.6435-9/54354250_430498804365015_238293912387584000_n.jpg?_nc_cat=103&ccb=1-5&_nc_sid=09cbfe&_nc_eui2=AeH9g8SZJueMPWsU9f_OCrjLwfS_AneM3KPB9L8Cd4zco7CpcH15y618-8HkvoluXvrc0QfeeAP9hdJQVw2qXi77&_nc_ohc=gugywDVe5RAAX-8avQO&_nc_ht=scontent.facc5-1.fna&oh=77ba445c37c61f2446d1f1a3dd236d4d&oe=61445AFE',
         blurData: 'L76uL*jZ00kD%$ayH=kC4TbH.Tae'
-    },
-    {
-        name: 'eustace',
-        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Flicensed-image.jfif?alt=media&token=2de6c6bb-9b09-416e-9473-744fb24b6dae',
-        blurData: 'LkKuA=WZ}ssS}ZR+-Ao0EfjYNZoL'
     },
 ]
 
