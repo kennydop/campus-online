@@ -38,7 +38,7 @@ function Header({pp}) {
                 {/*centre*/}
                 <div className = "hidden md:flex md:justify-center flex-grow">
                     <div className = "flex items-center rounded-full bg-blue-grey-50 p-1.5">
-                            <SearchIcon className = "h-3 sm:h-5 text-gray-500"/>
+                            <SearchIcon className = "h-5 text-gray-500"/>
                             <input className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-500" type = "text" placeholder="Search"/>
                     </div>
                 </div>
