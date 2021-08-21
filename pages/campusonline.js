@@ -1,6 +1,6 @@
 import ButtomNavbar from "../components/ButtomNavbar";
 import Header from "../components/Header";
-import Feed from "../components/Feed"
+import Feed from "../components/Feed";
 import Sidebar from "../components/Sidebar";
 import {signOut, useSession} from "next-auth/client";
 import RightSpace from "../components/RightSpace"

@@ -2,7 +2,6 @@ import Head from 'next/head';
 import {getSession} from "next-auth/client";
 import Campusonline from './campusonline';
 import Login from './Login';
-import { auth, db } from '../firebase/firebase';
 
 export default function Home({session}) {
   return (
