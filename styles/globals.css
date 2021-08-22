@@ -26,7 +26,7 @@
     }
 
     .errorMsg{
-        @apply text-red-500 font-bold text-center mb-2;
+        @apply text-red-500 text-sm text-center mb-2;
     }
     .authForm{
         @apply flex flex-col justify-center items-center md:p-8 md:bg-white md:rounded-lg md:shadow-md;

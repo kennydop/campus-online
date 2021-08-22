@@ -8,7 +8,7 @@ function Story({name, src, blurData}) {
         name = name.substring(0, 10) + ' ...';
     }
     return (
-        <div className='transition duration-100 transform ease-in hover:scale-110 overflow-hidden text-center z-50 top-10 mx-5 cursor-pointer inline-block'>
+        <div className='transition duration-100 transform ease-in hover:scale-105 overflow-hidden text-center z-50 top-10 mx-5 cursor-pointer inline-block'>
             {src && 
             <div className='rounded-full h-16 w-16 border-4 border-pink-500 relative overflow-hidden'>
                 <div className='rounded-full h-14 w-14 border-2 border-transparent overflow-hidden relative'>
