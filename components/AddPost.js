@@ -81,12 +81,12 @@ function AddPost() {
     }
     }
     return (
-        <div className='w-screen p-1.5'>
+        <div className='w-screen p-1.5 md:w-102'>
         <div className='p-2 rounded-lg shadow-md text-gray-500 font-medium bg-white flex flex-grow flex-col'>
             <div className='flex space-x-4 items-center mb-3 ml-2'>
                 <img className='rounded-full object-cover h-12 w-12' src={session.user.image}/>
                 <form className='flex flex-1'>
-                    <input className='outline-none bg-blue-grey-50 placeholder-gray-500 rounded-full focus:ring-1 focus:ring-gray-500 h-10 p-2 overflow-hidden w-full md:w-96' 
+                    <input className='outline-none bg-blue-grey-50 placeholder-gray-500 rounded-full focus:ring-1 focus:ring-gray-500 h-10 p-2 overflow-hidden w-full' 
                         ref={postRef}
                         type='text'
                         placeholder={`What's up, ${session.user.name}?`}/>
