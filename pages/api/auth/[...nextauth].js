@@ -24,7 +24,7 @@ const options = {
               email: { label: "Email", type: "text"},
               password: {  label: "Password", type: "password" },
               username: {label: "Username", type: "text"},
-              photoURL: {label: "Profile Image", type: 'text'},
+              photoURL: {label: "Profile Image", type: 'text', value:'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'},
               isNewUser: {label: "New User", type: 'boolean'},
             },
             async authorize(credentials, req) {

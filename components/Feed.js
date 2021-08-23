@@ -1,13 +1,17 @@
 import AddPost from "./AddPost"
 import Stories from "./Stories"
-// import Posts from "./Posts"
+import Posts from "./Posts"
 function Feed() {
     return (
-        <div className='flex flex-grow flex-col h-screen overflow-y-auto'>
+        <div className='flex flex-col h-screen overflow-y-auto lg:ml-8'>
             <div className='mx-auto'>
                 <Stories />
+            </div>
+            <div className='mx-auto'>
                 <AddPost />
-                {/* <Posts /> */}
+            </div>
+            <div>
+                <Posts />
             </div>
         </div>
     )

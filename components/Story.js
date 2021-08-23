@@ -26,7 +26,7 @@ function Story({name, src, blurData}) {
             <div className='relative'> 
             <img className='object-cover rounded-full h-14 w-14'
                 src={session.user.image}/>
-            <div className='absolute right-0 top-0 rounded-full p-0.5 bg-pink-500'>
+            <div className='absolute right-0 top-0 rounded-full p-0.5 bg-pink-500 border-2 border-blue-grey-50'>
                 <PlusIcon className='text-blue-grey-50 w-3 h-3'/>
             </div>
             </div>

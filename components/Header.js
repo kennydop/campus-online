@@ -1,13 +1,13 @@
 import Image from "next/image"
 import campus_online_logo from "../images/campus-online-logo.png"
-import {signOut} from "next-auth/client";
+import {signOut, useSession} from "next-auth/client";
 import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, MenuIcon} from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
 import { useRouter } from "next/router";
 import { auth } from '../firebase/firebase'
 
-function Header({pp}) {
-    
+function Header() {
+    const [session] = useSession()
     const router = useRouter()
     function logOut(){
             auth.signOut();
@@ -22,7 +22,7 @@ function Header({pp}) {
                     <div className="md:hidden flex text-center">
                         <img onClick = {logOut}
                             className = "h-8 w-8 avatar object-cover rounded-full cursor-pointer text-center"
-                            src = {pp}/>
+                            src = {session.user.image}/>
                     </div>
                     <div className="flex items-center cursor-pointer px-4" href = "#">
                         <Image src = {campus_online_logo}
@@ -51,7 +51,7 @@ function Header({pp}) {
                 <div className = "hidden md:flex px-5 text-center">
                     <img onClick = {logOut}
                     className = "h-8 w-8 avatar object-cover rounded-full cursor-pointer"
-                    src={pp}/>
+                    src={session.user.image}/>
                 </div>
         </div>
     </div>

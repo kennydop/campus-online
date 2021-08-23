@@ -22,7 +22,7 @@ const stories = [
         name: 'trayl',
         src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fcd.png?alt=media&token=1e9fb961-e29f-4d1a-be38-8afb63a75f9a',
         blurData: 'L6S~hmtR%1%g~qQSD%Qmu4oy*yMx'
-    }
+    },
     // {
     //     key: '4',
     //     name: 'eustace',

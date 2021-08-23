@@ -85,15 +85,12 @@ function AddPost() {
             <div className='flex space-x-4 items-center mb-3 ml-2'>
                 <img className='rounded-full object-cover h-12 w-12' src={session.user.image}/>
                 <form className='flex flex-1'>
-                    <input className='outline-none bg-blue-grey-50 placeholder-gray-500 rounded-full focus:ring-1 focus:ring-gray-500 h-10 p-2 resize-none overflow-hidden' 
+                    <input className='outline-none bg-blue-grey-50 placeholder-gray-500 rounded-full focus:ring-1 focus:ring-gray-500 h-10 p-2 overflow-hidden w-full sm:w-64 md:w-96' 
                         ref={postRef}
                         type='text'
                         placeholder={`What's up, ${session.user.name}?`}/>
                     <button hidden onClick={sendPost}></button>
                 </form>
-                {/* <div  className='p-2 cursor-pointer rounded-lg items-center justify-center flex-grow'>
-                    <PaperAirplaneIcon className='hover:text-blue-grey-50 text-pink-500 rotate-90 h-7'/>
-                </div> */}
             </div>
             {error && <p className='errorMsg'>{error}</p>}
             {posting && <p className='text-gray-500 text-sm self-center font-light mb-2'>...posting...</p>}
