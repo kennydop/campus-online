@@ -5,12 +5,12 @@ import Image from 'next/image'
 function Story({name, src, blurData}) {
     const [session] = useSession();
     if(name.length > 8){
-        name = name.substring(0, 10) + ' ...';
+        name = name.substring(0, 8) + ' ...';
     }
     return (
-        <div className='transition duration-100 transform ease-in hover:scale-105 overflow-hidden text-center z-50 top-10 mx-5 cursor-pointer inline-block'>
+        <div className='py-1 transition duration-100 transform ease-in hover:scale-105 overflow-hidden text-center cursor-pointer inline-block'>
             {src && 
-            <div className='rounded-full h-16 w-16 border-4 border-pink-500 relative overflow-hidden'>
+            <div className='rounded-full h-15 w-15 border-2.5 border-pink-500 relative overflow-hidden'>
                 <div className='rounded-full h-14 w-14 border-2 border-transparent overflow-hidden relative'>
                     <Image 
                     className='object-cover rounded-full'
@@ -23,7 +23,7 @@ function Story({name, src, blurData}) {
             </div>
                 }
             {!src &&
-            <div className='relative'> 
+            <div className='relative h-15 w-15'> 
             <img className='object-cover rounded-full h-14 w-14'
                 src={session.user.image}/>
             <div className='absolute right-0 top-0 rounded-full p-0.5 bg-pink-500 border-2 border-blue-grey-50'>

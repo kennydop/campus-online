@@ -1,4 +1,5 @@
 import Story from './Story';
+import { ChevronLeftIcon, ChevronRightIcon} from '@heroicons/react/solid';
 
 const stories = [
     {
@@ -35,12 +36,49 @@ const stories = [
         src: 'https://scontent.facc5-1.fna.fbcdn.net/v/t1.6435-9/54354250_430498804365015_238293912387584000_n.jpg?_nc_cat=103&ccb=1-5&_nc_sid=09cbfe&_nc_eui2=AeH9g8SZJueMPWsU9f_OCrjLwfS_AneM3KPB9L8Cd4zco7CpcH15y618-8HkvoluXvrc0QfeeAP9hdJQVw2qXi77&_nc_ohc=gugywDVe5RAAX-8avQO&_nc_ht=scontent.facc5-1.fna&oh=77ba445c37c61f2446d1f1a3dd236d4d&oe=61445AFE',
         blurData: 'L76uL*jZ00kD%$ayH=kC4TbH.Tae'
     },
+    {
+        key: '6',
+        name: 'kennydop',
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2FIMG-20210626-WA0007.jpg?alt=media&token=a270efe0-c5d1-4ece-bdd8-b5d465ef3d75',
+        blurData: 'LDFO=so:4,x|53%i%jISo=%N%Ne+'
+    },
+    {
+        key: '7',
+        name: 'kennydop',
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2FIMG-20210626-WA0007.jpg?alt=media&token=a270efe0-c5d1-4ece-bdd8-b5d465ef3d75',
+        blurData: 'LDFO=so:4,x|53%i%jISo=%N%Ne+'
+    },
+    {
+        key: '8',
+        name: 'kennydop',
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2FIMG-20210626-WA0007.jpg?alt=media&token=a270efe0-c5d1-4ece-bdd8-b5d465ef3d75',
+        blurData: 'LDFO=so:4,x|53%i%jISo=%N%Ne+'
+    },
 ]
 
 function Stories() {
+    const sideScroll = (element, speed, distance, step) => {
+        let scrollAmount = 0;
+        const slideTimer = setInterval(() => {
+          element.scrollLeft += step;
+          scrollAmount += Math.abs(step);
+          if (scrollAmount >= distance) {
+            clearInterval(slideTimer);
+          }
+        }, speed);
+      };
+
     return (
-        <div className='flex space-x-5 justify-center mx-auto my-3 whitespace-nowrap'>
+        <div className='flex'>
+        <div className='h-6 w-6 self-center rounded-full shadow-lg cursor-pointer ml-3 mr-1 '>
+            <ChevronLeftIcon className='text-gray-500'/>
+        </div>
+        <div className='hide-scrollbar space-x-5 justify-center my-4 w-screen md:w-105 whitespace-nowrap overflow-x-auto'>
             {stories.map((story)=>(<Story name={story.name} src={story.src} blurData={story.blurData} key={story.key}/>))}
+        </div>
+        <div className='h-6 w-6 self-center rounded-full shadow-lg cursor-pointer mr-3 ml-1'>
+            <ChevronRightIcon className='text-gray-500'/>
+        </div>
         </div>
     )
 }
