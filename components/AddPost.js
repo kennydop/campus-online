@@ -3,8 +3,9 @@ import {CameraIcon, VideoCameraIcon, CalendarIcon} from "@heroicons/react/outlin
 import { useRef, useState } from "react";
 import { XCircleIcon } from '@heroicons/react/solid'
 import { db, firebaseApp, storage} from '../firebase/firebase'
-function AddPost() {
+import { useCollection } from 'react-firebase-hooks/firestore';
 
+function AddPost() {
     const [session] = useSession();
     const postRef = useRef(null);
     const imgRef = useRef(null);
@@ -32,7 +33,7 @@ function AddPost() {
                 ()=> {
                 // when the upload completes
                     storage.ref('posts').child(doc.id).getDownloadURL().then(url => {
-                        db.collection('posts').doc(doc.id).set({postImage: url}, {merge: true })
+                        db.collection('posts').doc(doc.id).set({postImage: url, postType: image}, {merge: true })
                     }).then(
                     setPosting(false))
                 });
@@ -43,10 +44,12 @@ function AddPost() {
                 ()=> {
                 // when the upload completes
                     storage.ref('posts').child(doc.id).getDownloadURL().then(url => {
-                        db.collection('posts').doc(doc.id).set({postImage: url}, {merge: true })
+                        db.collection('posts').doc(doc.id).set({postImage: url, postType: video}, {merge: true })
                     }).then(
                     setPosting(false))
                 });
+            }else{
+                setPosting(false)
             }
         });
         postRef.current.value='';

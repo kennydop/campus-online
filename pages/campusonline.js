@@ -30,7 +30,7 @@ function campusonline() {
             </div>
             <div className='flex flex-grow  w-screen justify-center lg:justify-start'>
                 <Sidebar />
-                <div>
+                <div className='overflow-y-auto'>
                 <Stories />
                 <Feed />
                 </div>
