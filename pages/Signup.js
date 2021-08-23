@@ -44,7 +44,7 @@ function Signup() {
 
     }
     return (
-    <div className="w-screen flex flex-col justify-center items-center md:bg-blue-grey">
+    <div className="w-screen flex flex-col justify-center items-center bg-blue-grey-50">
         <div className = "flex self-center h-screen mt-4 mb-6">
             <div className = 'self-center'>
             <form autoComplete='on' className="authForm">

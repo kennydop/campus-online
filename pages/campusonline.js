@@ -4,6 +4,7 @@ import Feed from "../components/Feed";
 import Sidebar from "../components/Sidebar";
 import {signOut, useSession} from "next-auth/client";
 import RightSpace from "../components/RightSpace"
+import Stories from "../components/Stories";
 
 
 function campusonline() {
@@ -29,7 +30,10 @@ function campusonline() {
             </div>
             <div className='flex flex-grow  w-screen justify-center lg:justify-start'>
                 <Sidebar />
+                <div>
+                <Stories />
                 <Feed />
+                </div>
             </div>
         </div>
     )

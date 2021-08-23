@@ -10,8 +10,10 @@ module.exports = {
       },
       fontFamily: {
         default: ['Montserrat']
+      },
+      spacing: {
+        '70': '17rem',
       }
-
     },
   },
   variants: {
