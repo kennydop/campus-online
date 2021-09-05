@@ -6,6 +6,8 @@ import Campusonline from './campusonline';
 import Link from 'next/link'
 import { auth } from "../firebase/firebase";
 import { useState } from "react";
+import { setUserCookie } from '../firebase/userCookies';
+import { mapUserData } from '../firebase/mapUserData';
 
 function Login() {
   const [session, loading] = useSession();
@@ -26,6 +28,8 @@ function Login() {
       let goAhead = await auth.signInWithEmailAndPassword(email, password).then((userAuth)=>{
         // setName(userAuth.user.displayName);
         // setPhotoUrl(userAuth.user.photoURL);
+        const userData = mapUserData(userAuth.user);
+        setUserCookie(userData);
         return userAuth.user;
       }).catch((error)=> {
         switch (error.code) {

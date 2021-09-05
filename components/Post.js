@@ -1,14 +1,44 @@
 import Image from 'next/image'
 import {HeartIcon, ChatAltIcon, ShareIcon} from '@heroicons/react/outline'
 import { db, firebaseApp} from '../firebase/firebase'
+import {useUser} from '../firebase/useUser'
 
 // import {HeartIcon} from '@heroicons/react/solid'
 
 function Post({key, id, name, email, timestamp, image, message, likes, comments, postImage, postType }) {
 
+    const {user} = useUser();
+    var pliked = []
+    let colRef = db.collection('posts').doc(id)
+
     const likePicture = () => {
-        console.log(id)
-        db.collection('posts').doc(id).set({likes: firebaseApp.firestore.FieldValue.increment(1)}, {merge: true})
+        colRef.get().then((doc)=> {
+            pliked = doc.data().liked;
+            console.log(pliked);
+            
+            if(pliked !== undefined){  
+                console.log('defined')          
+                for (let i = 0; i < pliked.length; i++) {
+                    const element = pliked[i];
+                    if(element === user.id)
+                    {
+                        console.log('Already liked!')
+                        break;
+                    }else{
+                        console.log('Liking!')
+                        colRef.set({likes: firebaseApp.firestore.FieldValue.increment(1)}, {merge: true})
+                        colRef.update({liked: firebaseApp.firestore.FieldValue.arrayUnion(user.id)}) 
+                    }
+                }
+            }
+            else{
+                console.log('undefined')
+                console.log('Liking!')
+                colRef.set({likes: firebaseApp.firestore.FieldValue.increment(1)}, {merge: true})
+                colRef.update({liked: firebaseApp.firestore.FieldValue.arrayUnion(user.id)}) 
+            }
+        })
+
     }
 
     return (

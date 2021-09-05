@@ -5,6 +5,8 @@ import { UserIcon, MailIcon, LockClosedIcon, PhotographIcon} from "@heroicons/re
 import Link from 'next/link';
 import { auth } from "../firebase/firebase";
 import {signIn, signOut, useSession} from "next-auth/client";
+import { setUserCookie } from '../firebase/userCookies';
+import { mapUserData } from '../firebase/mapUserData';
 
 
 function Signup() {
@@ -36,6 +38,8 @@ function Signup() {
                                         displayName: name,
                                         photoURL: photoUrl
                                     })
+                                    const userData = mapUserData(userAuth.user);
+                                    setUserCookie(userData);
                                     return userAuth;
                                 }).catch((error)=> {setError(error.message)})
                                     
