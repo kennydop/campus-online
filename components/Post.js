@@ -1,8 +1,16 @@
 import Image from 'next/image'
 import {HeartIcon, ChatAltIcon, ShareIcon} from '@heroicons/react/outline'
+import { db, firebaseApp} from '../firebase/firebase'
+
 // import {HeartIcon} from '@heroicons/react/solid'
 
-function Post({key, name, email, timestamp, image, message, postImage, postType }) {
+function Post({key, id, name, email, timestamp, image, message, likes, comments, postImage, postType }) {
+
+    const likePicture = () => {
+        console.log(id)
+        db.collection('posts').doc(id).set({likes: firebaseApp.firestore.FieldValue.increment(1)}, {merge: true})
+    }
+
     return (
         <div className='w-screen p-1.5 md:w-102'>
             <div className='p-2 rounded-lg shadow-md bg-white flex flex-grow flex-col'>
@@ -31,17 +39,17 @@ function Post({key, name, email, timestamp, image, message, postImage, postType 
                     </div> }
                 </div>
                 <div className='flex justify-around mt-2'>
-                    <div className='flex flex-grow justify-center p-2 rounded-lg cursor-pointer hover:bg-gray-100'>
+                    <div onClick={likePicture} className='flex flex-grow justify-center p-2 rounded-lg cursor-pointer hover:bg-gray-100'>
                         <HeartIcon className='text-gray-500 h-6 w-6 mr-2' />
-                        <p className='text-gray-500'>Like</p>
+                        <p className='text-gray-500'>{likes}</p>
                     </div>
                     <div className='flex flex-grow justify-center p-2 rounded-lg cursor-pointer hover:bg-gray-100'>
                         <ChatAltIcon className='text-gray-500 h-6 w-6 mr-2' />
-                        <p className='text-gray-500'>Comment</p>
+                        <p className='text-gray-500'>{comments}</p>
                     </div>
                     <div className='flex flex-grow justify-center p-2 rounded-lg cursor-pointer hover:bg-gray-100'>
                         <ShareIcon className='text-gray-500 h-6 w-6 mr-2' />
-                        <p className='text-gray-500'>Share</p>
+                        <p className='text-gray-500'></p>
                     </div>
                 </div>
             </div>

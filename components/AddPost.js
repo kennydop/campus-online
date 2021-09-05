@@ -25,6 +25,8 @@ function AddPost() {
             email: session.user.email,
             image: session.user.image,
             timestamp: firebaseApp.firestore.FieldValue.serverTimestamp(),
+            likes: 0,
+            comments: 0,
         }).then((doc) => {
             if(imgToPost) {
                 const uploadTask = storage.ref(`posts/${doc.id}`).putString(imgToPost , 'data_url');
@@ -33,7 +35,7 @@ function AddPost() {
                 ()=> {
                 // when the upload completes
                     storage.ref('posts').child(doc.id).getDownloadURL().then(url => {
-                        db.collection('posts').doc(doc.id).set({postImage: url, postType: image}, {merge: true })
+                        db.collection('posts').doc(doc.id).set({postImage: url, postType: "image"}, {merge: true })
                     }).then(
                     setPosting(false))
                 });
@@ -44,7 +46,7 @@ function AddPost() {
                 ()=> {
                 // when the upload completes
                     storage.ref('posts').child(doc.id).getDownloadURL().then(url => {
-                        db.collection('posts').doc(doc.id).set({postImage: url, postType: video}, {merge: true })
+                        db.collection('posts').doc(doc.id).set({postImage: url, postType: "video"}, {merge: true })
                     }).then(
                     setPosting(false))
                 });
