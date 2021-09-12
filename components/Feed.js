@@ -8,6 +8,7 @@ function Feed() {
                 <AddPost />
                 <Posts />
             </div>
+            <div className='pt-64'></div>
         </div>
     )
 }

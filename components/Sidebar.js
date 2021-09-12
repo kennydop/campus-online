@@ -2,8 +2,8 @@ import Trend from "./Trend"
 
 function Sidebar() {
     return (
-<div className='p-2 hidden lg:block lg:w-1/4 ml-12'>
-    <div className='mt-3 p-2 self-center bg-white rounded-xl shadow-md'>
+<div className='p-2 hidden lg:block lg:w-1/4 ml-12 sticky top-0'>
+    <div className='mt-3 p-2 self-center bg-white rounded-xl shadow-md '>
         <div className='border-b p-2 text-gray-500 text-center font-bold'>
             <p>Trending</p>
         </div>

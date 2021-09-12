@@ -28,9 +28,9 @@ function campusonline() {
                 <Header />
                 <ButtomNavbar />
             </div>
-            <div className='flex flex-grow  w-screen justify-center lg:justify-start'>
+            <div className='flex flex-grow  w-screen justify-center lg:justify-start overflow-y-scroll'>
                 <Sidebar />
-                <div className='overflow-y-auto'>
+                <div>
                 <Stories />
                 <Feed />
                 </div>

@@ -4,7 +4,7 @@ import { HomeIcon, BellIcon, ChatAlt2Icon, MenuIcon } from "@heroicons/react/out
 function ButtomNavbar() {
     return (
         <div>
-            <div className = "flex items-center justify-center absolute inset-x-0 bottom-0 border-t py-3 md:hidden bg-white">
+            <div className = "flex items-center justify-center absolute inset-x-0 z-50 bottom-0 border-t py-3 md:hidden bg-white">
                 <HeaderIcon active Icon = {HomeIcon}/>
                 <HeaderIcon Icon = {BellIcon}/>
                 <HeaderIcon Icon = {ChatAlt2Icon}/>
