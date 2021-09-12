@@ -17,6 +17,8 @@ function Signup() {
     const [password, setpassword] = useState("");
     const [error, setError] = useState(false);
     const [session, loading] = useSession();
+    const defaultProfileImage = 'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'
+    var pp = "";
 
     async function register () {
         setError('');
@@ -33,17 +35,24 @@ function Signup() {
             setError("Please enter a Password");
         }
         else{
+            if(photoUrl === ''){
+                pp = defaultProfileImage
+            }
+            else{
+                pp = photoUrl
+            }
+            console.log(pp)
             let goAhead = await auth.createUserWithEmailAndPassword(email, password).then((userAuth)=>{
                                     userAuth.user.updateProfile({
                                         displayName: name,
-                                        photoURL: photoUrl
+                                        photoURL: pp
                                     })
                                     const userData = mapUserData(userAuth.user);
                                     setUserCookie(userData);
                                     return userAuth;
                                 }).catch((error)=> {setError(error.message)})
                                     
-            goAhead && await signIn('credentials', {email: email, username: name, password: password, photoURL: photoUrl, callbackUrl: 'http://localhost:3000/'})
+            goAhead && await signIn('credentials', {email: email, username: name, password: password, photoURL: pp, callbackUrl: 'http://localhost:3000/'})
         }
 
     }

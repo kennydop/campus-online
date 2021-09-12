@@ -22,15 +22,15 @@ const options = {
             name: 'Credentials',
             credentials: {
               email: { label: "Email", type: "text"},
-              password: {  label: "Password", type: "password" },
+              password: { label: "Password", type: "password" },
               username: {label: "Username", type: "text"},
-              photoURL: {label: "Profile Image", type: 'text', value:'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'},
+              photoURL: {label: "Profile Image", type: 'text'},
               isNewUser: {label: "New User", type: 'boolean'},
             },
             async authorize(credentials, req) {
               const user = {email: credentials.email, name: credentials.username, image: credentials.photoURL}
-              return user
-              //throw new Error('Check your credentials')}               
+              console.log(user)
+              return user               
             }
       })    
     ],  
