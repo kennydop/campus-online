@@ -10,35 +10,34 @@ function Post({key, id, name, email, timestamp, image, message, likes, comments,
     const {user} = useUser();
     var pliked = []
     let colRef = db.collection('posts').doc(id)
-
+    colRef.get().then((doc)=> {
+        pliked = doc.data().liked;
+        console.log(message, pliked);
+    })
     const likePicture = () => {
-        colRef.get().then((doc)=> {
-            pliked = doc.data().liked;
-            console.log(pliked);
-            
-            if(pliked !== undefined){  
-                console.log('defined')          
-                for (let i = 0; i < pliked.length; i++) {
-                    const element = pliked[i];
-                    if(element === user.id)
-                    {
-                        console.log('Already liked!')
-                        break;
-                    }else{
-                        console.log('Liking!')
-                        colRef.set({likes: firebaseApp.firestore.FieldValue.increment(1)}, {merge: true})
-                        colRef.update({liked: firebaseApp.firestore.FieldValue.arrayUnion(user.id)}) 
-                    }
+        if(pliked !== undefined){  
+            console.log('defined')          
+            for (let i = 0; i < pliked.length; i++) {
+                const element = pliked[i];
+                if(element === user.id){
+                    console.log('Already liked!')
+                    console.log('Unliking!')
+                    colRef.set({likes: firebaseApp.firestore.FieldValue.increment(-1)}, {merge: true})
+                    colRef.update({liked: firebaseApp.firestore.FieldValue.arrayRemove(user.id)}) 
+                    return;
                 }
             }
-            else{
-                console.log('undefined')
-                console.log('Liking!')
-                colRef.set({likes: firebaseApp.firestore.FieldValue.increment(1)}, {merge: true})
-                colRef.update({liked: firebaseApp.firestore.FieldValue.arrayUnion(user.id)}) 
-            }
-        })
-
+            console.log('Liking!')
+            colRef.set({likes: firebaseApp.firestore.FieldValue.increment(1)}, {merge: true})
+            colRef.update({liked: firebaseApp.firestore.FieldValue.arrayUnion(user.id)}) 
+        }
+        else{
+            console.log('undefined')
+            console.log('Liking!')
+            colRef.set({likes: firebaseApp.firestore.FieldValue.increment(1)}, {merge: true})
+            colRef.update({liked: firebaseApp.firestore.FieldValue.arrayUnion(user.id)}) 
+            liked = true;
+        }
     }
 
     return (
