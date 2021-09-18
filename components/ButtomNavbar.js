@@ -1,5 +1,5 @@
 import HeaderIcon from "./HeaderIcon";
-import { HomeIcon, BellIcon, ChatAlt2Icon, MenuIcon } from "@heroicons/react/outline";
+import { HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon } from "@heroicons/react/outline";
 
 function ButtomNavbar() {
     return (
@@ -8,7 +8,7 @@ function ButtomNavbar() {
                 <HeaderIcon active Icon = {HomeIcon}/>
                 <HeaderIcon Icon = {BellIcon}/>
                 <HeaderIcon Icon = {ChatAlt2Icon}/>
-                <HeaderIcon Icon = {MenuIcon}/>
+                <HeaderIcon Icon = {CogIcon}/>
             </div>
         </div>
     )

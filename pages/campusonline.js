@@ -3,38 +3,28 @@ import Header from "../components/Header";
 import Feed from "../components/Feed";
 import Sidebar from "../components/Sidebar";
 import {signOut, useSession} from "next-auth/client";
-import RightSpace from "../components/RightSpace"
 import Stories from "../components/Stories";
+import Settings from "../components/Settings"
 
 
 function campusonline() {
 
-    // const [session] = useSession();
-    // var pp = null;
-    // if(session.user.image){
-    //     if(session.user.image === 'null'){
-    //         pp = 'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'
-    //     }else{
-    //     pp = session.user.image
-    //     }
-    // }
-    // else{
-    //     pp = 'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'
-    // }
-
     return (
         <div>
             <div>
-                <Header />
                 <ButtomNavbar />
+                <Header />
             </div>
-            <div className='flex flex-grow  w-screen justify-center lg:justify-start overflow-y-scroll'>
+            <div className='flex flex-grow w-screen justify-center lg:justify-start overflow-y-scroll'>
                 <Sidebar />
                 <div>
                 <Stories />
                 <Feed />
                 </div>
             </div>
+                <div>
+                <Settings />
+                </div>
         </div>
     )
 }

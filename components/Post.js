@@ -6,7 +6,6 @@ import {useUser} from '../firebase/useUser'
 // import {HeartIcon} from '@heroicons/react/solid'
 
 function Post({key, id, name, email, timestamp, image, message, likes, comments, postImage, postType }) {
-
     const {user} = useUser();
     var pliked = []
     let colRef = db.collection('posts').doc(id)
@@ -45,11 +44,13 @@ function Post({key, id, name, email, timestamp, image, message, likes, comments,
                 <div className='py-2'><p className='text-gray-600'>{message}</p></div>
                 <div>
                     {postType==='image' && 
-                    <div className='relative h-105 mb-2'>
+                    <div className='relative mb-2 h-100'>
                         <Image
                         src = {postImage}
                         objectFit='cover'
                         layout='fill'
+                        placeholder = 'blur'
+                        blurDataURL={`/_next/image?url=${postImage}&w=16&q=1`}
                         />
                     </div>}
                     {postType==='video' &&

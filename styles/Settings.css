@@ -1,0 +1,8 @@
+.settings {
+    transition: 850ms;
+}
+  
+.settings.active {
+    right: 0;
+    transition: 350ms;
+}

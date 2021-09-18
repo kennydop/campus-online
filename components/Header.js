@@ -1,8 +1,9 @@
 import Image from "next/image"
 import campus_online_logo from "../images/campus-online-logo.png"
 import {signOut, useSession} from "next-auth/client";
-import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, MenuIcon} from "@heroicons/react/outline";
+import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon} from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
+import Settings from "../components/Settings"
 import { useRouter } from "next/router";
 import { auth } from '../firebase/firebase'
 
@@ -16,6 +17,7 @@ function Header() {
     }
 
     return (
+        <>
         <div className = "md:flex sticky top-0 z-50 bg-white justify-center items-center p-2 md:p-2.5 md:px-15 px-2 shadow-md">
                 {/*left*/}
                 <div className = "flex items-center pb-2 md:pb-0 px-2 md:px-0 mx-auto justify-between">
@@ -45,9 +47,10 @@ function Header() {
             {/*right*/}
             <div className = "hidden md:flex md:items-center md:justify-end">
                 <HeaderIcon active Icon = {HomeIcon}/>
+                <HeaderIcon Icon ={GlobeAltIcon}/>
                 <HeaderIcon Icon = {BellIcon}/>
                 <HeaderIcon Icon = {ChatAlt2Icon}/>
-                <HeaderIcon Icon = {MenuIcon}/>
+                <HeaderIcon Icon = {CogIcon}/>
                 <div className = "hidden md:flex px-5 text-center">
                     <img onClick = {logOut}
                     className = "h-8 w-8 avatar object-cover rounded-full cursor-pointer"
@@ -55,6 +58,12 @@ function Header() {
                 </div>
         </div>
     </div>
+    {/* <div>
+        <div>
+            <Settings />
+        </div>
+    </div> */}
+    </>
     )
 }
 
