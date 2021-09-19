@@ -12,8 +12,8 @@ function campusonline() {
     return (
         <div>
             <div>
-                <ButtomNavbar />
                 <Header />
+                <ButtomNavbar />
             </div>
             <div className='flex flex-grow w-screen justify-center lg:justify-start overflow-y-scroll'>
                 <Sidebar />
@@ -22,9 +22,9 @@ function campusonline() {
                 <Feed />
                 </div>
             </div>
-                <div>
+                {/* <div>
                 <Settings />
-                </div>
+                </div> */}
         </div>
     )
 }

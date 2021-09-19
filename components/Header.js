@@ -6,10 +6,13 @@ import HeaderIcon from "./HeaderIcon";
 import Settings from "../components/Settings"
 import { useRouter } from "next/router";
 import { auth } from '../firebase/firebase'
+import { useState } from "react";
 
 function Header() {
     const [session] = useSession()
     const router = useRouter()
+    const [settings, setSettings] = useState(false);
+
     function logOut(){
             auth.signOut();
             signOut();
@@ -46,11 +49,11 @@ function Header() {
                 </div>
             {/*right*/}
             <div className = "hidden md:flex md:items-center md:justify-end">
-                <HeaderIcon active Icon = {HomeIcon}/>
-                <HeaderIcon Icon ={GlobeAltIcon}/>
-                <HeaderIcon Icon = {BellIcon}/>
-                <HeaderIcon Icon = {ChatAlt2Icon}/>
-                <HeaderIcon Icon = {CogIcon}/>
+                <div><HeaderIcon active Icon = {HomeIcon}/></div>
+                <div><HeaderIcon Icon ={GlobeAltIcon}/></div>
+                <div><HeaderIcon Icon = {BellIcon}/></div>
+                <div><HeaderIcon Icon = {ChatAlt2Icon}/></div>
+                <div onClick = {()=>setSettings(!settings)}><HeaderIcon Icon = {CogIcon} /></div>
                 <div className = "hidden md:flex px-5 text-center">
                     <img onClick = {logOut}
                     className = "h-8 w-8 avatar object-cover rounded-full cursor-pointer"
@@ -58,11 +61,11 @@ function Header() {
                 </div>
         </div>
     </div>
-    {/* <div>
+    {settings &&
         <div>
-            <Settings />
+            <Settings show={settings}/>
         </div>
-    </div> */}
+    }
     </>
     )
 }
