@@ -12,14 +12,6 @@ function Header() {
     const [session] = useSession()
     const router = useRouter()
     const [settings, setSettings] = useState(false);
-
-    const unshowSettings = () => {
-        setSettings(false)
-    };
-    const showSettings = () => {
-        setSettings(!settings)
-        setTimeout(unshowSettings, 1000)
-    };
     
     function logOut(){
             auth.signOut();
