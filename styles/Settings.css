@@ -1,8 +1,4 @@
-.settings {
-    transition: 850ms;
-}
-  
-.settings.active {
-    right: 0;
-    transition: 350ms;
+input:checked ~ .dot {
+    transform: translateX(100%);
+    background-color: #48bb78;
 }
