@@ -22,9 +22,6 @@ function campusonline() {
                 <Feed />
                 </div>
             </div>
-                {/* <div>
-                <Settings />
-                </div> */}
         </div>
     )
 }

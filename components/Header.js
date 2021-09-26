@@ -7,11 +7,13 @@ import Settings from "../components/Settings"
 import { useRouter } from "next/router";
 import { auth } from '../firebase/firebase'
 import { useState } from "react";
+import Profile from "./Profile";
 
 function Header() {
     const [session] = useSession()
     const router = useRouter()
     const [settings, setSettings] = useState(false);
+    const [profile, setProfile] = useState(false);
     const [tabActive, setTabActive] = useState('home')
 
     function logOut(){
@@ -26,7 +28,7 @@ function Header() {
                 {/*left*/}
                 <div className = "flex items-center pb-2 md:pb-0 px-2 md:px-0 mx-auto justify-between">
                     <div className="md:hidden flex text-center">
-                        <img onClick = {logOut}
+                        <img onClick = {()=> {setProfile(true); setTabActive('profile')}}
                             className = "h-8 w-8 avatar object-cover rounded-full cursor-pointer text-center"
                             src = {session.user.image}/>
                     </div>
@@ -50,13 +52,13 @@ function Header() {
                 </div>
             {/*right*/}
             <div className = "hidden md:flex md:items-center md:justify-end">
-                <div onClick={()=>{setSettings(!settings); setTabActive('home')}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
+                <div onClick={()=>{setSettings(false); setProfile(false); setTabActive('home')}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
                 <div onClick = {()=>setTabActive('global')}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
                 <div onClick = {()=>setTabActive('notification')}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
                 <div onClick = {()=>setTabActive('chat')}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
                 <div onClick = {()=>{setSettings(!settings); setTabActive('settings')}}><HeaderIcon Icon = {CogIcon}/></div>
                 <div className = "hidden md:flex px-5 text-center">
-                    <img onClick = {logOut}
+                    <img onClick = {()=> {setProfile(true); setTabActive('profile')}}
                     className = "h-8 w-8 avatar object-cover rounded-full cursor-pointer"
                     src={session.user.image}/>
                 </div>
@@ -66,6 +68,11 @@ function Header() {
         <div>
             <Settings show={settings}/>
         </div>
+    }
+    {profile &&
+            <div>
+                <Profile show={profile}/>
+            </div>
     }
     </>
     )

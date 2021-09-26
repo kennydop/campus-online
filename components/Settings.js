@@ -16,7 +16,7 @@ function Settigs({show}) {
                 <div onClick={showSettings}><SettingItems Icon={MoonIcon} title = 'Display Accessibilities' onClick={showSettings}/></div>
                 <div onClick={showSettings}><SettingItems Icon={UserIcon} title = 'Account Settings' onClick={showSettings}/></div>
             </div>
-            <div className='bottom-0 my-2 absolute w-full border-t border-gray-400'>
+            <div className='bottom-12 md:bottom-0 my-2 absolute w-full border-t border-gray-400'>
             <div class="flex items-center mx-4 my-2">
                 <label for="toggleB" className="flex items-center cursor-pointer">
                     <div className="relative">

@@ -15,7 +15,7 @@ function ButtomNavbar() {
         }
         <div>
             <div className = "flex items-center justify-center absolute space-evenly inset-x-0 z-50 bottom-0 border-t py-3 md:hidden bg-white">
-                <div className='mx-auto' onClick = {()=>{setSettings(!settings); setTabActive('home')}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
+                <div className='mx-auto' onClick = {()=>{setSettings(false); setTabActive('home')}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
                 <div className='mx-auto' onClick = {()=>setTabActive('global')}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
                 <div className='mx-auto' onClick = {()=>setTabActive('notification')}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
                 <div className='mx-auto' onClick = {()=>setTabActive('chat')}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
