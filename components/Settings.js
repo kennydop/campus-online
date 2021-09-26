@@ -8,8 +8,8 @@ function Settigs({show}) {
 
     return (
          <div className={`top-0 fixed z-50 bg-white md:w-80 h-screen w-full shadow-md duration-300 ${settings?'right-0':'duration-700 -right-full'}`}>
-            <div onClick={showSettings}>
-                <ArrowLeftIcon className='cursor-pointer h-6  ml-2 hover:-translate-x-1 transform transition-all duration-200 text-gray-500'/>
+            <div className=' border-b border-gray-400 py-3'>
+                <ArrowLeftIcon onClick={showSettings} className='cursor-pointer h-6  ml-4 hover:-translate-x-1 transform transition-all duration-200 text-gray-500'/>
             </div>
             <div>
                 <div onClick={showSettings}><SettingItems Icon={QuestionMarkCircleIcon} title ='Help and Support' onClick={showSettings}/></div>

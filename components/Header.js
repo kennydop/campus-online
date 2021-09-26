@@ -12,7 +12,8 @@ function Header() {
     const [session] = useSession()
     const router = useRouter()
     const [settings, setSettings] = useState(false);
-    
+    const [tabActive, setTabActive] = useState('home')
+
     function logOut(){
             auth.signOut();
             signOut();
@@ -49,11 +50,11 @@ function Header() {
                 </div>
             {/*right*/}
             <div className = "hidden md:flex md:items-center md:justify-end">
-                <div><HeaderIcon active Icon = {HomeIcon}/></div>
-                <div><HeaderIcon Icon ={GlobeAltIcon}/></div>
-                <div><HeaderIcon Icon = {BellIcon}/></div>
-                <div><HeaderIcon Icon = {ChatAlt2Icon}/></div>
-                <div onClick = {()=>setSettings(!settings)}><HeaderIcon Icon = {CogIcon} /></div>
+                <div onClick={()=>{setSettings(!settings); setTabActive('home')}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
+                <div onClick = {()=>setTabActive('global')}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
+                <div onClick = {()=>setTabActive('notification')}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
+                <div onClick = {()=>setTabActive('chat')}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
+                <div onClick = {()=>{setSettings(!settings); setTabActive('settings')}}><HeaderIcon Icon = {CogIcon}/></div>
                 <div className = "hidden md:flex px-5 text-center">
                     <img onClick = {logOut}
                     className = "h-8 w-8 avatar object-cover rounded-full cursor-pointer"
