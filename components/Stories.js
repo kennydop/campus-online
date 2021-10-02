@@ -72,13 +72,13 @@ function Stories() {
 
     return (
         <div className='flex'>
-            <div onClick={()=>{sideScroll(storiesRef.current, 20, 420, -15)}} className='h-6 w-6 hidden md:block self-center rounded-full bg-gray-500 cursor-pointer ml-3 mr-1'>
+            <div onClick={()=>{sideScroll(storiesRef.current, 20, 420, -15)}} className='h-5 w-5 hidden md:block self-center rounded-full bg-gray-500 cursor-pointer ml-3 mr-1'>
                 <ChevronLeftIcon className='text-blue-grey-50'/>
             </div>
             <div ref={storiesRef}className='hide-scrollbar space-x-5 justify-center my-4 w-screen md:w-105 px-3 md:px-0 whitespace-nowrap overflow-x-auto'>
                 {stories.map((story)=>(<Story name={story.name} src={story.src} blurData={story.blurData} key={story.key}/>))}
             </div>
-            <div onClick={()=>{sideScroll(storiesRef.current, 20, 420, 15)}} className='h-6 w-6 hidden md:block self-center rounded-full bg-gray-500 cursor-pointer mr-3 ml-1'>
+            <div onClick={()=>{sideScroll(storiesRef.current, 20, 420, 15)}} className='h-5 w-5 hidden md:block self-center rounded-full bg-gray-500 cursor-pointer mr-3 ml-1'>
                 <ChevronRightIcon className='text-blue-grey-50'/>
             </div>
         </div>

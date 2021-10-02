@@ -1,10 +1,11 @@
 import Image from "next/image"
 import {signOut, useSession} from "next-auth/client";
 import {CameraIcon, PencilIcon} from "@heroicons/react/outline"
-
+import { useState } from 'react';
 
 function Profile() {
     const [session] = useSession()
+    const [tab, setTab] = useState('posts')
     return (
         <div className='h-screen w-screen flex flex-col items-center z-50 overflow-y-auto'>
             <div className='w-screen md:w-102 md:pt-10'>
@@ -45,9 +46,9 @@ function Profile() {
                     </div>
                 </div>
             </div>
-            <div className='flex mt-5 pb-2 border-gray-500 w-full md:w-102'>
-                <div className='w-1/2 text-right mr-3 text-pink-500'>Posts(100)</div>
-                <div className='w-1/2 text-left ml-3 text-gray-500'>About</div>
+            <div className='flex mt-5 pb-2 self-center space-x-3'>
+                <div onClick={()=> setTab('posts')} className={`w-1/2 text-right mr-3 cursor-pointer ${tab === 'posts'? 'text-pink-500 border-b border-pink-500':'text-gray-500'}`}>Posts</div>
+                <div onClick={()=> setTab('about')} className={`w-1/2 text-left ml-3 cursor-pointer ${tab === 'about'? 'text-pink-500 border-b border-pink-500':'text-gray-500'}`}>About</div>
             </div>
         </div>
     )
