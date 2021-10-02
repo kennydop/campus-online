@@ -52,7 +52,7 @@ function Signup() {
                                     return userAuth;
                                 }).catch((error)=> {setError(error.message)})
                                     
-            goAhead && await signIn('credentials', {email: email, username: name, password: password, photoURL: pp, callbackUrl: 'http://localhost:3000/'})
+            goAhead && await signIn('credentials', {email: email, username: name, password: password, photoURL: pp, callbackUrl: 'http://localhost:3000/AddCollege'})
         }
 
     }

@@ -6,7 +6,7 @@ import HeaderIcon from "./HeaderIcon";
 import Settings from "../components/Settings"
 import { useRouter } from "next/router";
 import { auth } from '../firebase/firebase'
-import { useState, createContext, useEffect } from "react";
+import { useState } from "react";
 import Profile from "./Profile";
 import { ActiveTab } from "./ActiveTab";
 
@@ -20,7 +20,6 @@ function Header() {
     function logOut(){
             auth.signOut();
             signOut();
-            router.replace('/Login')
     }
 
     return (
