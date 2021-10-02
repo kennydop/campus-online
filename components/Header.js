@@ -59,8 +59,8 @@ function Header() {
                     <div onClick = {()=>{setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
                     <div onClick = {()=>{/*setSettings(!settings); */setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div>
                     <div className = "hidden md:flex px-5 text-center">
-                        <img onClick = {()=> {setProfile(true); setTabActive('profile')}}
-                        className = "h-8 w-8 avatar object-cover rounded-full cursor-pointer"
+                        <img onClick = {()=> {setTabActive('profile')}}
+                        className = {`h-8 w-8 avatar object-cover rounded-full cursor-pointer ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
                         src={session.user.image}/>
                     </div>
             </div>
