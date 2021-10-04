@@ -3,15 +3,24 @@ import Settings from "../components/Settings"
 import { HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon } from "@heroicons/react/outline";
 import { useState } from "react";
 import { ActiveTab } from './ActiveTab'
+import NotificationPane from "./NotificationPane";
+
 function ButtomNavbar() {
     const [tabActive, setTabActive] = useState('home')
+
     return (
         <ActiveTab.Provider value = {{tabActive, setTabActive}}>
+        {tabActive === 'notification' &&
+        <div>
+            <NotificationPane />
+        </div>
+        }
         {tabActive === 'settings' &&
         <div>
             <Settings />
         </div>
         }
+
         <div>
             <div className = "flex items-center justify-center absolute space-evenly inset-x-0 z-50 bottom-0 border-t py-3 md:hidden bg-white">
                 <div className='mx-auto' onClick = {()=>{setTabActive('home')}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>

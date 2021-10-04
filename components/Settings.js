@@ -1,10 +1,9 @@
 import SettingItems from "./SettingItems";
-import {QuestionMarkCircleIcon, MoonIcon, ArrowLeftIcon, UserIcon} from '@heroicons/react/solid';
-import { useState, useContext } from "react";
-import {signOut, useSession} from "next-auth/client";
+import {LogoutIcon, QuestionMarkCircleIcon, MoonIcon, ArrowLeftIcon, UserIcon} from '@heroicons/react/solid';
+import { useContext } from "react";
+import {signOut} from "next-auth/client";
 import { auth } from '../firebase/firebase'
 import { ActiveTab } from './ActiveTab';
-import { LogoutIcon } from "@heroicons/react/outline";
 
 function logOut(){
     auth.signOut();
@@ -16,9 +15,9 @@ function Settigs() {
     const {tabActive, setTabActive} = useContext(ActiveTab)
 
     return (
-         <div className={`top-0 fixed z-50 bg-white md:w-80 h-screen w-full shadow-md ${tabActive === 'settings'?'right-0 duration-300':'duration-700 -right-full'}`}>
+         <div className={`top-0 fixed z-50 bg-white md:w-96 h-screen w-full shadow-md ${tabActive === 'settings'?'right-0 duration-300':'duration-700 -right-full'}`}>
             <div className='border-b border-gray-400 py-3'>
-                <ArrowLeftIcon onClick={()=>setTabActive('home')} className='cursor-pointer h-6  ml-4 hover:-translate-x-1 transform transition-all duration-200 text-gray-500'/>
+                <ArrowLeftIcon onClick={()=>setTabActive('')} className='cursor-pointer h-6  ml-4 hover:-translate-x-1 transform transition-all duration-200 text-gray-500'/>
             </div>
             <div>
                 <div onClick={()=> setTabActive('home')}><SettingItems Icon={QuestionMarkCircleIcon} title ='Help and Support'/></div>

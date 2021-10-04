@@ -46,3 +46,8 @@ input:checked ~ .dot {
     transform: translateX(100%);
     background-color: rgba(236, 72, 153);
 }
+.hover\:scale-105:hover {
+    --tw-scale-x: 1.05;
+    --tw-scale-y: 1.05;
+    transform: var(--tw-transform);
+}

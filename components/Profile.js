@@ -18,7 +18,7 @@ function Profile() {
                     <div className='absolute -top-10 left-1/2 -ml-10'>
                         <div className='relative'>
                             <img className = "h-20 w-20 object-cover rounded-full cursor-pointer" src = {session.user.image}/>
-                            <div className='absolute right-0 bottom-0 py-2 px-2 bg-gray-500 bg-opacity-90 rounded-full cursor-pointer transition hover:scale-125'><CameraIcon className='h-3 text-white'/></div>
+                            <div className='absolute right-0 bottom-0 py-2 px-2 bg-gray-500 bg-opacity-90 rounded-full cursor-pointer transition hover:scale-105'><CameraIcon className='h-3 text-white'/></div>
                         </div>
                     </div>
                     <div className='flex flex-col w-full'>
