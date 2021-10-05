@@ -3,7 +3,7 @@ import {LogoutIcon, QuestionMarkCircleIcon, MoonIcon, ArrowLeftIcon, UserIcon} f
 import { useContext } from "react";
 import {signOut} from "next-auth/client";
 import { auth } from '../firebase/firebase'
-import { ActiveTab } from './ActiveTab';
+import { ActiveTab, PrevTab } from './ActiveTab';
 
 function logOut(){
     auth.signOut();
@@ -13,11 +13,13 @@ function logOut(){
 
 function Settigs() {
     const {tabActive, setTabActive} = useContext(ActiveTab)
+    const {prevTab, setPrevTab} = useContext(PrevTab)
 
     return (
          <div className={`top-0 fixed z-50 bg-white md:w-96 h-screen w-full shadow-md ${tabActive === 'settings'?'right-0 duration-300':'duration-700 -right-full'}`}>
-            <div className='border-b border-gray-400 py-3'>
-                <ArrowLeftIcon onClick={()=>setTabActive('')} className='cursor-pointer h-6  ml-4 hover:-translate-x-1 transform transition-all duration-200 text-gray-500'/>
+            <div className='border-b border-gray-400 py-3 flex w-full'>
+                <ArrowLeftIcon onClick={()=>setTabActive(prevTab)} className='cursor-pointer h-6  mx-4 hover:-translate-x-1 transform transition-all duration-200 text-gray-500'/>
+                <div className='self-center text-gray-500 items-center '>Settings</div>
             </div>
             <div>
                 <div onClick={()=> setTabActive('home')}><SettingItems Icon={QuestionMarkCircleIcon} title ='Help and Support'/></div>
