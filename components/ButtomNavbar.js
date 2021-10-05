@@ -30,7 +30,7 @@ function ButtomNavbar() {
                 <div className='mx-auto' onClick = {()=>{setPrevTab(tabActive); router.push('/'); setTabActive('home')}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
                 <div className='mx-auto' onClick = {()=>{setPrevTab(tabActive); setTabActive('global')}}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
                 <div className='mx-auto' onClick = {()=>{setPrevTab(tabActive); setTabActive('notification')}}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
-                <div className='mx-auto' onClick = {()=>{setPrevTab(tabActive); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
+                <div className='mx-auto' onClick = {()=>{setPrevTab(tabActive); router.push('/Chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
                 <div className='mx-auto' onClick = {()=>{setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div>
             </div>
         </div>

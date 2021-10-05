@@ -23,11 +23,11 @@ function ProfileCard() {
                     </div>
                     <div className='flex flex-col w-full'>
                         <div className='flex w-full'>
-                            <div className = 'flex flex-col w-1/2'>
+                            <div className = 'flex flex-col w-1/2 cursor-pointer mt-2'>
                                 <div><p className = 'text-center text-gray-500 mr-12 text-lg font-medium'>5.4k</p></div>
                                 <div><p className = 'text-center text-gray-500 mr-12 text-xs font-light'>followers</p></div>
                             </div>
-                            <div className = 'flex flex-col w-1/2'>
+                            <div className = 'flex flex-col w-1/2 cursor-pointer mt-2'>
                                 <div><p className = 'text-center text-gray-500 ml-12 text-lg font-medium'>1</p></div>
                                 <div><p className = 'text-center text-gray-500 ml-12 text-xs font-light'>following</p></div>
                             </div>

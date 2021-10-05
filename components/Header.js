@@ -26,7 +26,7 @@ function Header() {
                                 className = {`h-8 w-8 avatar object-cover rounded-full cursor-pointer text-center ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
                                 src = {session.user.image}/>
                         </div>
-                        <div onClick={()=>{setTabActive('home')}} className="flex items-center cursor-pointer px-4" href = "/">
+                        <div onClick={()=>{router.push('/')}} className="flex items-center cursor-pointer px-4" href = "/">
                             <Image src = {campus_online_logo}
                             width = {138.24} 
                             height = {27.945} 
@@ -49,7 +49,7 @@ function Header() {
                     <div onClick = {()=>{setPrevTab(tabActive); router.push('/'); setTabActive('home')}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
                     <div onClick = {()=>{setPrevTab(tabActive); setTabActive('global')}}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
                     <div onClick = {()=>{setPrevTab(tabActive); setTabActive('notification')}}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
-                    <div onClick = {()=>{setPrevTab(tabActive); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
+                    <div onClick = {()=>{setPrevTab(tabActive); router.push('/Chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
                     <div onClick = {()=>{setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div>
                     <div className = "hidden md:flex px-5 text-center">
                         <img onClick = {()=> {setPrevTab(tabActive);  router.push('/Profile'); setTabActive('profile');}}
