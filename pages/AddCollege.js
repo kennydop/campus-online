@@ -1,8 +1,8 @@
 import {useRouter} from 'next/router';
 import {db, firebaseApp} from '../firebase/firebase';
 import { useState, useEffect } from 'react';
-import {useSession, getSession} from 'next-auth/client';
-import NotAuthorized from '../components/notAuthorized';
+import {useSession} from 'next-auth/client';
+import NotAuthorized from '../components/NotAuthorized';
 import {useUser} from '../firebase/useUser';
 
 function AddCollege({colleges}) {

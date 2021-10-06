@@ -1,8 +1,15 @@
 import Header from '../components/Header'
 import ButtomNavbar from '../components/ButtomNavbar'
 import Chat from '../components/Chat'
+import {useSession} from 'next-auth/client';
+import NotAuthorized from '../components/NotAuthorized';
+
 function Chats(){
+	const [session, loading] = useSession();
+
 	return(
+		<main>
+		{session &&(
 		<div className='bg-blue-grey-50 h-screen overflow-hidden'>
 			<Header />
 			<ButtomNavbar />
@@ -15,6 +22,13 @@ function Chats(){
 				</div>
 			</div>
 		</div>
+		)}
+		{!session &&(
+            !loading &&
+            <NotAuthorized />
+        )}
+		</main>
 	)
 }
+
 export default Chats
