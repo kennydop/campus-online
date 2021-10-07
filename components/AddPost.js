@@ -115,11 +115,11 @@ function AddPost() {
                 </div>
                 )}
             <div className='flex justify-evenly p-3 border-t dark:border-bdark-200'>
-                <div className='flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 cursor-pointer rounded-lg'>
+                <div className='flex items-center space-x-1 hover:bg-gray-100 dark:hover:bg-bdark-50 flex-grow justify-center p-2 cursor-pointer rounded-lg'>
                     <VideoCameraIcon className='text-red-500 h-6'/>
                     <p className='text-xs text-gray-500 dark:text-gray-400'>Live</p>
                 </div>
-                <div onClick={()=>imgRef.current.click()} className='flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 cursor-pointer rounded-lg'>
+                <div onClick={()=>imgRef.current.click()} className='flex items-center space-x-1 hover:bg-gray-100 dark:hover:bg-bdark-50 flex-grow justify-center p-2 cursor-pointer rounded-lg'>
                     <CameraIcon className='text-blue-500 h-6'/>
                     <p className='text-xs text-gray-500 dark:text-gray-400'>Photo/Video</p>
                     <input
@@ -129,7 +129,7 @@ function AddPost() {
                         hidden
                         />
                 </div>
-                <div className='flex items-center space-x-1 hover:bg-gray-100 flex-grow justify-center p-2 cursor-pointer rounded-lg'>
+                <div className='flex items-center space-x-1 hover:bg-gray-100 dark:hover:bg-bdark-50 flex-grow justify-center p-2 cursor-pointer rounded-lg'>
                     <CalendarIcon className='text-green-500 h-6'/>
                     <p className='text-xs text-gray-500 dark:text-gray-400'>Event</p>
                 </div>
