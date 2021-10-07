@@ -26,12 +26,12 @@ function Story({name, src, blurData}) {
             <div className='relative h-15 w-15'> 
             <img className='object-cover rounded-full h-14 w-14'
                 src={session.user.image}/>
-            <div className='absolute right-0 top-0 rounded-full p-0.5 bg-pink-500 border-2 border-blue-grey-50'>
+            <div className='absolute right-0 top-0 rounded-full p-0.5 bg-pink-500 border-2 border-blue-grey-50 dark:border-bdark-200'>
                 <PlusIcon className='text-blue-grey-50 w-3 h-3'/>
             </div>
             </div>
             }
-            <p className='text-gray-500 font-light text-xs text-center'>{name}</p>
+            <p className='text-gray-500 dark:text-gray-400 font-light text-xs text-center'>{name}</p>
         </div>
     )
 }

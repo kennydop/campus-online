@@ -1,12 +1,15 @@
 module.exports = {
   mode: 'jit',
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'media',
   theme: {
     extend: {
       colors: {
         'blue-grey': '#f6f9fb',
         'blue-grey-50': '#e9f0f4',
+        'bdark-50': '#181818',
+        'bdark-100': '#1f1f1f',
+        'bdark-200': '#111111',
       },
       fontFamily: {
         default: ['Montserrat']

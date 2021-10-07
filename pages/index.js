@@ -5,7 +5,7 @@ import Login from './Login';
 
 export default function Home({session}) {
   return (
-    <div className='h-screen bg-blue-grey-50 overflow-hidden'>
+    <div className='h-screen bg-blue-grey-50 dark:bg-bdark-200 overflow-hidden'>
       <Head>
         <title>Campus Online</title>
       </Head>

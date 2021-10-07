@@ -7,3 +7,4 @@ nextauth.js
 react hooks
 firebase
 react firebase hooks
+next themes

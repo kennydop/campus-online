@@ -39,6 +39,9 @@ function Login() {
           case 'auth/wrong-password':
             setError('Invalid password')
             break;
+          case 'auth/network-request-failed':
+            setError('Please check your internet connection')
+            break;
         
           default:
             setError(error.message)

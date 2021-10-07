@@ -48,7 +48,7 @@ function AddCollege({colleges}) {
                 </label>
             </div>
             <div className = "mt-6">
-             <button type = "button" className = "infobutton" onClick={confirmCollege}>Confirm</button>
+                <button type = "button" className = "infobutton" onClick={confirmCollege}>Confirm</button>
             </div>
         </div>
         )}
@@ -60,19 +60,19 @@ function AddCollege({colleges}) {
     )
 }
 
-  export async function getStaticProps() {
-    var colleges = new Array();
-    await db.collection("universities").get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            colleges.push(doc.id);
-        });
+export async function getStaticProps() {
+var colleges = new Array();
+await db.collection("universities").get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+        colleges.push(doc.id);
     });
-    
-    return {
-        props: {
-        colleges,
-      },
-    }
-  }
+});
+
+return {
+    props: {
+    colleges,
+    },
+}
+}
 
 export default AddCollege
