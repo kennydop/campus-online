@@ -16,7 +16,7 @@ function NotificationPane() {
 
     return (
         <div className={`top-0 fixed z-50 bg-white dark:bg-bdark-100 md:w-96 h-screen w-full shadow-md ${tabActive === 'notification'?'right-0 duration-300':'duration-700 -right-full'}`}>
-            <div className='border-b border-gray-400 py-3 flex'>
+            <div className='border-b border-gray-400 dark:border-bdark-50 py-3 flex'>
                 <ArrowLeftIcon onClick={()=>setTabActive(prevTab)} className='cursor-pointer h-6 mx-4 hover:-translate-x-1 transform transition-all duration-200 text-gray-500 dark:text-gray-400'/>
                 <div className='self-center text-gray-500 dark:text-gray-400 items-center'>Notifications</div>
             </div>

@@ -9,10 +9,10 @@ function Sidebar() {
         </div>
         <div>
             <Trend trend='#FixTheCountry' />
-            <Trend trend='UTAG' />
             <Trend trend='Kwesi Arthur' />
+            <Trend trend='UTAG' />
+            <Trend trend='Coro Dash' />
             <Trend trend='#CITSA' />
-            <Trend trend='FPL' />
             <div className='p-2 text-center text-pink-500  cursor-pointer hover:font-bold'>
                 <p>More</p>
             </div>
