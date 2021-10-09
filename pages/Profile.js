@@ -6,6 +6,7 @@ import { useContext, useState } from "react";
 import NotAuthorized from '../components/NotAuthorized';
 import {useSession} from 'next-auth/client';
 import ProfilePostsAndAbout from '../components/ProfilePostsAndAbout';
+import Layout from '../components/Layout';
 
 function Profile() {
     const {tabActive, setTabActive} = useContext(ActiveTab)
@@ -16,8 +17,6 @@ function Profile() {
         <>
         {session &&(
             <div className='bg-blue-grey-50 dark:bg-bdark-200'>
-                <Header/>
-                <ButtomNavbar />
                 <div className='md:flex w-screen'>
                     <ProfileCard />
                     <ProfilePostsAndAbout/>
@@ -31,5 +30,11 @@ function Profile() {
         </>
     )
 }
-
+Profile.getLayout = function getLayout(page) {
+    return (
+        <Layout>
+            {page}
+        </Layout>
+    )
+}
 export default Profile

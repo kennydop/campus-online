@@ -36,7 +36,7 @@ function ProfileCard() {
                     <div className='items-center justify-center px-16 mt-4'>
                         <p className='text-center text-gray-500 dark:text-gray-400 text-sm font-light'>I'm GOD 😈👽😌</p>
                     </div>
-                    <div className='absolute bottom-2 right-2 p-2 bg-gray-500 dark:bg-bdark-200 items-center justify-center text-white text-sm flex rounded-lg cursor-pointer'><PencilIcon className='h-5 text-white dark:text-gray-400 text-center'/></div>
+                    <div className='absolute bottom-2 right-2 p-2 bg-gray-500 dark:bg-bdark-200 items-center justify-center text-white text-sm flex rounded-lg cursor-pointer shadow-md'><PencilIcon className='h-5 text-white dark:text-gray-400 text-center'/></div>
                 </div>
             </div>
     )

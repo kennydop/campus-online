@@ -1,20 +1,11 @@
-import ButtomNavbar from "../components/ButtomNavbar";
-import Header from "../components/Header";
 import Feed from "../components/Feed";
 import Sidebar from "../components/Sidebar";
-import {signOut, useSession} from "next-auth/client";
 import Stories from "../components/Stories";
-import Settings from "../components/Settings"
-
+import Layout from "../components/Layout";
 
 function campusonline() {
 
     return (
-        <div>
-            <div>
-                <Header />
-                <ButtomNavbar />
-            </div>
             <div className='flex flex-grow w-screen justify-center lg:justify-start overflow-y-scroll'>
                 <Sidebar />
                 <div>
@@ -22,8 +13,14 @@ function campusonline() {
                 <Feed />
                 </div>
             </div>
-        </div>
     )
 }
 
+campusonline.getLayout = function getLayout(page) {
+    return (
+        <Layout>
+            {page}
+        </Layout>
+    )
+}
 export default campusonline

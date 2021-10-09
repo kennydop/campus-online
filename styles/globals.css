@@ -51,3 +51,7 @@ input:checked ~ .dot {
     --tw-scale-y: 1.02;
     transform: var(--tw-transform);
 }
+
+html, body {
+    overflow: hidden;
+}

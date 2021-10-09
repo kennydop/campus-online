@@ -20,10 +20,10 @@ function Header() {
         <PrevTab.Provider value ={{prevTab, setPrevTab}}>
             <div className = "md:flex sticky top-0 z-50 bg-white dark:bg-bdark-100 justify-center items-center p-2 md:p-2.5 md:px-15 px-2 shadow-md">
                     {/*left*/}
-                    <div className = "flex items-center pb-2 md:pb-0 px-2 md:px-0 mx-auto justify-between">
+                    <div className = "flex items-center md:pb-0 px-2 md:px-0 mx-auto justify-between">
                         <div className="md:hidden flex text-center">
                             <img onClick={()=>{setPrevTab(tabActive); router.push('/Profile'); setTabActive('profile');}}
-                                className = {`h-8 w-8 avatar object-cover rounded-full cursor-pointer text-center ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
+                                className = 'h-8 w-8 avatar object-cover rounded-full cursor-pointer text-center'
                                 src = {session.user.image}/>
                         </div>
                         <div onClick={()=>{router.push('/')}} className="flex items-center cursor-pointer px-4" href = "/">
