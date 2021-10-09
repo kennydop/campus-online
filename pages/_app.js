@@ -10,9 +10,9 @@ export default function MyApp({ Component, pageProps }) {
 
   return(
     <Provider session = {pageProps.session}>
-      {/* <ThemeProvider attribute="class"> */}
-        {getLayout(<Component {...pageProps} />)}
-      {/* </ThemeProvider> */}
+      <ThemeProvider attribute="class">
+        <Layout><Component {...pageProps} /></Layout>
+      </ThemeProvider>
     </Provider>
   )
 }
