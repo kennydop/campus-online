@@ -1,9 +1,19 @@
 import Head from 'next/head';
-import {getSession} from "next-auth/client";
+import {getSession, session} from "next-auth/client";
 import Campusonline from './campusonline';
 import Login from './Login';
+import {useRouter} from 'next/router';
+import { useEffect } from 'react';
+import SiteLayout from '../components/SiteLayout';
 
 export default function Home({session}) {
+  const router = useRouter()
+  
+  useEffect(()=>{
+    if(!session){
+      router.replace('/Login')
+    }
+  },[])
   return (
     <div className='h-screen bg-blue-grey-50 dark:bg-bdark-200 overflow-hidden'>
       <Head>
@@ -11,10 +21,11 @@ export default function Home({session}) {
       </Head>
 
       <main>
-        {!session && (
-          <Login />
-        )}        {
-          session && (
+        {/* {!session && (
+          // <Login />
+          router.replace('/Login')
+        )}         */}
+        {session && (
             <Campusonline />
           )
         }
@@ -22,7 +33,13 @@ export default function Home({session}) {
     </div>
   )
 }
-
+Home.getLayout = function getLayout(page) {
+  return (
+      <SiteLayout>
+          {page}
+      </SiteLayout>
+  )
+}
 export async function getServerSideProps(context){
   //Get user
   const session = await getSession(context)

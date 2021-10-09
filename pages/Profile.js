@@ -1,15 +1,10 @@
-import ButtomNavbar from '../components/ButtomNavbar';
 import ProfileCard from '../components/ProfileCard';
-import Header from '../components/Header';
-import { ActiveTab } from '../components/ActiveTab';
-import { useContext, useState } from "react";
 import NotAuthorized from '../components/NotAuthorized';
 import {useSession} from 'next-auth/client';
 import ProfilePostsAndAbout from '../components/ProfilePostsAndAbout';
-import Layout from '../components/Layout';
+import SiteLayout from '../components/SiteLayout';
 
 function Profile() {
-    const {tabActive, setTabActive} = useContext(ActiveTab)
     const [session, loading] = useSession();
 
 
@@ -32,9 +27,9 @@ function Profile() {
 }
 Profile.getLayout = function getLayout(page) {
     return (
-        <Layout>
+        <SiteLayout>
             {page}
-        </Layout>
+        </SiteLayout>
     )
 }
 export default Profile

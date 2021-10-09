@@ -8,6 +8,7 @@ import { auth } from "../firebase/firebase";
 import { useState } from "react";
 import { setUserCookie } from '../firebase/userCookies';
 import { mapUserData } from '../firebase/mapUserData';
+import { useRouter } from "next/router";
 
 function Login() {
   const [session, loading] = useSession();
@@ -16,6 +17,7 @@ function Login() {
   // const [photoUrl, setPhotoUrl] = useState("");
   const [password, setpassword] = useState("");
   const [error, setError] = useState(false);
+  const router = useRouter();
 
   async function loginToApp(){
     setError('')
@@ -94,7 +96,7 @@ function Login() {
                   />
                 </div>
                 <a href="#" className="self-center mb-1 text-sm text-gray-500 hover:font-bold">Forgot password?</a>
-                <p className="self-center mb-6 text-sm text-gray-500">Don't have an account? <a className = "text-pink-500 hover:font-bold"> <Link href = "/Signup">Create one</Link></a></p>
+                <p className="self-center mb-6 text-sm text-gray-500">Don't have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=> router.push("/Signup")}>Create one</a></p>
                 <button className="infobutton" type = "button" onClick = {loginToApp}>Login</button>
                 <div className = "flex flex-col mt-5 items-center justify center">
                   <p className = "self-center text-gray-500"> Or Login with</p>
@@ -128,7 +130,7 @@ function Login() {
           )}
           {
             session && (
-              <Campusonline />
+              router.replace('/')
             )
           }
         

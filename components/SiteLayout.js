@@ -1,7 +1,7 @@
 import ButtomNavbar from "./ButtomNavbar";
 import Header from "./Header";
 
-export default function Layout({children}) {
+export default function SiteLayout({children}) {
     return (
         <>
             <Header/>

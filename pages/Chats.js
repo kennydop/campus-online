@@ -1,7 +1,7 @@
 import Chat from '../components/Chat'
 import {useSession} from 'next-auth/client';
 import NotAuthorized from '../components/NotAuthorized';
-import Layout from '../components/Layout';
+import SiteLayout from '../components/SiteLayout';
 
 function Chats(){
 	const [session, loading] = useSession();
@@ -29,9 +29,9 @@ function Chats(){
 }
 Chats.getLayout = function getLayout(page) {
     return (
-        <Layout>
+        <SiteLayout>
             {page}
-        </Layout>
+        </SiteLayout>
     )
 }
 export default Chats

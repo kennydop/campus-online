@@ -1,7 +1,7 @@
 import Feed from "../components/Feed";
 import Sidebar from "../components/Sidebar";
 import Stories from "../components/Stories";
-import Layout from "../components/Layout";
+import SiteLayout from "../components/SiteLayout";
 
 function campusonline() {
 
@@ -15,12 +15,11 @@ function campusonline() {
             </div>
     )
 }
-
 campusonline.getLayout = function getLayout(page) {
     return (
-        <Layout>
+        <SiteLayout>
             {page}
-        </Layout>
+        </SiteLayout>
     )
 }
 export default campusonline
