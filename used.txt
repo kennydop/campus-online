@@ -4,7 +4,9 @@ tailwind css
 flexbox
 hero icons
 nextauth.js
+js cookies
 react hooks
 firebase
 react firebase hooks
 next themes
+react flip move

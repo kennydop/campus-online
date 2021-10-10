@@ -25,8 +25,6 @@ function AddPost() {
             email: session.user.email,
             image: session.user.image,
             timestamp: firebaseApp.firestore.FieldValue.serverTimestamp(),
-            likes: 0,
-            comments: 0,
         }).then((doc) => {
             if(imgToPost) {
                 const uploadTask = storage.ref(`posts/${doc.id}`).putString(imgToPost , 'data_url');

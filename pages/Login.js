@@ -13,19 +13,23 @@ import { useRouter } from "next/router";
 function Login() {
   const [session, loading] = useSession();
   const [email, setEmail] = useState("");
-  // const [name, setName] = useState("");
+  const [name, setName] = useState("");
+  const [loginLoading, setLoginLoading] = useState(false);
   // const [photoUrl, setPhotoUrl] = useState("");
   const [password, setpassword] = useState("");
   const [error, setError] = useState(false);
   const router = useRouter();
 
   async function loginToApp(){
-    setError('')
+    setError('');
+    setLoginLoading(true);
     if(!email){
       setError("Please enter your Email");
+      setLoginLoading(false);
     }
     else if(!password){
       setError("Please enter a Password");
+      setLoginLoading(false);
     }else{
       let goAhead = await auth.signInWithEmailAndPassword(email, password).then((userAuth)=>{
         // setName(userAuth.user.displayName);
@@ -61,7 +65,7 @@ function Login() {
           {!session && (
             <div className="w-screen flex justify-center items-center bg-blue-grey-50 dark:bg-bdark-200">
               <AuthLeft/>
-              <div className = "flex h-screen self-center w-screen lg:w-2/5 items-center justify-center dark:bg-bdark-100 lg:dark:bg-transparent">
+              <div className = "flex h-screen self-center w-screen lg:w-2/5 items-center justify-center bg-white dark:bg-bdark-100 lg:bg-transparent">
                   <form autoComplete='on' className="authForm">
                   <div className="mb-6" >
                   <Image 

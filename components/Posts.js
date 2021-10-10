@@ -1,11 +1,12 @@
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { db } from '../firebase/firebase';
 import Post from './Post';
+import FlipMove from 'react-flip-move';
 function Posts() {
     const [realtimePosts, loading, error] = useCollection( db.collection("posts").orderBy("timestamp", "desc"));
     
     return (
-        <div>
+        <FlipMove>
             {realtimePosts?.docs.map(post => (
             <Post
                 key={post.id}
@@ -20,7 +21,7 @@ function Posts() {
                 likes={post.data().likes}
                 comments={post.data().comments}
             />))}
-        </div>
+        </FlipMove>
     )
 }
 

@@ -2,10 +2,11 @@ import Image from 'next/image'
 import {HeartIcon, ChatAltIcon, ShareIcon} from '@heroicons/react/outline'
 import { db, firebaseApp} from '../firebase/firebase'
 import {useUser} from '../firebase/useUser'
+import { forwardRef } from 'react';
 
 // import {HeartIcon} from '@heroicons/react/solid'
 
-function Post({key, id, name, email, timestamp, image, message, likes, comments, postImage, postType }) {
+const Post = forwardRef(({key, id, name, email, timestamp, image, message, likes, comments, postImage, postType }, ref) => {
     const {user} = useUser();
     var pliked = []
     let colRef = db.collection('posts').doc(id)
@@ -32,7 +33,7 @@ function Post({key, id, name, email, timestamp, image, message, likes, comments,
     }
 
     return (
-        <div className='w-screen p-1.5 md:w-102'>
+        <div ref={ref} className='w-screen p-1.5 md:w-102'>
             <div className='p-2 rounded-lg shadow-md bg-white dark:bg-bdark-100 flex flex-grow flex-col'>
                 <div className='py-1 text-center flex space-x-4 border-b border-gray-200 dark:border-bdark-200'>
                     <img className='h-10 w-10 rounded-full' src={image}/>
@@ -79,6 +80,6 @@ function Post({key, id, name, email, timestamp, image, message, likes, comments,
             </div>
         </div>
     )
-}
+})
 
 export default Post

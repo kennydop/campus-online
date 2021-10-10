@@ -18,22 +18,29 @@ function Signup() {
     const [password, setpassword] = useState("");
     const [error, setError] = useState(false);
     const [session, loading] = useSession();
+    const [loginLoading, setLoginLoading] = useState(false);
+
     const defaultProfileImage = 'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'
     var pp = "";
 
     async function register () {
         setError('');
+        setLoginLoading(true);
         if(session){
             setError('Please log out first')
+            setLoginLoading(false)
         }
         else if(!name){
             setError("Please enter a Username");
+            setLoginLoading(false)
         }
         else if(!email){
             setError("Please enter your Email");
+            setLoginLoading(false);
         }
         else if(!password){
             setError("Please enter a Password");
+            setLoginLoading(false);
         }
         else{
             if(photoUrl === ''){
@@ -60,7 +67,7 @@ function Signup() {
     return (
     <div className="w-screen flex justify-center items-center bg-blue-grey-50 dark:bg-bdark-200">
         <AuthLeft/>
-        <div className = "flex h-screen self-center w-screen lg:w-2/5 items-center justify-center dark:bg-bdark-100 lg:dark:bg-transparent">
+        <div className = "flex h-screen self-center w-screen lg:w-2/5 items-center justify-center bg-white dark:bg-bdark-100 lg:bg-transparent">
             <form autoComplete='on' className="authForm">
                 <div className="mb-4" >
                     <Image 

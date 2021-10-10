@@ -13,6 +13,7 @@ function Header() {
     const [session] = useSession()
     const [tabActive, setTabActive] = useState('home')
     const [prevTab, setPrevTab] = useState()
+    const [searchMode, setSearchMode] = useState()
     const router = useRouter();
 
     return (
@@ -34,14 +35,14 @@ function Header() {
                             alt = "campus online logo"/>
                         </div>
                         <div className="flex md:hidden items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 p-2">
-                        <SearchIcon className = "h-5 cursor-pointer text-gray-500 dark:text-gray-400"/>
+                        <SearchIcon className = "h-5 cursor-pointer text-gray-500 dark:text-gray-400 placeholder-gray-500 dark:placeholder-gray-400"/>
                         </div>
                     </div>
                     {/*centre*/}
                     <div className = "hidden md:flex md:justify-center flex-grow">
                         <div className = "flex items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 p-1.5">
                                 <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
-                                <input className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-500 dark:placeholder-gray-400" type = "text" placeholder="Search"/>
+                                <input className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-500 dark:placeholder-gray-400 text-gray-500 dark:text-gray-400" type = "text" placeholder="Search"/>
                         </div>
                     </div>
                 {/*right*/}
