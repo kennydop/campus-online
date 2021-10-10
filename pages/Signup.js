@@ -7,6 +7,7 @@ import { auth } from "../firebase/firebase";
 import {session, signIn, signOut, useSession} from "next-auth/client";
 import { setUserCookie } from '../firebase/userCookies';
 import { mapUserData } from '../firebase/mapUserData';
+import AuthLeft from "../components/AuthLeft";
 
 
 function Signup() {
@@ -57,9 +58,9 @@ function Signup() {
 
     }
     return (
-    <div className="w-screen flex flex-col justify-center items-center bg-blue-grey-50">
-        <div className = "flex self-center h-screen mt-4 mb-6">
-            <div className = 'self-center'>
+    <div className="w-screen flex justify-center items-center bg-blue-grey-50 dark:bg-bdark-200">
+        <AuthLeft/>
+        <div className = "flex h-screen self-center w-screen lg:w-2/5 items-center justify-center dark:bg-bdark-100 lg:dark:bg-transparent">
             <form autoComplete='on' className="authForm">
                 <div className="mb-4" >
                     <Image 
@@ -112,12 +113,12 @@ function Signup() {
                     placeholder="Profile Photo URL"
                     className="infofield"/>
                 </div>
-                <p className="self-center mb-6 text-sm text-gray-500">Already have an account? <a className = "text-pink-500 hover:font-bold"> <Link href="/Login">Login</Link></a></p>
+                <p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Already have an account? <a className = "text-pink-500 hover:font-bold"> <Link href="/Login">Login</Link></a></p>
                 <button className="infobutton prevent-default" type = "button" onClick={register}>Sign Up</button>
                 <div className = "flex flex-col mt-5 items-center justify center">
-                    <p className = "self-center text-gray-500"> Or Signup with</p>
+                    <p className = "self-center text-gray-500 dark:text-gray-400"> Or Signup with</p>
                     <div className = "flex items-center justify center">
-                        <div className="mx-4 cursor-pointer hover:translate-y-1 transform transition-all duration-500;" onClick={() => signIn("facebook")}>
+                        <div className="mx-4 cursor-pointer hover:translate-y-0.5 transform transition-all duration-500;" onClick={() => signIn("facebook")}>
                             <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 48 48" width="48px" height="48px"><path fill="#039be5" d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"/><path fill="#fff" d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z"/></svg>
                         </div>
                         <div className="mx-4 cursor-pointer hover:translate-y-1 transform transition-all duration-500;" onClick={() => signIn("twitter")}>
@@ -129,18 +130,6 @@ function Signup() {
                     </div>
                 </div>
             </form>
-            </div>
-        </div>
-        <div>
-            <nav className="flex flex-row flex-wrap justify-center items-center ">
-                <a className = "text-gray-500 mx-3 my-1 text-sm" href="#">About</a>
-                <a className = "text-gray-500 mx-3 my-1 text-sm" href="#">Help</a>
-                <a className = "text-gray-500 mx-3 my-1 text-sm" href="#">Terms Of Service</a>
-                <a className = "text-gray-500 mx-3 my-1 text-sm" href="#">Privacy Policy</a>
-                <a className = "text-gray-500 mx-3 my-1 text-sm" href="#">Cookie Policy</a>
-                <a className = "text-gray-500 mx-3 my-1 text-sm" href="#">Settings</a>
-            </nav>
-            <div className = "text-center text-gray-500 text-sm mb-2">&copy; 2021 Trayl, Inc.</div>
         </div>
     </div>
     )

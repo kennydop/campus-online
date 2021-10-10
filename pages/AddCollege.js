@@ -39,12 +39,11 @@ function AddCollege({colleges}) {
     return (
         <main>
         {session && ( 
-        <div className = "h-screen flex flex-col items-center justify-center">
-            <div className = "mb-10"><h1 className = "text-lg font-bold text-gray-500">Finish Setting up your Account</h1></div>
-            <div className = "bg-gray-100 rounded-full space-between justify-center text-center">
-                <label className = "text-gray-500 mx-4" onClick={fillColleges}> Select College:
-                    <select id = 'colleges' value={college} onChange = {e=>setCollege(e.target.value)} required = "required" className = "bg-gray-100 text-gray-500 h-12 w-40 md:w-60 outline-none pl-4">
-                    </select>
+        <div className = "h-screen flex flex-col items-center justify-center dark:bg-bdark-100">
+            <div className = "mb-10"><h1 className = "text-lg font-bold text-gray-500 dark:text-gray-400">Finish Setting up your Account</h1></div>
+            <div className = "bg-gray-100 dark:bg-bdark-200 rounded-full space-between justify-center text-center">
+                <label className = "text-gray-500 dark:text-gray-400 mx-4" onClick={fillColleges}> Select College:
+                    <select id = 'colleges' value={college} onChange = {e=>setCollege(e.target.value)} required = "required" className = "bg-gray-100 dark:bg-bdark-200 text-gray-500 dark:text-gray-400 h-11 w-40 md:w-60 outline-none pl-4"/>
                 </label>
             </div>
             <div className = "mt-6">

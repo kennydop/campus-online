@@ -15,45 +15,45 @@ const stories = [
     },
     {
         key: '2',
+        name: 'Eustace',
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Flicensed-image.jfif?alt=media&token=2de6c6bb-9b09-416e-9473-744fb24b6dae',
+        blurData: 'LkKuA=WZ}ssS}ZR+-Ao0EfjYNZoL'
+    },
+    {
+        key: '3',
         name: 'sethaddo',
         src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2FIMG-20210713-WA0001.jpg?alt=media&token=9353267c-73fe-4ff9-9f38-960432b9c509',
         blurData: 'LsHo^0w?bEkCGKoLn%jZbHS%j=js'
     },
     {
-        key: '3',
+        key: '4',
         name: 'trayl',
         src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fcd.png?alt=media&token=1e9fb961-e29f-4d1a-be38-8afb63a75f9a',
         blurData: 'L6S~hmtR%1%g~qQSD%Qmu4oy*yMx'
     },
     {
-        key: '4',
-        name: 'eustace',
-        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Flicensed-image.jfif?alt=media&token=2de6c6bb-9b09-416e-9473-744fb24b6dae',
-        blurData: 'LkKuA=WZ}ssS}ZR+-Ao0EfjYNZoL'
-    },
-    {
         key: '5',
-        name: 'ian wright',
-        src: 'https://scontent.facc5-1.fna.fbcdn.net/v/t1.6435-9/54354250_430498804365015_238293912387584000_n.jpg?_nc_cat=103&ccb=1-5&_nc_sid=09cbfe&_nc_eui2=AeH9g8SZJueMPWsU9f_OCrjLwfS_AneM3KPB9L8Cd4zco7CpcH15y618-8HkvoluXvrc0QfeeAP9hdJQVw2qXi77&_nc_ohc=gugywDVe5RAAX-8avQO&_nc_ht=scontent.facc5-1.fna&oh=77ba445c37c61f2446d1f1a3dd236d4d&oe=61445AFE',
-        blurData: 'L76uL*jZ00kD%$ayH=kC4TbH.Tae'
+        name: 'Dannings',
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fwe_small.png?alt=media&token=fed9e01a-1daf-4da8-a34f-840884368e99',
+        blurData: 'LHSijaof^*t7WEoeofWB~Vt64:Rj'
     },
     {
         key: '6',
-        name: 'kennydop',
-        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2FIMG-20210626-WA0007.jpg?alt=media&token=a270efe0-c5d1-4ece-bdd8-b5d465ef3d75',
-        blurData: 'LDFO=so:4,x|53%i%jISo=%N%Ne+'
+        name: 'Aberama',
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fab6761610000e5ebe8637c96a7aa2917eae3c54d.jfif?alt=media&token=78c9df84-97bc-43ab-a2d0-65ad268d1f86',
+        blurData: 'LTPp_wIn_7-D%CtLM-RW=Kt6EfIp'
     },
     {
         key: '7',
-        name: 'kennydop',
-        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2FIMG-20210626-WA0007.jpg?alt=media&token=a270efe0-c5d1-4ece-bdd8-b5d465ef3d75',
-        blurData: 'LDFO=so:4,x|53%i%jISo=%N%Ne+'
+        name: 'vc',
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fcompany.png?alt=media&token=9153d362-56c0-45a3-bff5-8f1cb4dc6492',
+        blurData: 'L1Ra36,[L#,t}GfQf6j[L#f6y?kC'
     },
     {
         key: '8',
-        name: 'kennydop',
-        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2FIMG-20210626-WA0007.jpg?alt=media&token=a270efe0-c5d1-4ece-bdd8-b5d465ef3d75',
-        blurData: 'LDFO=so:4,x|53%i%jISo=%N%Ne+'
+        name: 'KAMI',
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Farthur.jpg?alt=media&token=4ac5d55f-8f01-4224-93c0-9cb1da2e9556',
+        blurData: 'L7GHVV:%0g~U010hEN?F00?GQ.9c'
     },
 ]
 

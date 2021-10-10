@@ -9,17 +9,17 @@
         @apply font-default;
     }
     .infofield{
-        @apply outline-none bg-blue-grey-50 placeholder-gray-500 rounded-full focus:ring-2 focus:ring-pink-500 w-80 h-11 mb-5 pr-5 pl-11;
+        @apply outline-none bg-blue-grey-50 dark:bg-bdark-200 placeholder-gray-500 dark:placeholder-gray-400 rounded-full focus:ring-2 focus:ring-pink-500 w-80 h-11 mb-5 pr-5 pl-11;
     }
 
     .infobutton{
-        @apply h-12 w-40 bg-pink-500 rounded-full text-white  hover:translate-y-1 transform transition-all duration-300;
+        @apply h-12 w-40 bg-pink-500 rounded-full text-white hover:translate-y-1 transform transition-all duration-300;
     }
     .infobutton-white{
         @apply h-12 w-40 border border-pink-500 bg-white rounded-full text-pink-500  hover:translate-y-1 transform transition-all duration-500;
     }
     .infoicons{
-        @apply absolute text-gray-500 w-6 text-center mt-3 ml-3;
+        @apply absolute text-gray-500 dark:text-gray-400 w-6 text-center mt-3 ml-3;
     }
     .footerlinks{
         @apply mx-5 my-8 text-gray-500;
@@ -29,7 +29,7 @@
         @apply text-red-500 text-sm text-center mb-2;
     }
     .authForm{
-        @apply flex flex-col justify-center items-center p-5 md:p-8 bg-white rounded-lg shadow-md;
+        @apply flex flex-col justify-center items-center lg:p-4 lg:bg-bdark-100 lg:shadow-md lg:dark:shadow-xl lg:rounded-lg;
     }
 
 }

@@ -33,13 +33,13 @@ export default function Home({session}) {
     </div>
   )
 }
-Home.getLayout = function getLayout(page) {
-  return (
-      <SiteLayout>
-          {page}
-      </SiteLayout>
-  )
-}
+// Home.getLayout = function getLayout(page) {
+//   return (
+//       <SiteLayout>
+//           {page}
+//       </SiteLayout>
+//   )
+// }
 export async function getServerSideProps(context){
   //Get user
   const session = await getSession(context)
