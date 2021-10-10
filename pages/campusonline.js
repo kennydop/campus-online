@@ -1,17 +1,19 @@
 import Feed from "../components/Feed";
-import Sidebar from "../components/Sidebar";
+import Trending from "../components/Trending";
 import Stories from "../components/Stories";
 import SiteLayout from "../components/SiteLayout";
+import PeopleYouMightKnow from "../components/PeopleYouMightKnow";
 
 function campusonline() {
 
     return (
-            <div className='flex flex-grow w-screen justify-center lg:justify-start overflow-y-scroll'>
-                <Sidebar />
+            <div className='flex flex-grow w-screen justify-center overflow-y-scroll'>
+                <Trending />
                 <div>
                 <Stories />
                 <Feed />
                 </div>
+                <PeopleYouMightKnow/>
             </div>
     )
 }

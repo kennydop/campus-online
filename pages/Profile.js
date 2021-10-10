@@ -11,7 +11,7 @@ function Profile() {
     return (
         <>
         {session &&(
-            <div className='bg-blue-grey-50 dark:bg-bdark-200'>
+            <div className='bg-blue-grey-50 dark:bg-bdark-200 h-screen'>
                 <div className='md:flex w-screen'>
                     <ProfileCard />
                     <ProfilePostsAndAbout/>
