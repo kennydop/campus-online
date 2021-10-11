@@ -5,15 +5,17 @@ import {signOut} from "next-auth/client";
 import { auth } from '../firebase/firebase'
 import { ActiveTab, PrevTab } from './ActiveTab';
 import {useTheme} from 'next-themes'
-
+import { useRouter } from "next/router";
 function Settigs() {
-    function logOut(){
-        auth.signOut();
-        signOut();
-    }
     const {tabActive, setTabActive} = useContext(ActiveTab)
     const {prevTab, setPrevTab} = useContext(PrevTab)
     const {theme, setTheme} = useTheme()
+    const router = useRouter()
+
+    async function logOut(){
+        auth.signOut();
+        signOut({callbackUrl:'http://localhost:3000/'});
+    }
 
     return (
         <div className={`top-0 fixed z-50 bg-white dark:bg-bdark-100 md:w-96 h-screen w-full shadow-md transition-all duration-700 ease-linear ${tabActive === 'settings'?'right-0':'-right-full'}`}>

@@ -1,7 +1,6 @@
 import AddPost from "./AddPost"
-import Stories from "./Stories"
 import Posts from "./Posts"
-function Feed() {
+function FeedLayout() {
     return (
         <div className='flex flex-col h-screen lg:ml-8'>
             <div className='mx-auto'>
@@ -13,4 +12,4 @@ function Feed() {
     )
 }
 
-export default Feed
+export default FeedLayout

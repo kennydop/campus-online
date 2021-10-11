@@ -2,7 +2,7 @@ import Image from "next/image";
 import campus_online_logo from "../images/campus-online-logo.png";
 import { MailIcon, LockClosedIcon} from "@heroicons/react/outline";
 import {signIn, signOut, useSession} from "next-auth/client";
-import Campusonline from './campusonline';
+import Feed from './feed';
 import AuthLeft from '../components/AuthLeft'
 import { auth } from "../firebase/firebase";
 import { useState } from "react";
@@ -122,7 +122,7 @@ function Login() {
           )}
           {
             session && (
-              router.replace('/')
+              router.replace('/feed')
             )
           }
         

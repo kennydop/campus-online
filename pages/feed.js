@@ -1,27 +1,27 @@
-import Feed from "../components/Feed";
+import FeedLayout from "../components/FeedLayout";
 import Trending from "../components/Trending";
 import Stories from "../components/Stories";
 import SiteLayout from "../components/SiteLayout";
 import PeopleYouMightKnow from "../components/PeopleYouMightKnow";
 
-function campusonline() {
+function feed() {
 
     return (
-            <div className='flex flex-grow w-screen justify-center overflow-y-scroll'>
+            <div className='flex flex-grow bg-blue-grey-50 dark:bg-bdark-200 w-screen justify-center overflow-y-scroll'>
                 <Trending />
                 <div>
                 <Stories />
-                <Feed />
+                <FeedLayout />
                 </div>
                 <PeopleYouMightKnow/>
             </div>
     )
 }
-campusonline.getLayout = function getLayout(page) {
+feed.getLayout = function getLayout(page) {
     return (
         <SiteLayout>
             {page}
         </SiteLayout>
     )
 }
-export default campusonline
+export default feed
