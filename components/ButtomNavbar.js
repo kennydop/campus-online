@@ -5,13 +5,17 @@ import { useState } from "react";
 import { ActiveTab, PrevTab } from './ActiveTab'
 import NotificationPane from "./NotificationPane";
 import { useRouter } from 'next/router';
+import { useSession } from "next-auth/client";
 
 function ButtomNavbar() {
     const [tabActive, setTabActive] = useState('home')
     const [prevTab, setPrevTab] = useState()
     const router = useRouter();
+    const [session] = useSession()
 
     return (
+        <>
+        {session ?
         <ActiveTab.Provider value = {{tabActive, setTabActive}}>
         <PrevTab.Provider value = {{prevTab, setPrevTab}}>
         {tabActive === 'notification' &&
@@ -34,6 +38,10 @@ function ButtomNavbar() {
             </div>
         </PrevTab.Provider>
         </ActiveTab.Provider>
+        :
+        <div></div>
+    }
+    </>
     )
 }
 

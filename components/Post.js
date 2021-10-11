@@ -1,18 +1,35 @@
+/* eslint-disable react/display-name */
 import Image from 'next/image'
 import {HeartIcon, ChatAltIcon, ShareIcon} from '@heroicons/react/outline'
 import { db, firebaseApp} from '../firebase/firebase'
 import {useUser} from '../firebase/useUser'
 import { forwardRef } from 'react';
-
-// import {HeartIcon} from '@heroicons/react/solid'
+import {HeartIcon as Filled} from '@heroicons/react/solid'
+import { useState } from 'react';
 
 const Post = forwardRef(({key, id, name, email, timestamp, image, message, likes, comments, postImage, postType }, ref) => {
     const {user} = useUser();
+    const [liked, setLiked] = useState(false)
     var pliked = []
     let colRef = db.collection('posts').doc(id)
-    colRef.get().then((doc)=> {
+    db.collection('posts').doc(id).get().then((doc)=> {
         pliked = doc.data().liked;
+    }).then((pliked)=>{
+        if(pliked !== undefined){
+            for (let i = 0; i < pliked.length; i++) {
+                const element = pliked[i];
+                if(element === user.id){
+                    setLiked(true)
+                    console.log(message, 'liked')
+                }
+                else{
+                    console.log('nothing')
+                }
+            }
+        }
     })
+
+    
     const likePicture = () => {
         if(pliked !== undefined){  
             for (let i = 0; i < pliked.length; i++) {
@@ -20,15 +37,18 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, likes
                 if(element === user.id){
                     colRef.set({likes: firebaseApp.firestore.FieldValue.increment(-1)}, {merge: true})
                     colRef.update({liked: firebaseApp.firestore.FieldValue.arrayRemove(user.id)}) 
+                    setLiked(false);
                     return;
                 }
             }
             colRef.set({likes: firebaseApp.firestore.FieldValue.increment(1)}, {merge: true})
-            colRef.update({liked: firebaseApp.firestore.FieldValue.arrayUnion(user.id)}) 
+            colRef.update({liked: firebaseApp.firestore.FieldValue.arrayUnion(user.id)})
+            setLiked(true)
         }
         else{
             colRef.set({likes: firebaseApp.firestore.FieldValue.increment(1)}, {merge: true})
             colRef.update({liked: firebaseApp.firestore.FieldValue.arrayUnion(user.id)}) 
+            setLiked(true)
         }
     }
 
@@ -63,7 +83,7 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, likes
                 </div>
                 <div className='flex justify-around border-t border-gray-200 dark:border-bdark-200 pt-2'>
                     <div onClick={likePicture} className='flex flex-grow justify-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
-                        <HeartIcon className='text-gray-500 dark:text-gray-400 h-6 w-6 mr-2' />
+                        {liked?<Filled className='text-pink-500 h-6 w-6 mr-2' /> : <HeartIcon className='text-gray-500 dark:text-gray-400 h-6 w-6 mr-2' />}
                         <p className='text-gray-500 dark:text-gray-400'>{likes}</p>
                     </div>
                     <div className='h-12 border-r border-gray-200 dark:border-bdark-200'></div>

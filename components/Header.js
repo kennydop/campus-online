@@ -17,6 +17,8 @@ function Header() {
     const router = useRouter();
 
     return (
+        <>
+        {session ?
         <ActiveTab.Provider value ={{tabActive, setTabActive}}>
         <PrevTab.Provider value ={{prevTab, setPrevTab}}>
             <div className = "md:flex sticky top-0 z-50 bg-white dark:bg-bdark-100 justify-center items-center p-2 md:p-2.5 md:px-15 px-2 shadow-md">
@@ -71,6 +73,10 @@ function Header() {
             }
         </PrevTab.Provider>
         </ActiveTab.Provider>
+        :
+        <div></div>
+    }
+    </>
     )
 }
 
