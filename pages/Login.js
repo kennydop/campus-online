@@ -29,6 +29,7 @@ function Login() {
     }else{
       try{
         await login(email, password)
+        router.replace('/')
       }
       catch(error){
         switch (error.code) {
@@ -40,6 +41,9 @@ function Login() {
             break;
           case 'auth/network-request-failed':
             setError('Please check your internet connection')
+            break;
+          case "auth/invalid-email":
+            setError('Invalid Email')
             break;
           default:
             setError('Unable to login, try again please')
@@ -53,10 +57,10 @@ function Login() {
 
     return (
         <main>
-          {/* {!currentUser && ( */}
+          {!currentUser && (
             <div className="w-screen flex justify-center items-center bg-blue-grey-50 dark:bg-bdark-200">
               <AuthLeft/>
-              <div className = "flex h-screen self-center w-screen lg:w-2/5 items-center justify-center bg-white dark:bg-bdark-100 lg:bg-transparent">
+              <div className = "flex h-screen self-center w-screen lg:w-2/5 items-center justify-center bg-white dark:bg-bdark-100 lg:bg-transparent dark:lg:bg-transparent">
                   <form autoComplete='on' className="authForm">
                   <div className="mb-6" >
                   <Image 
@@ -91,7 +95,9 @@ function Login() {
                   </div>
                   <a href="#" className="self-center mb-1 text-sm text-gray-500 dark:text-gray-400 hover:font-bold">Forgot password?</a>
                   <p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Don't have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=> router.push("/Signup")}>Create one</a></p>
-                  <button disabled = {loginLoading} className="infobutton" type = "button" onClick = {loginWithEmail}>Login</button>
+                  <button disabled = {loginLoading} className="infobutton" type = "button" onClick = {loginWithEmail}>
+                    {loginLoading ? <div className="loader mx-auto animate-spin"></div> : <>Login</>}
+                  </button>
                   <div className = "flex flex-col mt-5 items-center justify center">
                     <p className = "self-center text-gray-500 dark:text-gray-400"> Or Login with</p>
                     <div className = "flex items-center justify center">
@@ -109,13 +115,12 @@ function Login() {
                 </form>
               </div>
           </div>
-          {/* )} */}
-          {/* {
+          )}
+          {
             currentUser && (
               router.replace('/')
             )
-          } */}
-        
+          }
         </main>
     )
 }
