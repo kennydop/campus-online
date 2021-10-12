@@ -5,17 +5,16 @@ import { useState } from "react";
 import { ActiveTab, PrevTab } from './ActiveTab'
 import NotificationPane from "./NotificationPane";
 import { useRouter } from 'next/router';
-import { useSession } from "next-auth/client";
+import { useAuth } from "../firebase/AuthContext";
 
 function ButtomNavbar() {
     const [tabActive, setTabActive] = useState('home')
     const [prevTab, setPrevTab] = useState()
     const router = useRouter();
-    const [session] = useSession()
-
+    const { currentUser } = useAuth();
     return (
         <>
-        {session ?
+        {currentUser ?
         <ActiveTab.Provider value = {{tabActive, setTabActive}}>
         <PrevTab.Provider value = {{prevTab, setPrevTab}}>
         {tabActive === 'notification' &&

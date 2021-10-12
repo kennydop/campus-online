@@ -1,6 +1,7 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
 import campus_online_logo from "../images/campus-online-logo.png"
-import { useSession } from "next-auth/client";
 import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon} from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
 import Settings from "../components/Settings";
@@ -8,17 +9,18 @@ import { useState } from "react";
 import { ActiveTab, PrevTab } from "./ActiveTab";
 import NotificationPane from "./NotificationPane";
 import { useRouter } from 'next/router';
+import { useAuth } from "../firebase/AuthContext";
 
 function Header() {
-    const [session] = useSession()
     const [tabActive, setTabActive] = useState('home')
     const [prevTab, setPrevTab] = useState()
     const [settings, setSettings] = useState()
+    const { currentUser } = useAuth();
     const router = useRouter();
 
     return (
         <>
-        {session ?
+        {currentUser ?
         <ActiveTab.Provider value ={{tabActive, setTabActive}}>
         <PrevTab.Provider value ={{prevTab, setPrevTab}}>
             <div className = "md:flex sticky top-0 z-50 bg-white dark:bg-bdark-100 justify-center items-center p-2 md:p-2.5 md:px-15 px-2 shadow-md">
@@ -27,7 +29,7 @@ function Header() {
                         <div className="md:hidden flex text-center">
                             <img onClick={()=>{setPrevTab(tabActive); router.push('/Profile'); setTabActive('profile');}}
                                 className = 'h-8 w-8 avatar object-cover rounded-full cursor-pointer text-center'
-                                src = {session.user.image}/>
+                                src = {currentUser.photoURL}/>
                         </div>
                         <div onClick={()=>{router.push('/')}} className="flex items-center cursor-pointer px-4" href = "/">
                             <Image src = {campus_online_logo}
@@ -57,7 +59,7 @@ function Header() {
                     <div className = "hidden md:flex px-5 text-center">
                         <img onClick = {()=> {setPrevTab(tabActive);  router.push('/Profile'); setTabActive('profile');}}
                         className = {`h-8 w-8 avatar object-cover rounded-full cursor-pointer ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
-                        src={session.user.image}/>
+                        src={currentUser.photoURL}/>
                     </div>
             </div>
             </div>

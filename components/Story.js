@@ -1,9 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable jsx-a11y/alt-text */
 import { PlusIcon } from "@heroicons/react/outline"
-import { useSession } from "next-auth/client"
 import Image from 'next/image'
+import { useAuth } from "../firebase/AuthContext";
 
 function Story({name, src, blurData}) {
-    const [session] = useSession();
+    const {currentUser} = useAuth()
     if(name.length > 8){
         name = name.substring(0, 8) + ' ...';
     }
@@ -25,7 +27,7 @@ function Story({name, src, blurData}) {
             {!src &&
             <div className='relative h-15 w-15'> 
             <img className='object-cover rounded-full h-14 w-14'
-                src={session.user.image}/>
+                src={currentUser.photoURL}/>
             <div className='absolute right-0 top-0 rounded-full p-0.5 bg-pink-500 border-2 border-blue-grey-50 dark:border-bdark-200'>
                 <PlusIcon className='text-blue-grey-50 w-3 h-3'/>
             </div>

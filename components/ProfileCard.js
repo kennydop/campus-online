@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 import {CameraIcon, PencilIcon} from "@heroicons/react/outline"
-import { useSession } from 'next-auth/client'
+import { useAuth } from "../firebase/AuthContext"
 function ProfileCard() {
-    const [session] = useSession();
+    const {currentUser} = useAuth();
 
     return (
             <div className='w-screen md:w-96 md:sticky md:left-0 md:h-screen bg-white dark:bg-bdark-100 shadow-md'>
@@ -13,7 +15,7 @@ function ProfileCard() {
                 <div className='relative w-full bg-white dark:bg-bdark-100 rounded-b-lg flex flex-col pb-2'>
                     <div className='absolute -top-10 left-1/2 -ml-10'>
                         <div className='relative'>
-                            <img className = "h-20 w-20 object-cover rounded-full cursor-pointer" src = {session.user.image}/>
+                            <img className = "h-20 w-20 object-cover rounded-full cursor-pointer" src = {currentUser.photoURL}/>
                             <div className='absolute right-0 bottom-0 py-2 px-2 bg-gray-500 dark:bg-bdark-200 bg-opacity-90 rounded-full cursor-pointer transition hover:scale-105'><CameraIcon className='h-3 text-white dark:text-gray-400'/></div>
                         </div>
                     </div>
@@ -29,7 +31,7 @@ function ProfileCard() {
                             </div>
                         </div>
                         <div className = 'w-full h-5 mt-1 mb-8'>
-                            <div ><p className = 'text-center text-gray-500 dark:text-gray-400 text-md font-medium'>{session.user.name}</p></div>
+                            <div ><p className = 'text-center text-gray-500 dark:text-gray-400 text-md font-medium'>{currentUser.displayName}</p></div>
                             <div ><p className = 'text-center text-gray-500 dark:text-gray-400 text-sm font-light'>University of Cape Coast</p></div>
                         </div>
                     </div>

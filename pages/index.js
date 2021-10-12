@@ -1,12 +1,13 @@
-import {getSession} from "next-auth/client";
 import Feed from './feed';
 import Login from './Login';
 import SiteLayout from '../components/SiteLayout';
+import { useAuth } from '../firebase/AuthContext';
 
-export default function Home({session}) {
+export default function Home() {
+  const {currentUser} = useAuth()
   return (
     <div className='h-screen bg-blue-grey-50 dark:bg-bdark-200 overflow-hidden'>
-    {session?<Feed/>:<Login/>}
+    {currentUser?<Feed/>:<Login/>}
     </div>
   )
 }
@@ -17,12 +18,12 @@ Home.getLayout = function getLayout(page) {
       </SiteLayout>
   )
 }
-export async function getServerSideProps(context){
-  //Get user
-  const session = await getSession(context)
-  return{
-    props:{
-      session
-    }
-  }
-}
+// export async function getServerSideProps(){
+//   //Get user
+//   const {currentUser} = useAuth()
+//   return{
+//     props:{
+//       currentUser
+//     }
+//   }
+// }

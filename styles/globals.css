@@ -13,7 +13,7 @@
     }
 
     .infobutton{
-        @apply h-12 w-40 bg-pink-500 rounded-full text-white hover:translate-y-0.5 transform transition-all duration-300 shadow-md;
+        @apply h-12 w-40 bg-pink-500 rounded-full text-white hover:translate-y-0.5 transform transition-all duration-300 shadow-md disabled:bg-gray-300;
     }
     .infobutton-white{
         @apply h-12 w-40 border border-pink-500 bg-white rounded-full text-pink-500  hover:translate-y-1 transform transition-all duration-500;

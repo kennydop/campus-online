@@ -1,21 +1,16 @@
 import SettingItems from "./SettingItems";
 import {LogoutIcon, QuestionMarkCircleIcon, MoonIcon, ArrowLeftIcon, UserIcon} from '@heroicons/react/solid';
 import { useContext } from "react";
-import {signOut} from "next-auth/client";
-import { auth } from '../firebase/firebase'
+import {useAuth} from "../firebase/AuthContext";
 import { ActiveTab, PrevTab } from './ActiveTab';
-import {useTheme} from 'next-themes'
+import { useTheme } from 'next-themes'
 import { useRouter } from "next/router";
 function Settigs() {
     const {tabActive, setTabActive} = useContext(ActiveTab)
     const {prevTab, setPrevTab} = useContext(PrevTab)
     const {theme, setTheme} = useTheme()
+    const { logout } = useAuth();
     const router = useRouter()
-
-    async function logOut(){
-        auth.signOut();
-        signOut();
-    }
 
     return (
         <div className={`top-0 fixed z-50 bg-white dark:bg-bdark-100 md:w-96 h-screen w-full shadow-md transition-all duration-700 ease-linear ${tabActive === 'settings'?'right-0':'-right-full'}`}>
@@ -27,7 +22,7 @@ function Settigs() {
                 <div onClick={()=> setTabActive('home')}><SettingItems Icon={QuestionMarkCircleIcon} title ='Help and Support'/></div>
                 <div onClick={()=> setTabActive('home')}><SettingItems Icon={MoonIcon} title = 'Display Accessibilities'/></div>
                 <div onClick={()=> setTabActive('home')}><SettingItems Icon={UserIcon} title = 'Account Settings'/></div>
-                <div onClick={ logOut }><SettingItems Icon={LogoutIcon} title = 'Log Out'/></div>
+                <div onClick={()=> {logout(); setTabActive('home')}}><SettingItems Icon={LogoutIcon} title = 'Log Out'/></div>
             </div>
             <div className='bottom-12 md:bottom-0 my-2 absolute w-full border-t border-gray-400 dark:border-bdark-200'>
             <div className="flex items-center mx-4 my-2">

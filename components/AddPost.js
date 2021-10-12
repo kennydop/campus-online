@@ -1,12 +1,14 @@
-import { useSession } from "next-auth/client"
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 import {CameraIcon, VideoCameraIcon, CalendarIcon} from "@heroicons/react/outline"
 import { useRef, useState } from "react";
 import { XCircleIcon } from '@heroicons/react/solid'
 import { db, firebaseApp, storage} from '../firebase/firebase'
 import { useCollection } from 'react-firebase-hooks/firestore';
+import { useAuth } from "../firebase/AuthContext";
 
 function AddPost() {
-    const [session] = useSession();
+    const { currentUser } = useAuth();
     const postRef = useRef(null);
     const imgRef = useRef(null);
     const [imgToPost, setImgToPost] = useState()
@@ -21,9 +23,9 @@ function AddPost() {
 
         db.collection('posts').add({
             message: postRef.current.value,
-            name: session.user.name,
-            email: session.user.email,
-            image: session.user.image,
+            name: currentUser.displayName,
+            email: currentUser.email,
+            image: currentUser.photoURL,
             timestamp: firebaseApp.firestore.FieldValue.serverTimestamp(),
         }).then((doc) => {
             if(imgToPost) {
@@ -87,12 +89,12 @@ function AddPost() {
         <div className='w-screen p-1.5 md:w-102'>
         <div className='p-2 rounded-lg shadow-md text-gray-500 font-medium bg-white dark:bg-bdark-100 flex flex-grow flex-col'>
             <div className='flex space-x-4 items-center mb-3 ml-2'>
-                <img className='rounded-full object-cover h-12 w-12' src={session.user.image}/>
+                <img className='rounded-full object-cover h-12 w-12' src={currentUser.photoURL}/>
                 <form className='flex flex-1'>
                     <input className='outline-none bg-blue-grey-50 dark:bg-bdark-200 placeholder-gray-500 dark:placeholder-gray-400 rounded-full focus:ring-1 focus:ring-gray-500 h-10 p-2 overflow-hidden w-full' 
                         ref={postRef}
                         type='text'
-                        placeholder={`What's up, ${session.user.name}?`}/>
+                        placeholder={`What's up, ${currentUser.displayName}?`}/>
                     <button hidden onClick={sendPost}></button>
                 </form>
             </div>

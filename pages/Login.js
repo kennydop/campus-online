@@ -1,24 +1,20 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
 import campus_online_logo from "../images/campus-online-logo.png";
 import { MailIcon, LockClosedIcon} from "@heroicons/react/outline";
-import {signIn, signOut, useSession} from "next-auth/client";
-import Feed from './feed';
 import AuthLeft from '../components/AuthLeft'
-import { auth } from "../firebase/firebase";
 import { useState } from "react";
-import { setUserCookie } from '../firebase/userCookies';
-import { mapUserData } from '../firebase/mapUserData';
 import { useRouter } from "next/router";
+import { useAuth } from "../firebase/AuthContext";
 
 function Login() {
-  const [session, loading] = useSession();
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
-  // const [photoUrl, setPhotoUrl] = useState("");
   const [password, setpassword] = useState("");
   const [error, setError] = useState(false);
   const router = useRouter();
+  const { login, currentUser } = useAuth()
 
   async function loginWithEmail(){
     setError('');
@@ -31,13 +27,10 @@ function Login() {
       setError("Please enter a Password");
       setLoginLoading(false);
     }else{
-      let goAhead = await auth.signInWithEmailAndPassword(email, password).then((userAuth)=>{
-        // setName(userAuth.user.displayName);
-        // setPhotoUrl(userAuth.user.photoURL);
-        const userData = mapUserData(userAuth.user);
-        setUserCookie(userData);
-        return userAuth.user;
-      }).catch((error)=> {
+      try{
+        await login(email, password)
+      }
+      catch(error){
         switch (error.code) {
           case 'auth/user-not-found':
             setError('Account not found')
@@ -48,21 +41,19 @@ function Login() {
           case 'auth/network-request-failed':
             setError('Please check your internet connection')
             break;
-        
           default:
-            setError(error.message)
+            setError('Unable to login, try again please')
             console.log(error)
             break;
         }
-      })
-        
-      goAhead &&  await signIn('credentials', {username: goAhead.displayName, email: email, password: password, photoURL: goAhead.photoURL, callbackUrl: 'http://localhost:3000/'})
+      }
+      setLoginLoading(false);
     }
   }
 
     return (
         <main>
-          {!session && (
+          {/* {!currentUser && ( */}
             <div className="w-screen flex justify-center items-center bg-blue-grey-50 dark:bg-bdark-200">
               <AuthLeft/>
               <div className = "flex h-screen self-center w-screen lg:w-2/5 items-center justify-center bg-white dark:bg-bdark-100 lg:bg-transparent">
@@ -73,7 +64,6 @@ function Login() {
                     width = {192} 
                     height = {34.5} 
                     layout = "fixed"
-                    onClick = {signOut}
                     alt = "campus online logo"/>
                   </div>
                   {error && <p className = "errorMsg" id = "injectError">{error}</p>}
@@ -101,7 +91,7 @@ function Login() {
                   </div>
                   <a href="#" className="self-center mb-1 text-sm text-gray-500 dark:text-gray-400 hover:font-bold">Forgot password?</a>
                   <p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Don't have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=> router.push("/Signup")}>Create one</a></p>
-                  <button className="infobutton" type = "button" onClick = {loginWithEmail}>Login</button>
+                  <button disabled = {loginLoading} className="infobutton" type = "button" onClick = {loginWithEmail}>Login</button>
                   <div className = "flex flex-col mt-5 items-center justify center">
                     <p className = "self-center text-gray-500 dark:text-gray-400"> Or Login with</p>
                     <div className = "flex items-center justify center">
@@ -119,12 +109,12 @@ function Login() {
                 </form>
               </div>
           </div>
-          )}
-          {
-            session && (
+          {/* )} */}
+          {/* {
+            currentUser && (
               router.replace('/')
             )
-          }
+          } */}
         
         </main>
     )

@@ -3,7 +3,6 @@ next.js
 tailwind css
 flexbox
 hero icons
-nextauth.js
 js cookies
 react hooks
 firebase
