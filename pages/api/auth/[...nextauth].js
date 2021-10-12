@@ -33,7 +33,10 @@ const options = {
               return user               
             }
       })    
-    ],  
+    ],
+    pages: {
+      signIn: '/Login'
+    },
     // session: { 
     //   jwt: true,
     // },
@@ -42,7 +45,6 @@ const options = {
     //     // Defaults to NextAuth.js secret if not explicitly specified.
     //     secret: process.env.JWT_SIGNING_PRIVATE_KEY,    
     //   }  
-     
 };
 
 

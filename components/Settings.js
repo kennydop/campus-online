@@ -14,7 +14,7 @@ function Settigs() {
 
     async function logOut(){
         auth.signOut();
-        signOut({callbackUrl:'http://localhost:3000/'});
+        signOut();
     }
 
     return (

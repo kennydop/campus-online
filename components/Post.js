@@ -12,7 +12,7 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, likes
     const [liked, setLiked] = useState(false)
     var pliked = []
     let colRef = db.collection('posts').doc(id)
-    db.collection('posts').doc(id).get().then((doc)=> {
+    colRef.get().then((doc)=> {
         pliked = doc.data().liked;
     }).then((pliked)=>{
         if(pliked !== undefined){

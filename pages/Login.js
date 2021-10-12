@@ -20,7 +20,7 @@ function Login() {
   const [error, setError] = useState(false);
   const router = useRouter();
 
-  async function loginToApp(){
+  async function loginWithEmail(){
     setError('');
     setLoginLoading(true);
     if(!email){
@@ -59,7 +59,7 @@ function Login() {
       goAhead &&  await signIn('credentials', {username: goAhead.displayName, email: email, password: password, photoURL: goAhead.photoURL, callbackUrl: 'http://localhost:3000/'})
     }
   }
-  
+
     return (
         <main>
           {!session && (
@@ -101,7 +101,7 @@ function Login() {
                   </div>
                   <a href="#" className="self-center mb-1 text-sm text-gray-500 dark:text-gray-400 hover:font-bold">Forgot password?</a>
                   <p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Don't have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=> router.push("/Signup")}>Create one</a></p>
-                  <button className="infobutton" type = "button" onClick = {loginToApp}>Login</button>
+                  <button className="infobutton" type = "button" onClick = {loginWithEmail}>Login</button>
                   <div className = "flex flex-col mt-5 items-center justify center">
                     <p className = "self-center text-gray-500 dark:text-gray-400"> Or Login with</p>
                     <div className = "flex items-center justify center">
@@ -122,7 +122,7 @@ function Login() {
           )}
           {
             session && (
-              router.replace('/feed')
+              router.replace('/')
             )
           }
         

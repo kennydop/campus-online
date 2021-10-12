@@ -1,17 +1,32 @@
 import {useRouter} from 'next/router';
 import {db, firebaseApp} from '../firebase/firebase';
 import { useState, useEffect } from 'react';
-import {useSession} from 'next-auth/client';
+import { useSession, getSession } from "next-auth/client";
 import NotAuthorized from '../components/NotAuthorized';
 import {useUser} from '../firebase/useUser';
-
-function AddCollege({colleges}) {
+function AddCollege() {
     const router = useRouter();
+    const [session, loading] = useSession()
     const [college, setCollege] = useState("");
-    const [session, loading] = useSession();
     const [filledColleges, setfilledColleges] = useState(false)
     const {user} = useUser();
 
+useEffect(()=>{
+    const _name =  session?.user.name
+    db.collection("users").doc(_name).get().then((_user)=>{
+        if(_user.exists){
+            const userData = mapUserData({uid: session.user.name});
+            setUserCookie(userData);
+            console.log(userData)
+        }
+    })
+    // if(session){
+    //     fillColleges();
+    // }
+    // else{
+    //     router.replace('/')
+    // }
+},[college])
 
     function fillColleges(){
         colleges.forEach(col => {
@@ -38,40 +53,57 @@ function AddCollege({colleges}) {
     }
     return (
         <main>
-        {session && ( 
-        <div className = "h-screen flex flex-col items-center justify-center dark:bg-bdark-100">
-            <div className = "mb-10"><h1 className = "text-lg font-bold text-gray-500 dark:text-gray-400">Finish Setting up your Account</h1></div>
-            <div className = "bg-gray-100 dark:bg-bdark-200 rounded-full space-between justify-center text-center">
-                <label className = "text-gray-500 dark:text-gray-400 mx-4" onClick={fillColleges}> Select College:
-                    <select id = 'colleges' value={college} onChange = {e=>setCollege(e.target.value)} required = "required" className = "bg-gray-100 dark:bg-bdark-200 text-gray-500 dark:text-gray-400 h-11 w-40 md:w-60 outline-none pl-4"/>
-                </label>
+        {session && (
+            <div className = "h-screen flex flex-col items-center justify-center dark:bg-bdark-100">
+                <div className = "mb-10"><h1 className = "text-lg font-bold text-gray-500 dark:text-gray-400">Finish Setting up your Account</h1></div>
+                <div className = "bg-gray-100 dark:bg-bdark-200 rounded-full space-between justify-center text-center">
+                    <label className = "text-gray-500 dark:text-gray-400 mx-4" onClick={fillColleges}> Select College:
+                        <select id = 'colleges' value={college} onChange = {e=>setCollege(e.target.value)} required = "required" className = "bg-gray-100 dark:bg-bdark-200 text-gray-500 dark:text-gray-400 h-11 w-40 md:w-60 outline-none pl-4"/>
+                    </label>
+                </div>
+                <div className = "mt-6">
+                    <button type = "button" className = "infobutton" onClick={confirmCollege}>Confirm</button>
+                </div>
             </div>
-            <div className = "mt-6">
-                <button type = "button" className = "infobutton" onClick={confirmCollege}>Confirm</button>
-            </div>
-        </div>
         )}
         {!session &&(
-            !loading &&
+            !loading && (
             <NotAuthorized />
+            )
         )}
     </main>
     )
 }
+// export async function getServerSideProps(){
+//     //Get user
+//     const session = await getSession()
 
-export async function getStaticProps() {
-var colleges = new Array();
-await db.collection("universities").get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-        colleges.push(doc.id);
-    });
-});
+//     var colleges = new Array();
+//     await db.collection("universities").get().then((querySnapshot) => {
+//         querySnapshot.forEach((doc) => {
+//             colleges.push(doc.id);
+//         });
+//     });
+//     return{
+//         props:{
+//             session,
+//             colleges
+//         }
+//     }
+// }
+// export async function getStaticProps() {
+//     var colleges = new Array();
+//     await db.collection("universities").get().then((querySnapshot) => {
+//         querySnapshot.forEach((doc) => {
+//             colleges.push(doc.id);
+//         });
+//     });
 
-return {
-    props: {
-    colleges,
-    },
-}
-}
+//     return {
+//         props: {
+//             colleges,
+//         },
+//     }
+// }
 
 export default AddCollege
