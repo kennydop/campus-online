@@ -57,6 +57,7 @@ function Login() {
 
   async function loginWithSocials(pvd){
     try{
+      router.replace('/')
       await loginWithProvider(pvd)
     }catch(error){
       switch (error.code) {

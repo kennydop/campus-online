@@ -4,19 +4,19 @@ import SiteLayout from '../components/SiteLayout';
 import { useAuth } from '../firebase/AuthContext';
 import { auth } from "../firebase/firebase";
 import { useState } from 'react';
-import AddCollege from './AddCollege';
-import {useRouter} from 'next/router';
+import AddCollege from './addcollege';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const {currentUser} = useAuth()
   const [newbie, setNewbie] = useState()
-  const router = useRouter();
-
+  const router = useRouter()
   if(currentUser){
     auth.getRedirectResult().then((res)=>{
       if(res.additionalUserInfo){
         if(res.additionalUserInfo.isNewUser){
           setNewbie(true)
+          router.replace('/addcollege');
         }
         else{
           setNewbie(false)
@@ -25,10 +25,7 @@ export default function Home() {
     })
   }
   return (
-    <div className='h-screen bg-blue-grey-50 dark:bg-bdark-200 overflow-hidden'>
-    {/* {currentUser ? (newbie ? router.replace('/AddCollege') : <Feed/>) : <Login/>} */}
-    <AddCollege/>
-    </div>
+    currentUser?(newbie?<></>:<Feed/>) : <Login/>
   )
 }
 Home.getLayout = function getLayout(page) {
@@ -38,12 +35,3 @@ Home.getLayout = function getLayout(page) {
       </SiteLayout>
   )
 }
-// export async function getServerSideProps(){
-//   //Get user
-//   const {currentUser} = useAuth()
-//   return{
-//     props:{
-//       currentUser
-//     }
-//   }
-// }
