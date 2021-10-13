@@ -47,7 +47,7 @@ function Signup() {
 			}
 			try{
 				await signup(email, password, name, pp)
-				router.replace('/')
+				router.replace('/AddCollege')
 			}
 			catch(error){
 				switch (error.code) {
@@ -125,7 +125,7 @@ function Signup() {
 					</div>
 					<p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Already have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=>{router.push('/')}}>Login</a></p>
 					<button disabled={signUpLoading} className="infobutton prevent-default" type = "button" onClick={registerWithEmail}>
-						{signUpLoading ? <div className="loader mx-auto animate-spin"></div> : <>Login</>}
+						{signUpLoading ? <div className="loader mx-auto animate-spin"></div> : <>Sign Up</>}
 					</button>
 					<div className = "flex flex-col mt-5 items-center justify center">
 						<p className = "self-center text-gray-500 dark:text-gray-400"> Or Signup with</p>

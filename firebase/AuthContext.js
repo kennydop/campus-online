@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect, createContext } from "react"
-import { auth } from "./firebase"
+import { auth, firebaseApp } from "./firebase"
 
 const AuthContext = createContext()
 
@@ -24,6 +24,23 @@ export function AuthProvider({ children }) {
 		return auth.signInWithEmailAndPassword(email, password)
 	}
 	
+	function loginWithProvider(pvd){
+		var provider;
+		switch(pvd){
+			case 'facebook':
+				provider = new firebaseApp.auth.FacebookAuthProvider();
+				break;
+			case 'google':
+				provider = new firebaseApp.auth.GoogleAuthProvider();
+				break;
+			case 'twitter':
+				provider = new firebaseApp.auth.TwitterAuthProvider();
+				break;
+		}
+
+		return auth.signInWithRedirect(provider)
+	}
+
 	function logout() {
 		return auth.signOut()
 	}
@@ -40,6 +57,7 @@ export function AuthProvider({ children }) {
 	
 	const value = {
 		currentUser,
+		loginWithProvider,
 		login,
 		signup,
 		logout,
