@@ -10,8 +10,8 @@ const stories = [
     {
         key: '1',
         name: 'kennydop',
-        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2FIMG-20210626-WA0007.jpg?alt=media&token=a270efe0-c5d1-4ece-bdd8-b5d465ef3d75',
-        blurData: 'LDFO=so:4,x|53%i%jISo=%N%Ne+'
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2FIMG_5819%20(1).jpg?alt=media&token=8d9bed35-614b-4537-9823-4ff0fd41743c',
+        blurData: 'LBEyMr?Gta9F0cV[-@xI?cMyxbsW'
     },
     {
         key: '2',

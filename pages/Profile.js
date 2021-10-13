@@ -3,6 +3,7 @@ import NotAuthorized from '../components/NotAuthorized';
 import ProfilePostsAndAbout from '../components/ProfilePostsAndAbout';
 import SiteLayout from '../components/SiteLayout';
 import { useAuth } from '../firebase/AuthContext';
+import { db } from "../firebase/firebase";
 
 function Profile() {
     const {currentUser} = useAuth()

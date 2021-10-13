@@ -2,9 +2,16 @@
 /* eslint-disable @next/next/no-img-element */
 import {CameraIcon, PencilIcon} from "@heroicons/react/outline"
 import { useAuth } from "../firebase/AuthContext"
+import { db } from "../firebase/firebase";
+import { useState } from "react";
+
 function ProfileCard() {
     const {currentUser} = useAuth();
-
+    const [uni, setUni] = useState("...");
+    var ref = db.collection("users").doc(currentUser.uid)
+    ref.get().then((doc)=>{
+        setUni(doc.data().college)
+    })
     return (
             <div className='w-screen md:w-96 md:sticky md:left-0 md:h-screen bg-white dark:bg-bdark-100 shadow-md'>
                 <div className='relative w-full h-40 overflow-hidden'>
@@ -32,7 +39,7 @@ function ProfileCard() {
                         </div>
                         <div className = 'w-full h-5 mt-1 mb-8'>
                             <div ><p className = 'text-center text-gray-500 dark:text-gray-400 text-md font-medium'>{currentUser.displayName}</p></div>
-                            <div ><p className = 'text-center text-gray-500 dark:text-gray-400 text-sm font-light'>University of Cape Coast</p></div>
+                            <div ><p className = 'text-center text-gray-500 dark:text-gray-400 text-sm font-light'>{uni}</p></div>
                         </div>
                     </div>
                     <div className='items-center justify-center px-16 mt-4'>

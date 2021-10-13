@@ -4,8 +4,8 @@ const profiles = [
     {
         key: '1',
         name:'kennydop',
-        pic: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2FIMG_5819%20(1).jpg?alt=media&token=8d9bed35-614b-4537-9823-4ff0fd41743c',
-        blurData: 'LBEyMr?Gta9F0cV[-@xI?cMyxbsW'
+        pic: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2F0_OnDYE8LBtGH-sX7q.jpeg?alt=media&token=26e559ed-7778-460e-aa68-810efe0e0500',
+        blurData: 'LQHy8v9]~p?b_3H?%~.8yEXSn3W.'
     }, 
     {
         key: '2',
