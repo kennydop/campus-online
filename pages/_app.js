@@ -12,6 +12,7 @@ export default function MyApp({ Component, pageProps }) {
     <AuthProvider>
       <Head>
         <title>Campus Online</title>
+        <link rel='icon' href="/favicon.png"/>
       </Head>
       <ThemeProvider attribute="class">
         {getLayout(<Component {...pageProps} />)}

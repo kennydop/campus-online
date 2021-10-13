@@ -1,5 +1,4 @@
 import Chat from '../components/Chat'
-import {useSession} from 'next-auth/client';
 import NotAuthorized from '../components/NotAuthorized';
 import SiteLayout from '../components/SiteLayout';
 import { useAuth } from '../firebase/AuthContext';
@@ -7,7 +6,6 @@ import { useAuth } from '../firebase/AuthContext';
 function Chats(){
 	const {currentUser} = useAuth
 	return(
-		currentUser?
 		<div className='bg-blue-grey-50 dark:bg-bdark-200 h-screen overflow-hidden'>
 			<div className='flex h-full'>
 				<div className='w-full md:w-96 md:left-0 md:sticky h-full overflow-y-auto bg-white dark:bg-bdark-100 shadow-md'>
@@ -17,8 +15,7 @@ function Chats(){
 					</div>
 				</div>
 			</div>
-		</div>:
-		<NotAuthorized />
+		</div>
 	)
 }
 Chats.getLayout = function getLayout(page) {
