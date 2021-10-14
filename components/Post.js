@@ -66,23 +66,28 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, likes
                 </div>
                 <div className='py-2'><p className='text-gray-600 dark:text-gray-400'>{message}</p></div>
                 <div>
-                    {postType==='image' && 
-                    <div className='unset-img'>
-                        <Image
-                        src = {postImage}
-                        className ='custom-img'
-                        layout ='fill'
-                        placeholder = 'blur'
-                        blurDataURL = {`/_next/image?url=${postImage}&w=16&q=1`}
-                        />
-                    </div>
+                    {
+                        (postType==='image'&& postImage) &&
+                            <div className='unset-img'>
+                                <Image
+                                src = {postImage}
+                                className ='custom-img'
+                                layout ='fill'
+                                placeholder = 'blur'
+                                blurDataURL = {`/_next/image?url=${postImage}&w=16&q=1`}
+                                />
+                            </div>
                     }
-                    {postType==='video' &&
-                    <div className = 'mb-2'>
-                        <video controls>
-                            <source src={postImage}/>
-                        </video>
-                    </div> }
+                    {(postType === 'image' && !postImage) && <div className='w-full h-96 bg-gray-200 dark:bg-bdark-50 animate-pulse'></div>}
+                    {(postType==='video' && postImage) &&
+                        <div>
+                            <video controls>
+                                <source src={postImage}/>
+                            </video>
+                        </div> 
+                    }
+                    {(postType === 'video' && !postImage) && <div className='w-full h-80 bg-gray-200 dark:bg-bdark-50 animate-pulse'></div>}
+
                 </div>
                 <div className='flex justify-around border-t border-gray-200 dark:border-bdark-200 pt-2'>
                     <div onClick={likePicture} className='flex flex-grow justify-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>

@@ -4,7 +4,6 @@ import {CameraIcon, VideoCameraIcon, CalendarIcon} from "@heroicons/react/outlin
 import { useRef, useState } from "react";
 import { XCircleIcon } from '@heroicons/react/solid'
 import { db, firebaseApp, storage} from '../firebase/firebase'
-import { useCollection } from 'react-firebase-hooks/firestore';
 import { useAuth } from "../firebase/AuthContext";
 
 function AddPost() {
@@ -16,44 +15,103 @@ function AddPost() {
     const [error, setError] = useState()
     const [posting, setPosting] = useState()
 
+    // const sendPost =(e)=>{
+    //     e.preventDefault();
+    //     if(!postRef.current.value) return;
+    //     setPosting(true)
+
+    //     db.collection('posts').add({
+    //         message: postRef.current.value,
+    //         name: currentUser.displayName,
+    //         email: currentUser.email,
+    //         image: currentUser.photoURL,
+    //         timestamp: firebaseApp.firestore.FieldValue.serverTimestamp(),
+    //     }).then((doc) => {
+    //         if(imgToPost) {
+    //             const uploadTask = storage.ref(`posts/${doc.id}`).putString(imgToPost , 'data_url');
+    //             setImgToPost(null);
+    //             uploadTask.on("state_change", null, (error) => setError(error.message),
+    //             ()=> {
+    //             // when the upload completes
+    //                 storage.ref('posts').child(doc.id).getDownloadURL().then(url => {
+    //                     db.collection('posts').doc(doc.id).set({postImage: url, postType: "image"}, {merge: true })
+    //                 }).then(
+    //                 setPosting(false))
+    //             });
+    //         }else if(vidToPost){
+    //             const uploadTask = storage.ref(`posts/${doc.id}`).putString(vidToPost, 'data_url');
+    //             setVidToPost(null);
+    //             uploadTask.on("state_change", null, (error) => setError(error.message),
+    //             ()=> {
+    //             // when the upload completes
+    //                 storage.ref('posts').child(doc.id).getDownloadURL().then(url => {
+    //                     db.collection('posts').doc(doc.id).set({postImage: url, postType: "video"}, {merge: true })
+    //                 }).then(
+    //                 setPosting(false))
+    //             });
+    //         }else{
+    //             setPosting(false)
+    //         }
+    //     });
+    //     postRef.current.value='';
+    //     setError('')                    
+    // }
+
     const sendPost =(e)=>{
         e.preventDefault();
         if(!postRef.current.value) return;
         setPosting(true)
 
-        db.collection('posts').add({
-            message: postRef.current.value,
-            name: currentUser.displayName,
-            email: currentUser.email,
-            image: currentUser.photoURL,
-            timestamp: firebaseApp.firestore.FieldValue.serverTimestamp(),
-        }).then((doc) => {
-            if(imgToPost) {
+        if(imgToPost) {
+            db.collection('posts').add({
+                message: postRef.current.value,
+                name: currentUser.displayName,
+                email: currentUser.email,
+                image: currentUser.photoURL,
+                postType: "image",
+                timestamp: firebaseApp.firestore.FieldValue.serverTimestamp(),
+            }).then((doc) => {
                 const uploadTask = storage.ref(`posts/${doc.id}`).putString(imgToPost , 'data_url');
                 setImgToPost(null);
                 uploadTask.on("state_change", null, (error) => setError(error.message),
                 ()=> {
                 // when the upload completes
                     storage.ref('posts').child(doc.id).getDownloadURL().then(url => {
-                        db.collection('posts').doc(doc.id).set({postImage: url, postType: "image"}, {merge: true })
+                        db.collection('posts').doc(doc.id).set({postImage: url}, {merge: true })
                     }).then(
                     setPosting(false))
-                });
-            }else if(vidToPost){
+                })
+            })
+        }else if(vidToPost){
+            db.collection('posts').add({
+                message: postRef.current.value,
+                name: currentUser.displayName,
+                email: currentUser.email,
+                image: currentUser.photoURL,
+                postType: "video",
+                timestamp: firebaseApp.firestore.FieldValue.serverTimestamp(),
+            }).then((doc) => {
                 const uploadTask = storage.ref(`posts/${doc.id}`).putString(vidToPost, 'data_url');
                 setVidToPost(null);
                 uploadTask.on("state_change", null, (error) => setError(error.message),
                 ()=> {
-                // when the upload completes
-                    storage.ref('posts').child(doc.id).getDownloadURL().then(url => {
-                        db.collection('posts').doc(doc.id).set({postImage: url, postType: "video"}, {merge: true })
-                    }).then(
-                    setPosting(false))
-                });
-            }else{
-                setPosting(false)
-            }
-        });
+            // when the upload completes
+                storage.ref('posts').child(doc.id).getDownloadURL().then(url => {
+                    db.collection('posts').doc(doc.id).set({postImage: url}, {merge: true })
+                }).then(
+                setPosting(false))
+            })
+        })
+        }else{
+            db.collection('posts').add({
+                message: postRef.current.value,
+                name: currentUser.displayName,
+                email: currentUser.email,
+                image: currentUser.photoURL,
+                timestamp: firebaseApp.firestore.FieldValue.serverTimestamp(),
+            })
+            setPosting(false)
+        }
         postRef.current.value='';
         setError('')                    
     }
@@ -91,7 +149,7 @@ function AddPost() {
             <div className='flex space-x-4 items-center mb-3 ml-2'>
                 <img className='rounded-full object-cover h-12 w-12' src={currentUser.photoURL}/>
                 <form className='flex flex-1'>
-                    <input className='outline-none bg-blue-grey-50 dark:bg-bdark-200 placeholder-gray-500 dark:placeholder-gray-400 rounded-full focus:ring-1 focus:ring-gray-500 h-10 p-2 overflow-hidden w-full' 
+                    <input className='outline-none bg-blue-grey-50 dark:bg-bdark-200 placeholder-gray-400 dark:placeholder-gray-500 rounded-full focus:ring-1 focus:ring-gray-500 h-10 p-2 overflow-hidden w-full' 
                         ref={postRef}
                         type='text'
                         placeholder={`What's up, ${currentUser.displayName}?`}/>
@@ -111,7 +169,7 @@ function AddPost() {
                     <video className = 'w-80 object-contain' controls>
                         <source src={vidToPost}/> 
                     </video>
-                    <XCircleIcon onClick={()=>setVidToPost(null)} className='absolute h-6 w-6 -right-3 -top-3 bg-white rounded-ful text-red-500 transition duration-75 transform ease-in hover:scale-110 cursor-pointer'/>
+                    <XCircleIcon onClick={()=>setVidToPost(null)} className='absolute h-6 w-6 -right-3 -top-3 bg-white rounded-full text-red-500 transition duration-75 transform ease-in hover:scale-110 cursor-pointer'/>
                 </div>
                 )}
             <div className='flex justify-evenly p-3 border-t dark:border-bdark-200'>

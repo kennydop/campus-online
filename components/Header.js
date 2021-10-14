@@ -45,7 +45,7 @@ function Header() {
                     <div className = "hidden md:flex md:justify-center flex-grow">
                         <div className = "flex items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 p-1.5 focus:shadow-md">
                                 <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
-                                <input className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-500 dark:placeholder-gray-400 text-gray-500 dark:text-gray-400 focus:scale-x-1" type = "text" placeholder="Search"/>
+                                <input className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 focus:scale-x-1" type = "text" placeholder="Search"/>
                         </div>
                     </div>
                 {/*right*/}
