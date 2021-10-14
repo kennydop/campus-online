@@ -13,9 +13,25 @@ function AddCollege({colleges}) {
     const [confirmCollegeLoading, setconfirmCollegeLoading] = useState(false);
 
     useEffect(()=>{
-        fillColleges();
+        if(college){
+            fillColleges();
+        }else{
+            refillColleges()
+        }
     },[])
-
+    async function refillColleges(){
+        if(!filledColleges){
+            var colleges = new Array();
+            await db.collection("universities").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                    var collegeOption = document.createElement("option");
+                    collegeOption.innerHTML = doc.id;
+                    document.getElementById('colleges').appendChild(collegeOption)
+                    setfilledColleges(true);
+                });
+            });
+        }
+    }
     function fillColleges(){
         colleges.forEach(col => {
                 if(!filledColleges){
