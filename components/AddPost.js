@@ -103,7 +103,7 @@ function AddPost() {
             {imgToPost && (
                 <div className='relative my-2 self-center'>
                     <img className = 'w-80 object-contain' src={imgToPost} alt=''/>
-                    <XCircleIcon onClick={()=>setImgToPost(null)} className='absolute h-6 w-6 -right-3 -top-3 text-gray-500 transition duration-75 transform ease-in hover:scale-110 cursor-pointer'/>
+                    <XCircleIcon onClick={()=>setImgToPost(null)} className='absolute h-6 w-6 -right-3 -top-3 bg-white rounded-full text-red-500 transition duration-75 transform ease-in hover:scale-110 cursor-pointer'/>
                 </div>
                 )}
             {vidToPost && (
@@ -111,7 +111,7 @@ function AddPost() {
                     <video className = 'w-80 object-contain' controls>
                         <source src={vidToPost}/> 
                     </video>
-                    <XCircleIcon onClick={()=>setVidToPost(null)} className='absolute h-6 w-6 -right-3 -top-3 text-gray-500 transition duration-75 transform ease-in hover:scale-110 cursor-pointer'/>
+                    <XCircleIcon onClick={()=>setVidToPost(null)} className='absolute h-6 w-6 -right-3 -top-3 bg-white rounded-ful text-red-500 transition duration-75 transform ease-in hover:scale-110 cursor-pointer'/>
                 </div>
                 )}
             <div className='flex justify-evenly p-3 border-t dark:border-bdark-200'>

@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable react/display-name */
 import Image from 'next/image'
 import {HeartIcon, ChatAltIcon, ShareIcon} from '@heroicons/react/outline'
@@ -65,15 +67,16 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, likes
                 <div className='py-2'><p className='text-gray-600 dark:text-gray-400'>{message}</p></div>
                 <div>
                     {postType==='image' && 
-                    <div className='relative mb-2 h-100'>
+                    <div className='unset-img'>
                         <Image
                         src = {postImage}
-                        objectFit='cover'
-                        layout='fill'
+                        className ='custom-img'
+                        layout ='fill'
                         placeholder = 'blur'
-                        blurDataURL={`/_next/image?url=${postImage}&w=16&q=1`}
+                        blurDataURL = {`/_next/image?url=${postImage}&w=16&q=1`}
                         />
-                    </div>}
+                    </div>
+                    }
                     {postType==='video' &&
                     <div className = 'mb-2'>
                         <video controls>
