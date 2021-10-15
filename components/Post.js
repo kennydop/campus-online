@@ -4,53 +4,40 @@
 import Image from 'next/image'
 import {HeartIcon, ChatAltIcon, ShareIcon} from '@heroicons/react/outline'
 import { db, firebaseApp} from '../firebase/firebase'
-import {useUser} from '../firebase/useUser'
+import { useAuth } from "../firebase/AuthContext";
 import { forwardRef } from 'react';
 import {HeartIcon as Filled} from '@heroicons/react/solid'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 
-const Post = forwardRef(({key, id, name, email, timestamp, image, message, likes, comments, postImage, postType }, ref) => {
-    const {user} = useUser();
-    const [liked, setLiked] = useState(false)
-    var pliked = []
-    let colRef = db.collection('posts').doc(id)
-    colRef.get().then((doc)=> {
-        pliked = doc.data().liked;
-    }).then((pliked)=>{
-        if(pliked !== undefined){
-            for (let i = 0; i < pliked.length; i++) {
-                const element = pliked[i];
-                if(element === user.id){
-                    setLiked(true)
-                    console.log(message, 'liked')
-                }
-                else{
-                    console.log('nothing')
-                }
-            }
-        }
-    })
-
+const Post = forwardRef(({key, id, name, email, timestamp, image, message, postImage, postType }, ref) => {
+    const { currentUser } = useAuth();
+    const [hasLiked, setHasLiked] = useState(false)
+    const postRef = db.collection('posts').doc(id)
+    const [likes, setLikes] = useState([])
+    const { theme } = useTheme()
     
-    const likePicture = () => {
-        if(pliked !== undefined){  
-            for (let i = 0; i < pliked.length; i++) {
-                const element = pliked[i];
-                if(element === user.id){
-                    colRef.set({likes: firebaseApp.firestore.FieldValue.increment(-1)}, {merge: true})
-                    colRef.update({liked: firebaseApp.firestore.FieldValue.arrayRemove(user.id)}) 
-                    setLiked(false);
-                    return;
-                }
+    useEffect(() => {
+        postRef.collection('likes').doc(currentUser.uid).get().then((doc)=>{
+            if (doc.exists){
+                setHasLiked(true);
             }
-            colRef.set({likes: firebaseApp.firestore.FieldValue.increment(1)}, {merge: true})
-            colRef.update({liked: firebaseApp.firestore.FieldValue.arrayUnion(user.id)})
-            setLiked(true)
-        }
-        else{
-            colRef.set({likes: firebaseApp.firestore.FieldValue.increment(1)}, {merge: true})
-            colRef.update({liked: firebaseApp.firestore.FieldValue.arrayUnion(user.id)}) 
-            setLiked(true)
+        })
+    }, [db])
+
+    useEffect(() => {
+        postRef.collection("likes").get().then((querySnapshot) => {
+            setLikes(querySnapshot.docs)
+        });
+    }, [likes, db])
+
+    async function likePost(){
+        if (hasLiked){
+            postRef.collection('likes').doc(currentUser.uid).delete()
+            setHasLiked(false)
+        }else{
+            postRef.collection('likes').doc(currentUser.uid).set({username: currentUser.displayName})
+            setHasLiked(true)
         }
     }
 
@@ -74,7 +61,7 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, likes
                                 className ='custom-img'
                                 layout ='fill'
                                 placeholder = 'blur'
-                                blurDataURL = {`/_next/image?url=${postImage}&w=16&q=1`}
+                                blurDataURL = {theme==='dark'? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABmCAYAAAA53+RiAAAABHNCSVQICAgIfAhkiAAAAXRJREFUeF7t1VEJADAMxNBVTv0L3GAq8vGqICQcnd29x+UMjDC5Jh9ImGYXYaJdhBGmaiDK5ccIEzUQxbIYYaIGolgWI0zUQBTLYoSJGohiWYwwUQNRLIsRJmogimUxwkQNRLEsRpiogSiWxQgTNRDFshhhogaiWBYjTNRAFMtihIkaiGJZjDBRA1EsixEmaiCKZTHCRA1EsSxGmKiBKJbFCBM1EMWyGGGiBqJYFiNM1EAUy2KEiRqIYlmMMFEDUSyLESZqIIplMcJEDUSxLEaYqIEolsUIEzUQxbIYYaIGolgWI0zUQBTLYoSJGohiWYwwUQNRLIsRJmogimUxwkQNRLEsRpiogSiWxQgTNRDFshhhogaiWBYjTNRAFMtihIkaiGJZjDBRA1EsixEmaiCKZTHCRA1EsSxGmKiBKJbFCBM1EMWyGGGiBqJYFiNM1EAUy2KEiRqIYlmMMFEDUSyLESZqIIplMcJEDUSxLEaYqIEo1gNTr5cDklMVSwAAAABJRU5ErkJggg==' : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABmCAYAAAA53+RiAAAABHNCSVQICAgIfAhkiAAAAXZJREFUeF7t1cEJACAQxEDtv1URrEDBKuaRqyAkLDfXPnd0nIFZGK7JByqM2aUwaJfCFEY1gHL1YwqDGkCxWkxhUAMoVospDGoAxWoxhUENoFgtpjCoARSrxRQGNYBitZjCoAZQrBZTGNQAitViCoMaQLFaTGFQAyhWiykMagDFajGFQQ2gWC2mMKgBFKvFFAY1gGK1mMKgBlCsFlMY1ACK1WIKgxpAsVpMYVADKFaLKQxqAMVqMYVBDaBYLaYwqAEUq8UUBjWAYrWYwqAGUKwWUxjUAIrVYgqDGkCxWkxhUAMoVospDGoAxWoxhUENoFgtpjCoARSrxRQGNYBitZjCoAZQrBZTGNQAitViCoMaQLFaTGFQAyhWiykMagDFajGFQQ2gWC2mMKgBFKvFFAY1gGK1mMKgBlCsFlMY1ACK1WIKgxpAsVpMYVADKFaLKQxqAMVqMYVBDaBYLaYwqAEUq8UUBjWAYrWYwqAGUKwWUxjUAIr1AIxPgvK2EjJAAAAAAElFTkSuQmCC'}
                                 />
                             </div>
                     }
@@ -90,17 +77,17 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, likes
 
                 </div>
                 <div className='flex justify-around border-t border-gray-200 dark:border-bdark-200 pt-2'>
-                    <div onClick={likePicture} className='flex flex-grow justify-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
-                        {liked?<Filled className='text-pink-500 h-6 w-6 mr-2' /> : <HeartIcon className='text-gray-500 dark:text-gray-400 h-6 w-6 mr-2' />}
-                        <p className='text-gray-500 dark:text-gray-400'>{likes}</p>
+                    <div onClick={likePost} className='flex flex-grow justify-center items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
+                        {hasLiked?<Filled className='text-pink-500 h-6 w-6 mr-2' /> : <HeartIcon className='text-gray-500 dark:text-gray-400 h-6 w-6 mr-2' />}
+                        {likes.length > 0 && <p className='text-gray-500 dark:text-gray-400 cursor-default'>{likes.length}</p>}
                     </div>
                     <div className='h-12 border-r border-gray-200 dark:border-bdark-200'></div>
-                    <div className='flex flex-grow justify-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
+                    <div className='flex flex-grow justify-center items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
                         <ChatAltIcon className='text-gray-500 dark:text-gray-400 h-6 w-6 mr-2' />
-                        <p className='text-gray-500 dark:text-gray-400'>{comments}</p>
+                        <p className='text-gray-500 dark:text-gray-400 cursor-default'></p>
                     </div>
                     <div className='h-12 border-r border-gray-200 dark:border-bdark-200'></div>
-                    <div className='flex flex-grow justify-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
+                    <div className='flex flex-grow justify-center items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
                         <ShareIcon className='text-gray-500 dark:text-gray-400 h-6 w-6 mr-2' />
                         <p className='text-gray-500 dark:text-gray-400'></p>
                     </div>

@@ -15,51 +15,9 @@ function AddPost() {
     const [error, setError] = useState()
     const [posting, setPosting] = useState()
 
-    // const sendPost =(e)=>{
-    //     e.preventDefault();
-    //     if(!postRef.current.value) return;
-    //     setPosting(true)
-
-    //     db.collection('posts').add({
-    //         message: postRef.current.value,
-    //         name: currentUser.displayName,
-    //         email: currentUser.email,
-    //         image: currentUser.photoURL,
-    //         timestamp: firebaseApp.firestore.FieldValue.serverTimestamp(),
-    //     }).then((doc) => {
-    //         if(imgToPost) {
-    //             const uploadTask = storage.ref(`posts/${doc.id}`).putString(imgToPost , 'data_url');
-    //             setImgToPost(null);
-    //             uploadTask.on("state_change", null, (error) => setError(error.message),
-    //             ()=> {
-    //             // when the upload completes
-    //                 storage.ref('posts').child(doc.id).getDownloadURL().then(url => {
-    //                     db.collection('posts').doc(doc.id).set({postImage: url, postType: "image"}, {merge: true })
-    //                 }).then(
-    //                 setPosting(false))
-    //             });
-    //         }else if(vidToPost){
-    //             const uploadTask = storage.ref(`posts/${doc.id}`).putString(vidToPost, 'data_url');
-    //             setVidToPost(null);
-    //             uploadTask.on("state_change", null, (error) => setError(error.message),
-    //             ()=> {
-    //             // when the upload completes
-    //                 storage.ref('posts').child(doc.id).getDownloadURL().then(url => {
-    //                     db.collection('posts').doc(doc.id).set({postImage: url, postType: "video"}, {merge: true })
-    //                 }).then(
-    //                 setPosting(false))
-    //             });
-    //         }else{
-    //             setPosting(false)
-    //         }
-    //     });
-    //     postRef.current.value='';
-    //     setError('')                    
-    // }
-
     const sendPost =(e)=>{
         e.preventDefault();
-        if(!postRef.current.value) return;
+        if(postRef.current.value.trim()==='') return;
         setPosting(true)
 
         if(imgToPost) {

@@ -7,12 +7,12 @@ import { useAuth } from "../firebase/AuthContext";
 function Story({name, src, blurData}) {
     const {currentUser} = useAuth()
     if(name.length > 8){
-        name = name.substring(0, 8) + ' ...';
+        name = name.substring(0, 8) + '...';
     }
     return (
-        <div className='py-2 transition duration-100 transform ease-in hover:scale-102 overflow-hidden text-center cursor-pointer inline-block'>
+        <div className='py-2 text-center cursor-pointer inline-block overflow-visible'>
             {src && 
-            <div className='rounded-full h-15 w-15 border-2.5 border-pink-500 relative overflow-hidden'>
+            <div className='rounded-full h-15 w-15 border-2.5 border-pink-500 relative transition duration-100 transform ease-in hover:scale-105 overflow-hidden'>
                 <div className='rounded-full h-14 w-14 border-2 border-transparent overflow-hidden relative'>
                     <Image 
                     className='object-cover rounded-full'
@@ -33,7 +33,7 @@ function Story({name, src, blurData}) {
             </div>
             </div>
             }
-            <p className='text-gray-500 dark:text-gray-400 font-light text-xs text-center'>{name}</p>
+            <p className='text-gray-500 dark:text-gray-400 font-light text-xs text-center truncate'>{name}</p>
         </div>
     )
 }

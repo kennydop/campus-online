@@ -52,6 +52,13 @@ input:checked ~ .dot {
     transform: var(--tw-transform);
 }
 
+.-header{
+    height: calc(100% - 300px);
+}
+.coh{
+    width: 138.240px;
+    height: 27.948px;
+}
 html, body {
     overflow: hidden;
 }

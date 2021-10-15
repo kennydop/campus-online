@@ -4,7 +4,6 @@ import SiteLayout from '../components/SiteLayout';
 import { useAuth } from '../firebase/AuthContext';
 import { auth } from "../firebase/firebase";
 import { useState } from 'react';
-import AddCollege from './addcollege';
 import { useRouter } from 'next/router';
 
 export default function Home() {

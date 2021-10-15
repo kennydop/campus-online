@@ -5,6 +5,7 @@ import {useAuth} from "../firebase/AuthContext";
 import { ActiveTab, PrevTab } from './ActiveTab';
 import { useTheme } from 'next-themes'
 import { useRouter } from "next/router";
+
 function Settigs() {
     const {tabActive, setTabActive} = useContext(ActiveTab)
     const {prevTab, setPrevTab} = useContext(PrevTab)

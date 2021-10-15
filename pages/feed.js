@@ -5,9 +5,9 @@ import SiteLayout from "../components/SiteLayout";
 import PeopleYouMightKnow from "../components/PeopleYouMightKnow";
 
 function feed() {
-
+    
     return (
-            <div className='flex flex-grow bg-blue-grey-50 dark:bg-bdark-200 w-screen justify-center overflow-y-scroll'>
+            <div className='flex flex-grow bg-blue-grey-50 dark:bg-bdark-200 w-screen justify-center overflow-y-auto'>
                 <Trending />
                 <div>
                 <Stories />

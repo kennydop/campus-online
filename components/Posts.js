@@ -18,8 +18,6 @@ function Posts() {
                 image={post.data().image}
                 postImage={post.data().postImage}
                 postType={post.data().postType}
-                likes={post.data().likes}
-                comments={post.data().comments}
             />))}
         </FlipMove>
     )
