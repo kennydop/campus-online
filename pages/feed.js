@@ -7,14 +7,11 @@ import PeopleYouMightKnow from "../components/PeopleYouMightKnow";
 function feed() {
     
     return (
-            <div className='flex flex-grow bg-blue-grey-50 dark:bg-bdark-200 justify-center'>
+            <div className='flex flex-grow bg-blue-grey-50 dark:bg-bdark-200 justify-center h-full'>
                 <Trending />
                 <div>
                 <Stories />
                 <FeedLayout />
-                <div className='h-105 w-64 mx-auto bg-white mb-4'></div>
-                <div className='h-105 w-64 mx-auto bg-white mb-4'></div>
-                <div className='h-105 w-64 mx-auto bg-white mb-4'></div>
                 </div>
                 <PeopleYouMightKnow/>
             </div>

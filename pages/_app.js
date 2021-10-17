@@ -2,7 +2,7 @@ import '../styles/globals.css'
 import 'tailwindcss/tailwind.css'
 import Head from 'next/head';
 import { ThemeProvider } from 'next-themes'
-import { AuthProvider } from '../firebase/AuthContext';
+import { AuthProvider } from '../contexts/AuthContext';
 
 
 export default function MyApp({ Component, pageProps }) {

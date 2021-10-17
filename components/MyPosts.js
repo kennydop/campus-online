@@ -1,8 +1,7 @@
 import { db } from '../firebase/firebase';
 import Post from './Post';
 import FlipMove from 'react-flip-move';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { useAuth } from '../firebase/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useEffect, useState } from 'react';
 
 function MyPosts() {
@@ -10,6 +9,7 @@ function MyPosts() {
     const [myPosts, setMyPosts] = useState([]);
 
     useEffect(()=>{
+        console.log('made a request for my posts from my posts')
         db.collection('posts').where("author", "==", currentUser.uid).orderBy("timestamp", "desc").get().then((querrySnapshot)=>{
             setMyPosts(querrySnapshot.docs)
         })

@@ -1,8 +1,8 @@
 import SettingItems from "./SettingItems";
 import {LogoutIcon, QuestionMarkCircleIcon, MoonIcon, ArrowLeftIcon, UserIcon} from '@heroicons/react/solid';
 import { useContext } from "react";
-import {useAuth} from "../firebase/AuthContext";
-import { ActiveTab, PrevTab } from './ActiveTab';
+import {useAuth} from "../contexts/AuthContext";
+import { ActiveTab, PrevTab } from '../contexts/ActiveTab';
 import { useTheme } from 'next-themes'
 import { useRouter } from "next/router";
 

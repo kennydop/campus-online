@@ -11,10 +11,7 @@ function ProfilePostsAndAbout() {
                 <div onClick={()=> setTab('about')} className={`cursor-pointer ${tab === 'about'? 'text-pink-500 border-b border-pink-500':'text-gray-500 dark:text-gray-400'}`}>About</div>
             </div>
             <div className='flex flex-col mx-auto justify-center items-center w-full'>
-                {/* {tab === 'posts' ? <MyPosts/> : <About/>} */}
-                <div className='h-105 w-96 mx-auto bg-white mb-4'></div>
-                <div className='h-105 w-96 mx-auto bg-white mb-4'></div>
-                <div className='h-105 w-96 mx-auto bg-white mb-4'></div>
+                {tab === 'posts' ? <MyPosts/> : <About/>}
             </div>
             <div className='pt-20'></div>
         </div>

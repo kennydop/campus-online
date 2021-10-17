@@ -2,10 +2,10 @@ import HeaderIcon from "./HeaderIcon";
 import Settings from "../components/Settings"
 import { HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon } from "@heroicons/react/outline";
 import { useState } from "react";
-import { ActiveTab, PrevTab } from './ActiveTab'
+import { ActiveTab, PrevTab } from '../contexts/ActiveTab'
 import NotificationPane from "./NotificationPane";
 import { useRouter } from 'next/router';
-import { useAuth } from "../firebase/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 function ButtomNavbar() {
     const [tabActive, setTabActive] = useState('home')

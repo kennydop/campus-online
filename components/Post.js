@@ -4,7 +4,7 @@
 import Image from 'next/image'
 import {HeartIcon, ChatAltIcon, ShareIcon} from '@heroicons/react/outline'
 import { db, firebaseApp} from '../firebase/firebase'
-import { useAuth } from "../firebase/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { forwardRef } from 'react';
 import {HeartIcon as Filled} from '@heroicons/react/solid'
 import { useState, useEffect } from 'react';
@@ -13,26 +13,31 @@ import { useTheme } from 'next-themes';
 const Post = forwardRef(({key, id, name, email, timestamp, image, message, postImage, postType }, ref) => {
     const { currentUser } = useAuth();
     const [hasLiked, setHasLiked] = useState(false)
-    const postRef = db.collection('posts').doc(id)
     const [likes, setLikes] = useState([])
     const { theme } = useTheme()
     
     useEffect(() => {
+        console.log('made a request for hasLiked from post')
+        const postRef = db.collection('posts').doc(id)
         postRef.collection('likes').doc(currentUser.uid).get().then((doc)=>{
             if (doc.exists){
                 setHasLiked(true);
             }
         })
-    }, [db])
+    }, [])
 
     useEffect(() => {
+        console.log('made a request for likes from post')
+        const postRef = db.collection('posts').doc(id)
         postRef.collection("likes").get().then((querySnapshot) => {
             setLikes(querySnapshot.docs)
         });
-    }, [likes, db, hasLiked])
+    }, [hasLiked])
 
     async function likePost(){
+        const postRef = db.collection('posts').doc(id)
         if (hasLiked){
+            console.log('made a request to like a post')
             postRef.collection('likes').doc(currentUser.uid).delete()
             setHasLiked(false)
         }else{

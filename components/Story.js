@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 import { PlusIcon } from "@heroicons/react/outline"
 import Image from 'next/image'
-import { useAuth } from "../firebase/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 function Story({name, src, blurData}) {
     const {currentUser} = useAuth()

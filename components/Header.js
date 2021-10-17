@@ -4,10 +4,10 @@ import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon} fr
 import HeaderIcon from "./HeaderIcon";
 import Settings from "../components/Settings";
 import { useState } from "react";
-import { ActiveTab, PrevTab } from "./ActiveTab";
+import { ActiveTab, PrevTab } from "../contexts/ActiveTab";
 import NotificationPane from "./NotificationPane";
 import { useRouter } from 'next/router';
-import { useAuth } from "../firebase/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 function Header() {
     const [tabActive, setTabActive] = useState('home')

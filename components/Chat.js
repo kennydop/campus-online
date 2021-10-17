@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import Header from '../components/Header'
 function Chat({img, sender, time, text, read}){
 	return(
 		<div className='flex items-center h-20 border-b border-gray-300 dark:border-bdark-200 dark:hover:bg-bdark-50 hover:bg-blue-grey cursor-pointer'>

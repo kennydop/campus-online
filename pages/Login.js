@@ -1,12 +1,10 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import Image from "next/image";
-import campus_online_logo from "../images/campus-online-logo.png";
 import { MailIcon, LockClosedIcon} from "@heroicons/react/outline";
 import AuthLeft from '../components/AuthLeft'
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useAuth } from "../firebase/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 function Login() {
   const [email, setEmail] = useState("");

@@ -4,7 +4,7 @@ import {CameraIcon, VideoCameraIcon, CalendarIcon} from "@heroicons/react/outlin
 import { useRef, useState } from "react";
 import { XCircleIcon } from '@heroicons/react/solid'
 import { db, firebaseApp, storage} from '../firebase/firebase'
-import { useAuth } from "../firebase/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 function AddPost() {
     const { currentUser } = useAuth();

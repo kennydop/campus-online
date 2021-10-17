@@ -2,9 +2,9 @@ import ProfileCard from '../components/ProfileCard';
 import NotAuthorized from '../components/NotAuthorized';
 import ProfilePostsAndAbout from '../components/ProfilePostsAndAbout';
 import SiteLayout from '../components/SiteLayout';
-import { useAuth } from '../firebase/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useState } from 'react';
-import { ActiveTab } from "../components/ActiveTab";
+import { ActiveTab } from "../contexts/ActiveTab";
 function Profile() {
     const {currentUser} = useAuth()
     const [tabActive, setTabActive] = useState('profile')

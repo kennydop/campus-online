@@ -1,13 +1,10 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import Image from "next/image";
-import { useState, useEffect } from "react";
-import campus_online_logo from "../images/campus-online-logo.png";
+import { useState } from "react";
 import { UserIcon, MailIcon, LockClosedIcon, PhotographIcon, AcademicCapIcon} from "@heroicons/react/outline";
 import AuthLeft from "../components/AuthLeft";
 import {useRouter} from 'next/router';
-import { useAuth } from "../firebase/AuthContext";
-import {db, firebaseApp} from '../firebase/firebase';
+import { useAuth } from "../contexts/AuthContext";
 
 
 function Signup() {
@@ -16,12 +13,10 @@ function Signup() {
 	const [email, setEmail] = useState("");
 	const [photoUrl, setPhotoUrl] = useState("");
 	const [password, setpassword] = useState("");
-	const [college, setCollege] = useState("");
 	const [error, setError] = useState();
 	const [acceptImg, setAcceptImg] = useState(false);
 	const [signUpLoading, setSignUpLoading] = useState(false);
 	const router = useRouter();
-    const [filledColleges, setfilledColleges] = useState(false)
 	const defaultProfileImage = 'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'
 	var pp = "";
 	const imgTypes = ['png', 'jpg', 'jpeg', 'ico', 'bmp']

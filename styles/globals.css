@@ -32,6 +32,10 @@
         @apply flex flex-col justify-center items-center lg:p-5 lg:bg-white lg:dark:bg-bdark-100 lg:shadow-md lg:dark:shadow-xl lg:rounded-lg;
     }
 
+    html, body {
+        @apply bg-blue-grey-50 dark:bg-bdark-200
+    }
+
 }
 
 .text-2xs{
@@ -59,9 +63,6 @@ input:checked ~ .dot {
     width: 138.240px;
     height: 27.948px;
 }
-/* html, body {
-    overflow-x: hidden;
-} */
 
 .loader{
     content: "";

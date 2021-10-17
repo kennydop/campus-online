@@ -1,7 +1,7 @@
 import Feed from './feed';
 import Login from './Login';
 import SiteLayout from '../components/SiteLayout';
-import { useAuth } from '../firebase/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { auth } from "../firebase/firebase";
 import { useState } from 'react';
 import { useRouter } from 'next/router';
