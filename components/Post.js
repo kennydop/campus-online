@@ -29,7 +29,7 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, postI
         postRef.collection("likes").get().then((querySnapshot) => {
             setLikes(querySnapshot.docs)
         });
-    }, [likes, db])
+    }, [likes, db, hasLiked])
 
     async function likePost(){
         if (hasLiked){
@@ -48,14 +48,14 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, postI
                     <img className='h-10 w-10 rounded-full' src={image}/>
                     <div className='flex flex-col'>
                         <p className='mb-1 text-gray-600 dark:text-gray-400 self-start'>{name}</p>
-                        <p className='text-xs font-light text-gray-500 self-start'>{new Date(timestamp?.toDate()).toLocaleString()}</p>
+                        {timestamp && <p className='text-xs font-light text-gray-500 self-start'>{new Date(timestamp?.toDate()).toLocaleString()}</p>}
                     </div>
                 </div>
                 <div className='py-2'><p className='text-gray-600 dark:text-gray-400'>{message}</p></div>
                 <div>
                     {
                         (postType==='image'&& postImage) &&
-                            <div className='unset-img'>
+                            <div className='unset-img relative'>
                                 <Image
                                 src = {postImage}
                                 className ='custom-img'

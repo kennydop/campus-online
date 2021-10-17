@@ -59,9 +59,9 @@ input:checked ~ .dot {
     width: 138.240px;
     height: 27.948px;
 }
-html, body {
-    overflow: hidden;
-}
+/* html, body {
+    overflow-x: hidden;
+} */
 
 .loader{
     content: "";

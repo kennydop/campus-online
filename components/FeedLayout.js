@@ -5,9 +5,9 @@ function FeedLayout() {
         <div className='flex flex-col h-screen'>
             <div className='mx-auto'>
                 <AddPost />
-                <Posts />
+                {/* <Posts /> */}
             </div>
-            <div className='pt-64'></div>
+            {/* <div className='pt-20'></div> */}
         </div>
     )
 }

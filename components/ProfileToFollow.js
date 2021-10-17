@@ -9,10 +9,10 @@ function ProfileToFollow({name, pic, blurData}) {
     const [buttonText, setButtonText] = useState('Follow')
     const {currentUser} = useAuth();
     const [uni, setUni] = useState("...");
-    var ref = db.collection("users").doc(currentUser.uid)
-    ref.get().then((doc)=>{
-        setUni(doc.data().college)
-    })
+    // var ref = db.collection("users").doc(currentUser.uid)
+    // ref.get().then((doc)=>{
+    //     setUni(doc.data().college)
+    // })
     return (
         <div className='flex items-center border-b dark:border-bdark-200 px-2 py-4 text-gray-500 dark:text-gray-400 cursor-default'>
             <div className='h-14 w-14 rounded-full overflow-hidden relative'>

@@ -17,12 +17,14 @@ function Signup() {
 	const [photoUrl, setPhotoUrl] = useState("");
 	const [password, setpassword] = useState("");
 	const [college, setCollege] = useState("");
-	const [error, setError] = useState(false);
+	const [error, setError] = useState();
+	const [acceptImg, setAcceptImg] = useState(false);
 	const [signUpLoading, setSignUpLoading] = useState(false);
 	const router = useRouter();
     const [filledColleges, setfilledColleges] = useState(false)
 	const defaultProfileImage = 'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'
 	var pp = "";
+	const imgTypes = ['png', 'jpg', 'jpeg', 'ico', 'bmp']
 
 	async function registerWithEmail () {
 		setError('');
@@ -40,15 +42,29 @@ function Signup() {
 			setSignUpLoading(false);
 		}
 		else{
-			if(photoUrl === ''){
+			if(photoUrl.trim() === ''){
 				pp = defaultProfileImage
+			}
+			else if(!(photoUrl.trim()=== '')){
+				for (let i = 0; i < imgTypes.length; i++) {
+					const element = imgTypes[i];
+					if(photoUrl.endsWith(element)){
+						setAcceptImg(true)
+						return
+					}
+				}
+				if(!acceptImg){
+					setError("Your picture URL is invalid");
+					setSignUpLoading(false);
+				}
+
 			}
 			else{
 				pp = photoUrl
 			}
 			try{
-				await signup(email, password, name, pp)
-				router.replace('/addcollege')
+				// await signup(email, password, name, pp)
+				// router.replace('/addcollege')
 			}
 			catch(error){
 				switch (error.code) {
@@ -56,8 +72,8 @@ function Signup() {
 						setError('Please check your internet connection')
 					break;
 					case "auth/invalid-email":
-            			setError('Invalid Email')
-						break;
+						setError('Invalid Email')
+					break;
 					default:
 						setError('Unable to create account, try again please')
 					console.log(error)
@@ -138,7 +154,7 @@ function Signup() {
 						value={photoUrl}
 						onChange={e=> setPhotoUrl(e.target.value)}
 						type="text"
-						placeholder="Profile Photo URL"
+						placeholder="Profile Photo URL (optional)"
 						className="infofield"/>
 					</div>
 					<p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Already have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=>{router.push('/')}}>Login</a></p>

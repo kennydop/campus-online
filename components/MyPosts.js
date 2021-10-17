@@ -1,14 +1,22 @@
-import { useCollection } from 'react-firebase-hooks/firestore';
 import { db } from '../firebase/firebase';
 import Post from './Post';
 import FlipMove from 'react-flip-move';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { useAuth } from '../firebase/AuthContext';
+import { useEffect, useState } from 'react';
 
-function Posts() {
-    const [realtimePosts, loading, error] = useCollection( db.collection("posts").orderBy("timestamp", "desc"));
-    
+function MyPosts() {
+    const { currentUser } = useAuth();
+    const [myPosts, setMyPosts] = useState([]);
+
+    useEffect(()=>{
+        db.collection('posts').where("author", "==", currentUser.uid).orderBy("timestamp", "desc").get().then((querrySnapshot)=>{
+            setMyPosts(querrySnapshot.docs)
+        })
+    }, [])
     return (
         <FlipMove>
-            {realtimePosts?.docs.map(post => (
+            {myPosts?.map((post)=>(
             <Post
                 key={post.id}
                 id={post.id}
@@ -24,4 +32,4 @@ function Posts() {
     )
 }
 
-export default Posts
+export default MyPosts

@@ -26,6 +26,7 @@ function AddPost() {
                 name: currentUser.displayName,
                 email: currentUser.email,
                 image: currentUser.photoURL,
+                author: currentUser.uid,
                 postType: "image",
                 timestamp: firebaseApp.firestore.FieldValue.serverTimestamp(),
             }).then((doc) => {
@@ -46,6 +47,7 @@ function AddPost() {
                 name: currentUser.displayName,
                 email: currentUser.email,
                 image: currentUser.photoURL,
+                author: currentUser.uid,
                 postType: "video",
                 timestamp: firebaseApp.firestore.FieldValue.serverTimestamp(),
             }).then((doc) => {
@@ -66,6 +68,7 @@ function AddPost() {
                 name: currentUser.displayName,
                 email: currentUser.email,
                 image: currentUser.photoURL,
+                author: currentUser.uid,
                 timestamp: firebaseApp.firestore.FieldValue.serverTimestamp(),
             })
             setPosting(false)
@@ -107,7 +110,7 @@ function AddPost() {
             <div className='flex space-x-4 items-center mb-3 ml-2'>
                 <img className='rounded-full object-cover h-12 w-12' src={currentUser.photoURL}/>
                 <form className='flex flex-1'>
-                    <input className='outline-none bg-blue-grey-50 dark:bg-bdark-200 placeholder-gray-400 dark:placeholder-gray-500 rounded-full focus:ring-1 focus:ring-gray-500 h-10 p-2 overflow-hidden w-full' 
+                    <input className='outline-none bg-blue-grey-50 dark:bg-bdark-200 placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 rounded-full focus:ring-1 focus:ring-gray-500 h-10 p-2 overflow-hidden w-full' 
                         ref={postRef}
                         type='text'
                         placeholder={`What's up, ${currentUser.displayName}?`}/>
