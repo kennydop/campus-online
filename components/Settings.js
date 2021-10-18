@@ -14,7 +14,7 @@ function Settigs() {
     const router = useRouter()
 
     return (
-        <div className={`top-0 fixed z-50 bg-white dark:bg-bdark-100 md:w-96 h-screen w-full shadow-md transition-all duration-700 ease-linear ${tabActive === 'settings'?'right-0':'-right-full'}`}>
+        <div className={`side-bar ${tabActive === 'settings'?'md:w-96 w-full':'w-0'}`}>
             <div className='shadow-sm dark:shadow-md py-3 flex w-full cursor-default'>
                 <ArrowLeftIcon onClick={()=>setTabActive(prevTab)} className='cursor-pointer h-6  mx-4 hover:-translate-x-1 transform transition-all duration-200 text-gray-500 dark:text-gray-400'/>
                 <div className='self-center text-gray-500 dark:text-gray-400 items-center '>Settings</div>
