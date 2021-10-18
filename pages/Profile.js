@@ -4,15 +4,19 @@ import ProfilePostsAndAbout from '../components/ProfilePostsAndAbout';
 import SiteLayout from '../components/SiteLayout';
 import { useAuth } from '../contexts/AuthContext';
 import { useEffect, useContext, useState } from 'react';
-import { ActiveTab } from "../contexts/ActiveTab";
+import { ActiveTab } from '../contexts/ActiveTab';
 
 function Profile() {
-    const {tabActive, setTabActive} = useContext(ActiveTab)
+    const [tabActive, setTabActive] = useState('profile')
     const {currentUser} = useAuth()
 
-    // useEffect(()=>{
-	// 	setTabActive('profile')
-    // })
+    useEffect(()=>{
+        alert(tabActive)
+        if(!tabActive){
+            setTabActive('profile')
+            alert(tabActive)
+        }
+    },[])
     return (
         currentUser?
         <ActiveTab.Provider value ={{tabActive, setTabActive}}>
@@ -24,7 +28,7 @@ function Profile() {
                     <ProfilePostsAndAbout/>
                 </div>
             </div>
-        </ActiveTab.Provider>
+            </ActiveTab.Provider>
 
             :
             <NotAuthorized />

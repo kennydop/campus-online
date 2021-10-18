@@ -9,6 +9,7 @@ import { forwardRef } from 'react';
 import {HeartIcon as Filled} from '@heroicons/react/solid'
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
+import TimePast from './TimePast';
 
 const Post = forwardRef(({key, id, name, email, timestamp, image, message, postImage, postType }, ref) => {
     const { currentUser } = useAuth();
@@ -53,7 +54,7 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, postI
                     <img className='h-10 w-10 rounded-full' src={image}/>
                     <div className='flex flex-col'>
                         <p className='mb-1 text-gray-600 dark:text-gray-400 self-start'>{name}</p>
-                        {timestamp && <p className='text-xs font-light text-gray-500 self-start'>{new Date(timestamp?.toDate()).toLocaleString()}</p>}
+                        {timestamp && <TimePast date={new Date(timestamp?.toDate())}/>}
                     </div>
                 </div>
                 <div className='py-2'><p className='text-gray-600 dark:text-gray-400'>{message}</p></div>

@@ -32,12 +32,12 @@
         @apply flex flex-col justify-center items-center lg:p-5 lg:bg-white lg:dark:bg-bdark-100 lg:shadow-md lg:dark:shadow-xl lg:rounded-lg;
     }
 
-    html, body {
-        @apply bg-blue-grey-50 dark:bg-bdark-200
+    body {
+        @apply dark:bg-bdark-200 bg-blue-grey-50
     }
 
     .side-bar{
-        @apply top-0 right-0 fixed z-50 bg-white dark:bg-bdark-100 h-screen shadow-md w-0 overflow-hidden
+        @apply top-0 right-0 fixed z-50 bg-white dark:bg-bdark-100 h-screen shadow-md md:w-96 w-full overflow-hidden
     }
 
 }
@@ -57,7 +57,7 @@ input:checked ~ .dot {
     transform: var(--tw-transform);
 }
 
-.-header{
+.h-header{
     height: calc(100% - 300px);
 }
 .coh{

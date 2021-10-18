@@ -59,7 +59,7 @@ function Header() {
                     </div>
             </div>
             </div>
-                {(tabActive==='settings' || tabActive==='notification') && <div className='w-screen h-screen fixed top-0 z-50 bg-gray-900 opacity-70'/>}
+                {(tabActive==='settings' || tabActive==='notification') && <div className='w-screen h-screen fixed top-0 z-50 bg-gray-900 opacity-40'/>}
                 <div>
                     <NotificationPane/>
                 </div>

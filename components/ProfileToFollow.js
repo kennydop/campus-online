@@ -19,7 +19,7 @@ function ProfileToFollow({name, pic, blurData}) {
     
     return (
         <div className='flex items-center border-b dark:border-bdark-200 px-2 py-4 text-gray-500 dark:text-gray-400 cursor-default'>
-            <div className='h-14 w-14 rounded-full overflow-hidden relative'>
+            <div className='h-12 w-12 rounded-full overflow-hidden relative'>
                 <Image 
                     className='object-cover rounded-full'
                     src={pic}
