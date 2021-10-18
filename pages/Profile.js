@@ -3,12 +3,16 @@ import NotAuthorized from '../components/NotAuthorized';
 import ProfilePostsAndAbout from '../components/ProfilePostsAndAbout';
 import SiteLayout from '../components/SiteLayout';
 import { useAuth } from '../contexts/AuthContext';
-import { useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { ActiveTab } from "../contexts/ActiveTab";
-function Profile() {
-    const {currentUser} = useAuth()
-    const [tabActive, setTabActive] = useState('profile')
 
+function Profile() {
+    const {tabActive, setTabActive} = useContext(ActiveTab)
+    const {currentUser} = useAuth()
+
+    // useEffect(()=>{
+	// 	setTabActive('profile')
+    // })
     return (
         currentUser?
         <ActiveTab.Provider value ={{tabActive, setTabActive}}>

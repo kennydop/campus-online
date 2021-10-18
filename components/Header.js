@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from "../contexts/AuthContext";
 
 function Header() {
-    const [tabActive, setTabActive] = useState('home')
+    const [tabActive, setTabActive] = useState()
     const [prevTab, setPrevTab] = useState()
     const { currentUser } = useAuth();
     const router = useRouter();

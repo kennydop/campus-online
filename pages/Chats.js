@@ -2,9 +2,15 @@ import Chat from '../components/Chat'
 import NotAuthorized from '../components/NotAuthorized';
 import SiteLayout from '../components/SiteLayout';
 import { useAuth } from '../contexts/AuthContext';
-
+import { useContext, useEffect } from 'react';
+import { ActiveTab } from '../contexts/ActiveTab';
 function Chats(){
 	const {currentUser} = useAuth()
+    const {tabActive, setTabActive} = useContext(ActiveTab)
+
+	// useEffect(()=>{
+	// 	setTabActive('chats')
+	// },[])
 
 	return(
 		currentUser?

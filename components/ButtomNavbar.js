@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from "../contexts/AuthContext";
 
 function ButtomNavbar() {
-    const [tabActive, setTabActive] = useState('home')
+    const [tabActive, setTabActive] = useState()
     const [prevTab, setPrevTab] = useState()
     const router = useRouter();
     const { currentUser } = useAuth();
