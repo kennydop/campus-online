@@ -1,30 +1,16 @@
 import HeaderIcon from "./HeaderIcon";
 import Settings from "../components/Settings"
 import { HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon } from "@heroicons/react/outline";
-import { useState, useEffect } from "react";
-import { ActiveTab, PrevTab, PrevPrevTab } from '../contexts/ActiveTab'
+import { useEffect } from "react";
 import NotificationPane from "./NotificationPane";
 import { useRouter } from 'next/router';
 import { useAuth } from "../contexts/AuthContext";
+import { useActiveTab } from "../contexts/ActiveTabContext";
 
 function ButtomNavbar() {
-    const [tabActive, setTabActive] = useState('home')
-    const [prevTab, setPrevTab] = useState()
-    const [prevPrevTab, setPrevPrevTab] = useState()
+    const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
     const router = useRouter();
     const { currentUser } = useAuth();
-
-    // useEffect(()=>{
-    //     switch (router.pathname) {
-    //         case '/Chats':
-    //             setTabActive('chats')
-    //             alert('activetab changed to', tabActive)
-    //             break;
-    //         case '/Profile':
-    //             setTabActive('profile')
-    //             break;
-    //     }
-    // }, [])
 
     useEffect(()=>{
         if(tabActive==='settings'||tabActive==='notification'){
@@ -46,11 +32,8 @@ function ButtomNavbar() {
     }
     
     return (
+        currentUser ?
         <>
-        {currentUser ?
-        <ActiveTab.Provider value = {{tabActive, setTabActive}}>
-        <PrevTab.Provider value = {{prevTab, setPrevTab}}>
-        <PrevPrevTab.Provider value ={{prevPrevTab, setPrevPrevTab}}>
         <div>
             <NotificationPane />
         </div>
@@ -65,13 +48,9 @@ function ButtomNavbar() {
                 <div className='mx-auto' onClick = {()=>{setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/Chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
                 <div className='mx-auto' onClick = {()=>{setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div>
             </div>
-            </PrevPrevTab.Provider>
-        </PrevTab.Provider>
-        </ActiveTab.Provider>
-        :
-        <div></div>
-    }
     </>
+        :
+        <div/>
     )
 }
 

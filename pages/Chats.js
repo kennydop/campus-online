@@ -2,15 +2,12 @@ import Chat from '../components/Chat'
 import NotAuthorized from '../components/NotAuthorized';
 import SiteLayout from '../components/SiteLayout';
 import { useAuth } from '../contexts/AuthContext';
-import { useContext, useEffect, useState } from 'react';
-import { ActiveTab } from '../contexts/ActiveTab';
+
 function Chats(){
 	const {currentUser} = useAuth()
-	const [tabActive, setTabActive] = useState()
-
-	return(
+	
+	return(	
 		currentUser?
-		<ActiveTab.Provider value ={{tabActive, setTabActive}}>
 		<div className='bg-blue-grey-50 dark:bg-bdark-200'>
 			<div className='flex h-full'>
 				<div className='w-full md:w-96 md:left-0 md:sticky h-full overflow-y-auto bg-white dark:bg-bdark-100 shadow-md'>
@@ -35,7 +32,6 @@ function Chats(){
 				</div>
 			</div>
 		</div>
-		</ActiveTab.Provider>
 		:
 		<NotAuthorized/>
 	)

@@ -1,13 +1,10 @@
-import { ActiveTab, PrevTab, PrevPrevTab } from '../contexts/ActiveTab';
-import { useContext } from "react";
 import { ArrowLeftIcon } from '@heroicons/react/solid'
 import Notification from './Notification'
 import { useAuth } from '../contexts/AuthContext';
+import { useActiveTab } from "../contexts/ActiveTabContext";
 
 function NotificationPane() {
-    const {tabActive, setTabActive} = useContext(ActiveTab)
-    const {prevTab, setPrevTab} = useContext(PrevTab)
-    const {prevPrevTab, setPrevPrevTab} = useContext(PrevPrevTab)
+    const { tabActive, prevTab, setTabActive, setPrevTab, prevPrevTab } = useActiveTab()
     const { currentUser } = useAuth();
 
 

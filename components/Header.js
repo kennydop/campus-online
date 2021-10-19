@@ -4,29 +4,17 @@ import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon} fr
 import HeaderIcon from "./HeaderIcon";
 import Settings from "../components/Settings";
 import { useEffect, useState } from "react";
-import { ActiveTab, PrevTab, PrevPrevTab } from "../contexts/ActiveTab";
 import NotificationPane from "./NotificationPane";
 import { useRouter } from 'next/router';
 import { useAuth } from "../contexts/AuthContext";
+import { useActiveTab } from "../contexts/ActiveTabContext";
 
 function Header() {
-    const [tabActive, setTabActive] = useState('home')
-    const [prevTab, setPrevTab] = useState()
-    const [prevPrevTab, setPrevPrevTab] = useState()
+    const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
     const { currentUser } = useAuth();
     const [enterSearchMode, setEnterSearchMode] = useState(false);
     const router = useRouter();
-    useEffect(()=>{
-        switch (router.pathname) {
-            case '/Chats':
-                setTabActive('chats')
-                console.log('activetab changed to', tabActive)
-                break;
-            case '/Profile':
-                setTabActive('profile')
-                break;
-        }
-    }, [])
+
 
     useEffect(()=>{
         if(tabActive==='settings'||tabActive==='notification' || enterSearchMode){
@@ -36,6 +24,7 @@ function Header() {
         }
     },[tabActive, enterSearchMode])
 
+    
     function handleHome(){
         setPrevPrevTab(prevTab); 
         setPrevTab(tabActive);
@@ -48,12 +37,8 @@ function Header() {
     }
 
     return (
+        currentUser ?
         <>
-        {currentUser ?
-        <ActiveTab.Provider value ={{tabActive, setTabActive}}>
-        <PrevTab.Provider value ={{prevTab, setPrevTab}}>
-        <PrevPrevTab.Provider value ={{prevPrevTab, setPrevPrevTab}}>
-            
             {enterSearchMode && <div onClick={()=>{setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-gray-900 opacity-40'/>}
             
             <div className = "md:flex sticky inset-x-0 top-0 z-50 bg-white dark:bg-bdark-100 justify-center items-center p-2 md:p-2.5 md:px-15 px-2 shadow-md">
@@ -96,7 +81,7 @@ function Header() {
                     </div>
             </div>
             </div>
-                {(tabActive==='settings' || tabActive==='notification') && <div onClick={()=>{setTabActive(prevTab); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-gray-900 opacity-40'/>}
+                {(tabActive==='settings' || tabActive==='notification') && <div onClick={()=>{setTabActive(prevTab); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
                 <div>
                     <NotificationPane/>
                 </div>
@@ -104,13 +89,9 @@ function Header() {
                 <div>
                     <Settings/>
                 </div>
-        </PrevPrevTab.Provider>
-        </PrevTab.Provider>
-        </ActiveTab.Provider>
+        </>
         :
-        <div></div>
-    }
-    </>
+        <div/>
     )
 }
 

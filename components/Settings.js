@@ -1,15 +1,12 @@
 import SettingItems from "./SettingItems";
 import {LogoutIcon, QuestionMarkCircleIcon, MoonIcon, ArrowLeftIcon, UserIcon} from '@heroicons/react/solid';
-import { useContext } from "react";
 import {useAuth} from "../contexts/AuthContext";
-import { ActiveTab, PrevTab, PrevPrevTab } from '../contexts/ActiveTab';
 import { useTheme } from 'next-themes'
 import { useRouter } from "next/router";
+import { useActiveTab } from "../contexts/ActiveTabContext";
 
 function Settigs() {
-    const {tabActive, setTabActive} = useContext(ActiveTab)
-    const {prevTab, setPrevTab} = useContext(PrevTab)
-    const {prevPrevTab, setPrevPrevTab} = useContext(PrevPrevTab)
+    const { tabActive, prevTab, setTabActive, setPrevTab, prevPrevTab } = useActiveTab()
     const {theme, setTheme} = useTheme()
     const { logout } = useAuth();
     const router = useRouter()
