@@ -4,22 +4,58 @@ import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon} fr
 import HeaderIcon from "./HeaderIcon";
 import Settings from "../components/Settings";
 import { useEffect, useState } from "react";
-import { ActiveTab, PrevTab } from "../contexts/ActiveTab";
+import { ActiveTab, PrevTab, PrevPrevTab } from "../contexts/ActiveTab";
 import NotificationPane from "./NotificationPane";
 import { useRouter } from 'next/router';
 import { useAuth } from "../contexts/AuthContext";
 
 function Header() {
-    const [tabActive, setTabActive] = useState()
+    const [tabActive, setTabActive] = useState('home')
     const [prevTab, setPrevTab] = useState()
+    const [prevPrevTab, setPrevPrevTab] = useState()
     const { currentUser } = useAuth();
+    const [enterSearchMode, setEnterSearchMode] = useState(false);
     const router = useRouter();
+    useEffect(()=>{
+        switch (router.pathname) {
+            case '/Chats':
+                setTabActive('chats')
+                console.log('activetab changed to', tabActive)
+                break;
+            case '/Profile':
+                setTabActive('profile')
+                break;
+        }
+    }, [])
+
+    useEffect(()=>{
+        if(tabActive==='settings'||tabActive==='notification' || enterSearchMode){
+            document.body.classList.add('overflow-hidden')
+        }else{
+            document.body.classList.remove('overflow-hidden')
+        }
+    },[tabActive, enterSearchMode])
+
+    function handleHome(){
+        setPrevPrevTab(prevTab); 
+        setPrevTab(tabActive);
+        if(typeof window === 'object' && router.pathname === '/'){
+            window.scrollTo({top: 0, behavior: 'smooth'})
+        }else{
+        router.push('/');
+        }
+        setTabActive('home')
+    }
 
     return (
         <>
         {currentUser ?
         <ActiveTab.Provider value ={{tabActive, setTabActive}}>
         <PrevTab.Provider value ={{prevTab, setPrevTab}}>
+        <PrevPrevTab.Provider value ={{prevPrevTab, setPrevPrevTab}}>
+            
+            {enterSearchMode && <div onClick={()=>{setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-gray-900 opacity-40'/>}
+            
             <div className = "md:flex sticky inset-x-0 top-0 z-50 bg-white dark:bg-bdark-100 justify-center items-center p-2 md:p-2.5 md:px-15 px-2 shadow-md">
                     {/*left*/}
                     <div className = "flex items-center md:pb-0 px-2 md:px-0 mx-auto justify-between">
@@ -34,32 +70,33 @@ function Header() {
                                 <path id="Path_1" data-name="Path 1" d="M14.835,16.792q-.055.143-.472,1.626-1.187.352-2.153.544a10.764,10.764,0,0,1-2.1.192,8.1,8.1,0,0,1-2.725-.483,7.505,7.505,0,0,1-2.45-1.434,6.912,6.912,0,0,1-1.725-2.318A7.294,7.294,0,0,1,2.574,11.8,6.759,6.759,0,0,1,3.755,7.761a7.044,7.044,0,0,1,3.01-2.428,9.53,9.53,0,0,1,3.774-.78,8.223,8.223,0,0,1,2.944.538,3.646,3.646,0,0,0,.989.209q.154-.033.225-.044t.181-.022a.207.207,0,0,1,.143.088l-.165.626a16.214,16.214,0,0,0-.406,2.1.365.365,0,0,1-.264-.137.649.649,0,0,1-.066-.335,2,2,0,0,0-.187-.945,3.258,3.258,0,0,0-1.483-.989,6.039,6.039,0,0,0-2.384-.505A5.253,5.253,0,0,0,5.183,8.222a8.015,8.015,0,0,0-.742,3.56A7.391,7.391,0,0,0,5.1,15.017a6.089,6.089,0,0,0,1.637,2.148,6.7,6.7,0,0,0,2,1.143,5.523,5.523,0,0,0,1.763.352,4.384,4.384,0,0,0,1.967-.39,3.674,3.674,0,0,0,1.225-.934,8.629,8.629,0,0,0,.862-1.3q.165-.319.286-.319.209,0,.209.2A5.451,5.451,0,0,1,14.835,16.792Zm3.538-4.274-1.351.6a2.4,2.4,0,0,1-.088-.516,1.313,1.313,0,0,1,.687-1.038,6.257,6.257,0,0,1,1.549-.775,4.474,4.474,0,0,1,1.2-.3,1.523,1.523,0,0,1,.736.264,3.652,3.652,0,0,1,.7.527,2.05,2.05,0,0,1,.357.434,2.386,2.386,0,0,1,.225.676,5.766,5.766,0,0,1,.1,1.176q0,.209-.055,1.472l-.044.824q-.044.593-.044.945a4.255,4.255,0,0,0,.121.967q.11.527.494.527a3.016,3.016,0,0,0,1.143-.319v.45l-1.615.648a3.688,3.688,0,0,1-.549.165.666.666,0,0,1-.5-.335,2.849,2.849,0,0,1-.4-.8,7.253,7.253,0,0,1-3.12,1.132,1.27,1.27,0,0,1-1.011-.39,1.736,1.736,0,0,1-.341-1.17,2.592,2.592,0,0,1,.181-1.11,1.289,1.289,0,0,1,.588-.571,7.342,7.342,0,0,1,1.747-.621q.923-.2,1.934-.346l.055-1.351v-.363a2.02,2.02,0,0,0-.533-1.478A1.692,1.692,0,0,0,19.3,11.31a1.405,1.405,0,0,0-.687.192.6.6,0,0,0-.346.544A1.456,1.456,0,0,0,18.372,12.518Zm2.6,5.2q-.033-.363.066-2.065A4.419,4.419,0,0,0,18.721,16q-.876.45-.876,1.132a1.763,1.763,0,0,0,.268.934.828.828,0,0,0,.739.439A6.5,6.5,0,0,0,20.976,17.715Zm3.45,1.307.022-.341A2.541,2.541,0,0,0,25.4,18.3a1.6,1.6,0,0,0,.434-.976,13.674,13.674,0,0,0,.137-2.27,10.312,10.312,0,0,0-.148-2.106,1.129,1.129,0,0,0-.439-.779,2.366,2.366,0,0,0-.961-.176v-.368a8.439,8.439,0,0,0,2.406-1.016.426.426,0,0,1,.22-.088q.22,0,.269.571a5.381,5.381,0,0,1,.005,1q.231-.132.818-.445t.923-.472a7.237,7.237,0,0,1,.862-.33,3.063,3.063,0,0,1,.923-.17A2.21,2.21,0,0,1,31.979,11a1.7,1.7,0,0,1,.764,1.071,7.818,7.818,0,0,1,3.522-1.077,2.143,2.143,0,0,1,1.541.472,2.038,2.038,0,0,1,.589,1.214,16.416,16.416,0,0,1,.1,2.137V16.77q-.033.846-.022,1.159a.639.639,0,0,0,.1.406.605.605,0,0,0,.346.126q.088.011.61.121t.6.121l-.154.3H35.808l-.066-.3a2.565,2.565,0,0,0,.934-.385,1.45,1.45,0,0,0,.357-.89,18.268,18.268,0,0,0,.1-2.384,7.394,7.394,0,0,0-.17-1.714,2,2,0,0,0-.61-1.082,1.807,1.807,0,0,0-1.219-.379,5.612,5.612,0,0,0-2.3.6q.055.461.077,1.588t.044,2.318q.022,1.192.033,1.544a.916.916,0,0,0,.1.412.476.476,0,0,0,.291.17q.214.055.917.154V19H32.929q-.187,0-1.384.044t-1.428.044l-.066-.341a2.684,2.684,0,0,0,1.044-.379,1.262,1.262,0,0,0,.423-.835A12.463,12.463,0,0,0,31.6,15.5l-.022-1.066a4.515,4.515,0,0,0-.412-2.06,1.348,1.348,0,0,0-1.28-.709,2.91,2.91,0,0,0-.9.154,6.535,6.535,0,0,0-.9.368q-.428.214-.736.379-.011.187-.022.95T27.3,14.77v1.121q.022,1.967.066,2.142a.6.6,0,0,0,.319.357,3.943,3.943,0,0,0,1.187.291v.385q-.132,0-.945-.044t-.967-.044Zm15.952-6.877-.088-.313a7.011,7.011,0,0,1,.737-.408,3.713,3.713,0,0,0,.963-.463,4,4,0,0,0,1.117-.849,12.183,12.183,0,0,1,.236,1.549l.945-.374a6.467,6.467,0,0,1,2.23-.615,2.968,2.968,0,0,1,1.642.538,4.1,4.1,0,0,1,1.329,1.45A3.937,3.937,0,0,1,50,14.616a3.836,3.836,0,0,1-.6,2.214,4.223,4.223,0,0,1-1.489,1.362,6.775,6.775,0,0,1-1.7.665,6.1,6.1,0,0,1-1.236.187,5.224,5.224,0,0,1-1.626-.319q0,.2-.022,1.239T43.3,21.182v2a6.222,6.222,0,0,0,.055,1,.513.513,0,0,0,.2.378,1.3,1.3,0,0,0,.511.1l.8.044q.275,0,.275.214,0,.135-.082.169a1.334,1.334,0,0,1-.39.034q-1.362,0-1.7.016t-2.241.137a2.057,2.057,0,0,0-.022-.33,1.893,1.893,0,0,0,.747-.159.777.777,0,0,0,.3-.379,7.661,7.661,0,0,0,.231-1.938q.055-1.455.055-3.036l.022-1.373q0-1.581-.022-3.267a19.134,19.134,0,0,0-.088-2.059,1.677,1.677,0,0,0-.17-.423,1.117,1.117,0,0,0-.275-.329.519.519,0,0,0-.324-.126A3.836,3.836,0,0,0,40.378,12.145Zm2.944-.033L43.3,17.671l1.011.341a6.151,6.151,0,0,0,1.6.385,3.2,3.2,0,0,0,1.2-.269,2.835,2.835,0,0,0,1.159-.906,2.61,2.61,0,0,0,.5-1.659A4.423,4.423,0,0,0,46.97,12a2.577,2.577,0,0,0-1.461-.538A11.427,11.427,0,0,0,43.322,12.112Zm7.712.242V11.9l2.449-1.356.221-.088q.154,0,.154.2l-.137,1.89q-.137,2.241-.137,2.769a5.566,5.566,0,0,0,.329,2.06,1.461,1.461,0,0,0,1.534.818,2.7,2.7,0,0,0,.795-.126,7.19,7.19,0,0,0,.953-.385q.542-.258.849-.412a10.622,10.622,0,0,1,.033-1.072l.066-2.243a6.273,6.273,0,0,0-.066-1.439.714.714,0,0,0-.379-.542,2.8,2.8,0,0,0-.928-.142l-.022-.423,2.933-.687q-.055.989-.115,1.884t-.11,1.917q-.049,1.022-.049,1.516a8.182,8.182,0,0,0,.209,2.241,4.044,4.044,0,0,0,1.23-.264v.494q-1.246.341-2.525.813a9.057,9.057,0,0,1-.3-1.56,10.356,10.356,0,0,1-3.728,1.373,2.061,2.061,0,0,1-1.4-.669,3.416,3.416,0,0,1-.636-2.589l.088-2.468a4.553,4.553,0,0,0-.049-1,.391.391,0,0,0-.423-.346A2.736,2.736,0,0,0,51.035,12.353Zm10.69,4.175.385.022a1.451,1.451,0,0,0,.357.681,3.548,3.548,0,0,0,.961.851,2.434,2.434,0,0,0,1.318.379,2.619,2.619,0,0,0,1.033-.22.924.924,0,0,0,.516-.956,1.582,1.582,0,0,0-.531-1.241,5.966,5.966,0,0,0-1.222-.8l-.826-.385a4.8,4.8,0,0,1-1.156-.791,1.387,1.387,0,0,1-.429-1.055,1.947,1.947,0,0,1,.363-1.06,2.757,2.757,0,0,1,1.052-.917,3.292,3.292,0,0,1,1.558-.363,15.266,15.266,0,0,1,1.762.165l.363,1.868h-.385a1.573,1.573,0,0,0-.457-.731,3.394,3.394,0,0,0-.838-.588,1.9,1.9,0,0,0-.821-.242,1.282,1.282,0,0,0-.948.363,1.253,1.253,0,0,0-.364.925.965.965,0,0,0,.266.716,3.793,3.793,0,0,0,1,.636l.672.317a6.538,6.538,0,0,1,1.563,1,2.044,2.044,0,0,1,.649,1.6,2.374,2.374,0,0,1-.16.818,1.139,1.139,0,0,1-.479.621,6.194,6.194,0,0,1-1.508.752,4.375,4.375,0,0,1-1.211.17,5.052,5.052,0,0,1-.627-.055q-.407-.055-.572-.088t-.572-.154q-.407-.121-.528-.154A3.692,3.692,0,0,0,62,17.989a4.175,4.175,0,0,0-.093-.753A4.66,4.66,0,0,0,61.724,16.528Z" transform="translate(-2.574 1)" fill="#e74799"/>
                             </svg>
                         </div>
-                        <div className="flex md:hidden items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 p-2">
+                        <div onClick={()=>{setEnterSearchMode(true)}} className={`flex md:hidden rounded-full bg-blue-grey-50 dark:bg-bdark-200 p-2 transition duration-300 ease ${enterSearchMode? 'absolute w-11/12 items-start':'items-center'}`}>
                         <SearchIcon className = "h-5 cursor-pointer text-gray-500 dark:text-gray-400"/>
+                        <input className = {`md:hidden ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 ${enterSearchMode?'inline-flex':'hidden'}`} type = "text" placeholder="Search"/>
                         </div>
                     </div>
                     {/*centre*/}
                     <div className = "hidden md:flex md:justify-center flex-grow">
                         <div className = "flex items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 p-1.5 focus:shadow-md">
                                 <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
-                                <input className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 focus:scale-x-1" type = "text" placeholder="Search"/>
+                                <input className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400" type = "text" placeholder="Search"/>
                         </div>
                     </div>
                 {/*right*/}
                 <div className = "hidden md:flex md:items-center md:justify-end">
-                    <div onClick = {()=>{setPrevTab(tabActive); router.push('/'); setTabActive('home')}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
-                    <div onClick = {()=>{setPrevTab(tabActive); router.push('/'); setTabActive('global')}}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
-                    <div onClick = {()=>{setPrevTab(tabActive); setTabActive('notification')}}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
-                    <div onClick = {()=>{setPrevTab(tabActive); router.push('/Chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
-                    <div onClick = {()=>{setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div>
+                    <div onClick = {()=>{handleHome()}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
+                    <div onClick = {()=>{setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/'); setTabActive('global')}}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
+                    <div onClick = {()=>{setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('notification')}}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
+                    <div onClick = {()=>{setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/Chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
+                    <div onClick = {()=>{setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div>
                     <div className = "hidden md:flex px-5 text-center">
-                        <img onClick = {()=> {setPrevTab(tabActive);  router.push('/Profile'); setTabActive('profile');}}
+                        <img onClick = {()=> {setPrevPrevTab(prevTab); setPrevTab(tabActive);  router.push('/Profile'); setTabActive('profile');}}
                         className = {`h-8 w-8 avatar object-cover rounded-full cursor-pointer ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
                         src={currentUser.photoURL}/>
                     </div>
             </div>
             </div>
-                {(tabActive==='settings' || tabActive==='notification') && <div className='w-screen h-screen fixed top-0 z-50 bg-gray-900 opacity-40'/>}
+                {(tabActive==='settings' || tabActive==='notification') && <div onClick={()=>{setTabActive(prevTab); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-gray-900 opacity-40'/>}
                 <div>
                     <NotificationPane/>
                 </div>
@@ -67,6 +104,7 @@ function Header() {
                 <div>
                     <Settings/>
                 </div>
+        </PrevPrevTab.Provider>
         </PrevTab.Provider>
         </ActiveTab.Provider>
         :

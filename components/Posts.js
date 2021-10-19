@@ -2,12 +2,13 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 import { db } from '../firebase/firebase';
 import Post from './Post';
 import FlipMove from 'react-flip-move';
+import PostPlaceholder from './PostPlaceholder';
 
 function Posts() {
     console.log('made a request for realtime posts from posts')
     const [realtimePosts, loading, error] = useCollection( db.collection("posts").orderBy("timestamp", "desc"));
-    
     return (
+        realtimePosts && realtimePosts?.docs.length !== 0 ?
         <FlipMove>
             {realtimePosts?.docs.map(post => (
             <Post
@@ -22,6 +23,12 @@ function Posts() {
                 postType={post.data().postType}
             />))}
         </FlipMove>
+        :
+        <>
+        <PostPlaceholder type={'text'}/>
+        <PostPlaceholder type={'image'}/>
+        <PostPlaceholder type={'image'}/>
+        </>
     )
 }
 

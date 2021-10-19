@@ -1,7 +1,7 @@
 import {useRouter} from 'next/router';
 import {db, firebaseApp} from '../firebase/firebase';
 import { useState, useEffect } from 'react';
-import { useAuth } from '../firebase/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { AcademicCapIcon } from '@heroicons/react/outline';
 
 function AddCollege({colleges}) {

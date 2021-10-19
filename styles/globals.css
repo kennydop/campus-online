@@ -107,6 +107,5 @@ select{
 }
 
 .side-bar {
-    height: 100% !important;
     transition: 0.5s ease;
 }

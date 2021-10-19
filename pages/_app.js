@@ -7,7 +7,6 @@ import { AuthProvider } from '../contexts/AuthContext';
 
 export default function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout || ((page) => <>{page}</>)
-  const dont = Component.dont
   return(
     <AuthProvider>
       <Head>
