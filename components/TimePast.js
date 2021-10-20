@@ -57,7 +57,7 @@ function TimePast({date}) {
   }());
 
   return (
-    <div className='text-xs font-light text-gray-500 self-start'>{TimeAgo.inWords(timeAgo)}</div>
+    <div className='text-xs font-light text-gray-500'>{TimeAgo.inWords(timeAgo)}</div>
   )
 }
 

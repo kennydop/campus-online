@@ -1,21 +1,38 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import {CameraIcon, PencilIcon} from "@heroicons/react/outline";
+import {CameraIcon, PencilIcon, CheckIcon} from "@heroicons/react/outline";
+// import { CheckIcon } from "@heroicons/react/solid";
 import { useAuth } from "../contexts/AuthContext";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { db } from '../firebase/firebase';
 
 function ProfileCard() {
     const { currentUser } = useAuth();
     const [college, setCollege] = useState();
-
+    const [about, setAbout] = useState('Write some thing about yourself');
+    const [openAbout, setOpenAbout] = useState(false);
+    const aboutRef = useRef() 
     useEffect(() => {
         console.log("made a request for user's college from Profile Card")
         var ref = db.collection("users").doc(currentUser.uid)
         ref.get().then((doc)=>{
-            setCollege(doc.data().college);
+            if(doc.exists){
+                setCollege(doc.data().college);
+                if(doc.data().about){
+                    setAbout(doc.data().about)
+                }
+            }
         })
     }, [])
+
+    function handleChangeAbout(){
+        setOpenAbout(!openAbout)
+        if(aboutRef.current.value.trim()===''){
+            return
+        }
+        setAbout(aboutRef.current.value)
+        db.collection("users").doc(currentUser.uid).set({about: aboutRef.current.value},{merge: true})
+    }
 
     return (
             <div className='w-screen md:w-72 lg:w-96 md:sticky md:top-14 md:rounded-lg bg-white dark:bg-bdark-100 shadow-md md:h-screen'>
@@ -34,23 +51,29 @@ function ProfileCard() {
                     <div className='flex flex-col w-full'>
                         <div className='flex w-full'>
                             <div className = 'flex flex-col w-1/2 mt-2'>
-                                <div><p className = 'text-center text-gray-500 dark:text-gray-400 mr-12 text-lg font-medium cursor-pointer'>5.4k</p></div>
+                                <div><p className = 'text-center text-gray-500 dark:text-gray-400 mr-12 text-lg font-medium cursor-pointer'>0</p></div>
                                 <div><p className = 'text-center text-gray-500 dark:text-gray-400 mr-12 text-xs font-light cursor-pointer'>followers</p></div>
                             </div>
                             <div className = 'flex flex-col w-1/2 mt-2'>
-                                <div><p className = 'text-center text-gray-500 dark:text-gray-400 ml-12 text-lg font-medium cursor-pointer'>1</p></div>
+                                <div><p className = 'text-center text-gray-500 dark:text-gray-400 ml-12 text-lg font-medium cursor-pointer'>0</p></div>
                                 <div><p className = 'text-center text-gray-500 dark:text-gray-400 ml-12 text-xs font-light cursor-pointer'>following</p></div>
                             </div>
                         </div>
-                        <div className = 'w-full h-5 mt-1 mb-8'>
+                        <div className = 'w-full h-5 mt-1 mb-4'>
                             <div ><p className = 'text-center text-gray-500 dark:text-gray-400 text-md font-medium'>{currentUser.displayName}</p></div>
-                            <div ><p className = 'text-center text-gray-500 dark:text-gray-400 text-sm font-light'>{college}</p></div>
+                            <div ><p className = 'text-center text-gray-500 dark:text-gray-400 text-xs font-light'>{college}</p></div>
                         </div>
                     </div>
                     <div className='items-center justify-center px-16 mt-4'>
-                        <p className='text-center text-gray-500 dark:text-gray-400 text-sm font-light'>I'm GOD 😈👽😌</p>
+                        <p className='text-center text-gray-500 dark:text-gray-400 text-sm font-light'>{about}</p>
                     </div>
-                    <div className='absolute bottom-2 right-2 p-2 bg-gray-500 dark:bg-bdark-200 items-center justify-center text-white text-sm flex rounded-lg cursor-pointer shadow-md hover:shadow-lg hover:scale-102'><PencilIcon className='h-5 text-white dark:text-gray-400 text-center'/></div>
+                    {/* about */}
+                    <div className='relative flex flex-col items-center justify-center w-full'>
+                    <div className={`p-2 my-4 items-center justify-center text-white text-sm flex rounded-lg cursor-pointer shadow-md hover:shadow-lg hover:scale-102 ${openAbout?'bg-pink-500':'bg-gray-500 dark:bg-bdark-200'}`} onClick={handleChangeAbout}>{openAbout?<CheckIcon className='h-5 text-white dark:text-gray-300 text-center'/>:<PencilIcon className='h-5 text-white dark:text-gray-400 text-center'/>}</div>
+                        <div className='flex items-center justify-center w-11/12'>
+                            <input ref={aboutRef} className={`placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 rounded-full focus:ring-1 focus:ring-gray-500 h-10 p-2 overflow-hidden transition-all duration-300  ${openAbout?'w-full bg-blue-grey-50 dark:bg-bdark-200':'w-0 bg-white dark:bg-bdark-100'}`} placeholder='Write some thing about yourself' defaultValue={about==='Write some thing about yourself'?'':about}/>
+                        </div>
+                    </div>
                 </div>
             </div>
     )

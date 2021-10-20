@@ -1,4 +1,4 @@
-import { useContext, useState, createContext } from "react"
+import { useContext, useState, createContext, useEffect } from "react"
 
 const TabActive = createContext("home")
 
@@ -7,9 +7,12 @@ export function useActiveTab(){
 }
 
 export function ActiveTab({children}){
-    const [tabActive, set_TabActive] = useState('home')
-    const [prevTab, set_PrevTab] = useState()
-    const [prevPrevTab, set_PrevPrevTab] = useState()
+    const ssat = sessionStorage.getItem('activeTab')
+    const sspt = sessionStorage.getItem('prevTab')
+    const ssppt = sessionStorage.getItem('prevPrevTab')
+    const [tabActive, set_TabActive] = useState(ssat !== null ? ssat : 'home')
+    const [prevTab, set_PrevTab] = useState(sspt !== null  ? sspt : 'home')
+    const [prevPrevTab, set_PrevPrevTab] = useState(ssppt !== null  ? ssppt : 'home')
 
     function setTabActive(tab){
         set_TabActive(tab)
@@ -20,6 +23,12 @@ export function ActiveTab({children}){
     function setPrevPrevTab(tab){
         set_PrevPrevTab(tab)
     }
+
+    useEffect(() => {
+        sessionStorage.setItem('activeTab', tabActive === null || tabActive === 'undefined' ?'home':tabActive)
+        sessionStorage.setItem('prevTab',  tabActive === null || tabActive === 'undefined' ?'home':prevTab)
+        sessionStorage.setItem('prevPrevTab',  tabActive === null || tabActive === 'undefined' ?'home':prevPrevTab)
+    })
 
     const value = {
         tabActive,

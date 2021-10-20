@@ -109,3 +109,8 @@ select{
 .side-bar {
     transition: 0.5s ease;
 }
+
+.fit-content{
+    width: fit-content;
+    height: fit-content;
+}

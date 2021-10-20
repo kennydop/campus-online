@@ -13,7 +13,9 @@ function ProfileToFollow({name, pic, blurData}) {
         console.log("made a request for user's college from Profile to follow")
         var ref = db.collection("users").doc(currentUser.uid)
         ref.get().then((doc)=>{
-            setCollege(doc.data().college);
+            if(doc.exists){
+                setCollege(doc.data().college);
+            }
         })
     }, [])
     

@@ -19,11 +19,12 @@ function Header() {
     useEffect(()=>{
         if(tabActive==='settings'||tabActive==='notification' || enterSearchMode){
             document.body.classList.add('overflow-hidden')
+            // document.body.classList.add('lg:mr-4')
         }else{
             document.body.classList.remove('overflow-hidden')
+            // document.body.classList.remove('lg:mr-4')
         }
     },[tabActive, enterSearchMode])
-
     
     function handleHome(){
         setPrevPrevTab(prevTab); 
@@ -46,7 +47,7 @@ function Header() {
                     <div className = "flex items-center md:pb-0 px-2 md:px-0 mx-auto justify-between">
                         <div className="md:hidden flex text-center">
                             <img onClick={()=>{setPrevTab(tabActive); router.push('/Profile'); setTabActive('profile');}}
-                                className = 'h-8 w-8 avatar object-cover rounded-full cursor-pointer text-center'
+                                className = {`h-8 w-8 avatar object-cover rounded-full cursor-pointer text-center ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
                                 src = {currentUser.photoURL}/>
                         </div>
                         <div onClick={()=>{router.push('/')}} className="flex items-center cursor-pointer px-4 flex-shrink" href = "/">
