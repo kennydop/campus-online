@@ -15,7 +15,7 @@ export default function Home() {
     db.collection('users').doc(currentUser.uid).get().then((doc)=>{
       if(doc.exists){
           setNewbie(false)
-          setLoading(false)
+          // setLoading(false)
         }
         else{
           setNewbie(true)
@@ -24,12 +24,13 @@ export default function Home() {
           }else{
             router.replace('/addprofileimg');
           }
-          setLoading(false)
+          // setLoading(false)
         }
     })
-  }else{
-    setLoading(false)
   }
+  // else{
+  //   setLoading(false)
+  // }
   return (
     <div className='bg-blue-grey-50 dark:bg-bdark-200'>
     {currentUser?
