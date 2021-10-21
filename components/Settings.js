@@ -1,15 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import SettingItems from "./SettingItems";
 import {LogoutIcon, QuestionMarkCircleIcon, MoonIcon, ArrowLeftIcon, UserIcon} from '@heroicons/react/solid';
 import {useAuth} from "../contexts/AuthContext";
 import { useTheme } from 'next-themes'
 import { useRouter } from "next/router";
 import { useActiveTab } from "../contexts/ActiveTabContext";
+import { useEffect } from "react";
 
 function Settigs() {
     const { tabActive, prevTab, setTabActive, setPrevTab, prevPrevTab } = useActiveTab()
-    const {theme, setTheme} = useTheme()
+    const {theme, resolvedTheme, setTheme} = useTheme()
     const { logout } = useAuth();
     const router = useRouter()
+    useEffect(()=>{
+        if(!theme){
+            setTheme(resolvedTheme)
+        }
+    },[])
 
     return (
         <div className={`side-bar ${tabActive === 'settings'?'translate-x-0':'translate-x-full'}`}>

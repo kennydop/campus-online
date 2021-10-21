@@ -15,7 +15,7 @@ export default function MyApp({ Component, pageProps }) {
         <link rel='icon' href="/favicon.png"/>
       </Head>
       <ActiveTab>
-      <ThemeProvider attribute="class">
+      <ThemeProvider attribute="class" enableSystem={true} defaultTheme='system'>
         {getLayout(<Component {...pageProps} />)}
       </ThemeProvider>
       </ActiveTab>
