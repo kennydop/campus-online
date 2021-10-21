@@ -23,7 +23,7 @@ function Settigs() {
                 <div onClick={()=> {setPrevTab('settings') ;setTabActive('home')}}><SettingItems Icon={UserIcon} title = 'Account Settings'/></div>
                 <div onClick={()=> {router.replace('/'); logout(); setTabActive('home')}}><SettingItems Icon={LogoutIcon} title = 'Log Out'/></div>
             </div>
-            <div className='bottom-12 md:bottom-0 my-2 absolute w-full border-t border-gray-400 dark:border-bdark-200'>
+            <div className='bottom-20 md:bottom-0 my-2 absolute w-full border-t border-gray-400 dark:border-bdark-200'>
             <div className="flex items-center mx-4 my-2">
                 <label htmlFor="toggleB" className="flex items-center cursor-pointer">
                     <div className="relative">
