@@ -1,6 +1,7 @@
 import { useState } from "react";
 import MyPosts from "./MyPosts";
 import About from "./About";
+
 function ProfilePostsAndAbout() {
     const [tab, setTab] = useState('posts')
     

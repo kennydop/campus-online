@@ -19,14 +19,16 @@ function Header() {
     useEffect(()=>{
         if(tabActive==='settings'||tabActive==='notification' || enterSearchMode){
             document.body.classList.add('overflow-hidden')
-            // document.body.classList.add('lg:mr-4')
+            document.body.classList.add('lg:mr-4')
         }else{
             document.body.classList.remove('overflow-hidden')
-            // document.body.classList.remove('lg:mr-4')
+            document.body.classList.remove('lg:mr-4')
         }
     },[tabActive, enterSearchMode])
     
     function handleHome(){
+        if(tabActive==='home')
+            return;
         setPrevPrevTab(prevTab); 
         setPrevTab(tabActive);
         if(typeof window === 'object' && router.pathname === '/'){
@@ -71,12 +73,12 @@ function Header() {
                 {/*right*/}
                 <div className = "hidden md:flex md:items-center md:justify-end">
                     <div onClick = {()=>{handleHome()}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
-                    <div onClick = {()=>{setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/'); setTabActive('global')}}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
-                    <div onClick = {()=>{setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('notification')}}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
-                    <div onClick = {()=>{setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/Chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
-                    <div onClick = {()=>{setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div>
+                    <div onClick = {()=>{if(tabActive==='global')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/'); setTabActive('global')}}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
+                    <div onClick = {()=>{if(tabActive==='notification')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('notification')}}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
+                    <div onClick = {()=>{if(tabActive==='chat')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/Chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
+                    <div onClick = {()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div>
                     <div className = "hidden md:flex px-5 text-center">
-                        <img onClick = {()=> {setPrevPrevTab(prevTab); setPrevTab(tabActive);  router.push('/Profile'); setTabActive('profile');}}
+                        <img onClick = {()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive);  router.push('/Profile'); setTabActive('profile');}}
                         className = {`h-8 w-8 avatar object-cover rounded-full cursor-pointer ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
                         src={currentUser.photoURL}/>
                     </div>

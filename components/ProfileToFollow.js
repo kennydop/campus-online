@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 import Image from 'next/image'
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from "../contexts/AuthContext"
 import { db } from '../firebase/firebase';
 
@@ -10,7 +10,6 @@ function ProfileToFollow({name, pic, blurData}) {
     const [college, setCollege] = useState();
 
     useEffect(() => {
-        console.log("made a request for user's college from Profile to follow")
         var ref = db.collection("users").doc(currentUser.uid)
         ref.get().then((doc)=>{
             if(doc.exists){

@@ -103,7 +103,6 @@ function AddProfileImg() {
                         }).catch((error)=>{
                             setError(error.message)
                             setLoading(false)
-                            console.log(error)
                         })
         } else{
             urltp = url;
@@ -118,7 +117,6 @@ function AddProfileImg() {
                         router.replace('/addcollege')
                         }).catch((error)=>{
                             setError(error.message)
-                            console.log(error)
                         })
                 }).then(
                 setLoading(false)
@@ -136,7 +134,6 @@ function AddProfileImg() {
                         router.replace('/addcollege')
                         }).catch((error)=>{
                             setError(error.message)
-                            console.log(error)
                         })
                 }).then(
                 setLoading(false)
@@ -151,7 +148,7 @@ function AddProfileImg() {
                 <h1 className = "mb-5 text-lg font-bold text-gray-500 dark:text-gray-400">Finish Setting up your Account</h1>
             </div>
             <div className = "flex flex-col items-center mb-5">
-                <h2  onClick={()=>alert(url)} className = "text-lg text-gray-500 dark:text-gray-400 mb-3">Select A Profile Image</h2>
+                <h2  className = "text-lg text-gray-500 dark:text-gray-400 mb-3">Select A Profile Image</h2>
                 <div className = "mb-3 h-48 w-48 border-2 dark:border-gray-400 border-gray-500 rounded-full relative overflow-hidden">
                     <Image 
                     src={imgPreview ? imgPreview : Avatar}

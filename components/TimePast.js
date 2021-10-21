@@ -1,4 +1,4 @@
-function TimePast({date}) {
+function TimePast({date, read}) {
   const timeAgo = date.getTime()
   const TimeAgo = (function() {
     var self = {};
@@ -57,7 +57,11 @@ function TimePast({date}) {
   }());
 
   return (
-    <div className='text-xs font-light text-gray-500'>{TimeAgo.inWords(timeAgo)}</div>
+    read === undefined ? 
+      <div className='text-xs font-light text-gray-500 self-start'>{TimeAgo.inWords(timeAgo)}</div>
+      :
+			<div className = 'absolute bottom-3 right-3'><p className={`text-xs font-light ${read ? 'text-gray-400 dark:text-gray-500' : 'text-pink-500'}`}>{TimeAgo.inWords(timeAgo)}</p></div>
+
   )
 }
 

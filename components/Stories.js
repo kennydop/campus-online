@@ -4,7 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon} from '@heroicons/react/solid';
 
 const stories = [
     {
-        key: '11',
+        key: '111',
         name: 'my story',
     },
     {
@@ -54,6 +54,30 @@ const stories = [
         name: 'KAMI',
         src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Farthur.jpg?alt=media&token=4ac5d55f-8f01-4224-93c0-9cb1da2e9556',
         blurData: 'L7GHVV:%0g~U010hEN?F00?GQ.9c'
+    },
+    {
+        key: '9',
+        name: 'krish💦',
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2F1download%20(1).jpg?alt=media&token=7b00b65d-9e0b-49db-ad6e-5702b1d4edde',
+        blurData: 'LCD0Go-;~qM{RjWBxuRjM{ayxuxu'
+    },
+    {
+        key: '10',
+        name: 'blue💙',
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fchristina-wocintechchat-com-S3GrMiUhpNU-unsplash.jpg?alt=media&token=0caa75e2-1743-4068-95ab-b1c22314ea87',
+        blurData: 'LPF~p*xv.lMy_1xuxvR+RPWBMyjZ'
+    },
+    {
+        key: '11',
+        name: 'bree_',
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fistockphoto-1042424400-170667a.jpg?alt=media&token=6ff03bf0-e90e-49a4-8fbc-780dddd4f25c',
+        blurData: 'LB9?g[M_01-qR3xvb_IU15jX}nW='
+    },
+    {
+        key: '12',
+        name: 'narh🎀',
+        src: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fnarh.jpg?alt=media&token=38e9d671-8750-4b6b-a430-cf04161d0e5a',
+        blurData: 'L69Zcd-o015Rtlj@oLWB0fNG~B$*'
     },
 ]
 

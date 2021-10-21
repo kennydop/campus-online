@@ -5,7 +5,6 @@ import FlipMove from 'react-flip-move';
 import PostPlaceholder from './PostPlaceholder';
 
 function Posts() {
-    console.log('made a request for realtime posts from posts')
     const [realtimePosts, loading, error] = useCollection( db.collection("posts").orderBy("timestamp", "desc"));
     return (
         realtimePosts && realtimePosts?.docs.length !== 0 ?

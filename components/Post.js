@@ -16,35 +16,27 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, postI
     const { currentUser } = useAuth();
     const [hasLiked, setHasLiked] = useState(false)
     const [likes, setLikes] = useState([])
-    const [hasCommented, setHasCommented] = useState(false)
     const [comments, setComments] = useState([])
     const [openComments, setOpenComments] = useState(false)
     const comRef = useRef()
     const { theme } = useTheme()
     
     // liking
+    
     useEffect(() => {
-        console.log('made a request for hasLiked from post')
-        const postRef = db.collection('posts').doc(id)
-        postRef.collection('likes').doc(currentUser.uid).get().then((doc)=>{
-            if (doc.exists){
-                setHasLiked(true);
-            }
-        })
-    }, [])
-
-    useEffect(() => {
-        console.log('made a request for likes from post')
         const postRef = db.collection('posts').doc(id)
         postRef.collection("likes").onSnapshot((querySnapshot) => {
             setLikes(querySnapshot.docs)
         });
     }, [])
+    
+    useEffect(() => {
+        setHasLiked(likes?.findIndex((like)=> (like.id === currentUser.uid)) !== -1)
+    }, [likes])
 
     async function likePost(){
         const postRef = db.collection('posts').doc(id)
         if (hasLiked){
-            console.log('made a request to like a post')
             postRef.collection('likes').doc(currentUser.uid).delete()
             setHasLiked(false)
         }else{
@@ -55,7 +47,6 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, postI
     // commenting
 
     useEffect(() => {
-        console.log('made a request for comments from post')
         const postRef = db.collection('posts').doc(id)
         postRef.collection("comments").orderBy("timestamp", "desc").onSnapshot((querySnapshot) => {
             setComments(querySnapshot.docs)
@@ -67,7 +58,6 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, postI
         e.preventDefault();
         if(comRef.current.value.trim() !== ''){
             const postRef = db.collection('posts').doc(id)
-            console.log('made a request to comment on a post')
             await postRef.collection('comments').add({username: currentUser.displayName, comment: comRef.current.value, image: currentUser.photoURL, timestamp: firebaseApp.firestore.FieldValue.serverTimestamp()}).then(
                 comRef.current.value = ''
             )
@@ -112,7 +102,7 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, postI
                 </div>
                 {
                     <div className={`transition duration-300 ${openComments ? 'max-h-80 bg-blue-grey-50 dark:bg-bdark-200 mt-2' : 'h-0 max-h-0 hidden'}`}>
-                        <div className='overflow-y-auto max-h-60 hide-scrollbar border border-gray-300 dark:border-bdark-200'>
+                        <div className='overflow-y-auto max-h-60 hide-scrollbar border border-blue-grey-50 dark:border-bdark-200'>
                             {
                                 comments?.map((comment)=>
                                     (<Comment key={comment.id} username={comment.data().username} image={comment.data().image} comment={comment.data().comment} timestamp={comment.data().timestamp} />)

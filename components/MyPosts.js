@@ -9,7 +9,6 @@ function MyPosts() {
     const [myPosts, setMyPosts] = useState([]);
 
     useEffect(()=>{
-        console.log('made a request for my posts from my posts')
         db.collection('posts').where("author", "==", currentUser.uid).orderBy("timestamp", "desc").get().then((querrySnapshot)=>{
             setMyPosts(querrySnapshot.docs)
         })

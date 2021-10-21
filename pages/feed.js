@@ -3,7 +3,6 @@ import Trending from "../components/Trending";
 import Stories from "../components/Stories";
 import SiteLayout from "../components/SiteLayout";
 import PeopleYouMightKnow from "../components/PeopleYouMightKnow";
-import About from "../components/About";
 
 function feed() {
     
