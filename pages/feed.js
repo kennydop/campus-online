@@ -4,7 +4,7 @@ import Stories from "../components/Stories";
 import SiteLayout from "../components/SiteLayout";
 import PeopleYouMightKnow from "../components/PeopleYouMightKnow";
 
-function feed() {
+function Feed() {
     
     return (
             <div className='flex flex-grow bg-blue-grey-50 dark:bg-bdark-200 justify-center h-full'>
@@ -17,11 +17,11 @@ function feed() {
             </div>
     )
 }
-feed.getLayout = function getLayout(page) {
+Feed.getLayout = function getLayout(page) {
     return (
         <SiteLayout>
             {page}
         </SiteLayout>
     )
 }
-export default feed
+export default Feed
