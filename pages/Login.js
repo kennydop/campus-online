@@ -72,7 +72,7 @@ function Login() {
           {!currentUser && (
             <div className="w-screen flex justify-center items-center bg-blue-grey-50 dark:bg-bdark-200">
               <AuthLeft/>
-              <div className = "flex h-screen self-center w-screen lg:w-2/5 items-center justify-center bg-white dark:bg-bdark-100 lg:bg-transparent dark:lg:bg-transparent">
+              <div className = "flex h-screen self-center w-screen lg:w-2/5 items-center justify-center bg-white dark:bg-bdark-100 lg:bg-transparent lg:dark:bg-transparent">
                   <form autoComplete='on' className="authForm">
                   <div className="mb-6" >
                     <svg xmlns="http://www.w3.org/2000/svg" width="187.676" height="35.77" viewBox="0 0 187.676 35.77">
@@ -106,7 +106,7 @@ function Login() {
                     />
                   </div>
                   <a href="#" className="self-center mb-1 text-sm text-gray-500 dark:text-gray-400 hover:font-bold">Forgot password?</a>
-                  <p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Don't have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=> router.push("/Signup")}>Create one</a></p>
+                  <p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Don&apos;t have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=> router.push("/Signup")}>Create one</a></p>
                   <button disabled = {loginLoading} className="infobutton" type = "button" onClick = {loginWithEmail}>
                     {loginLoading ? <div className="loader mx-auto animate-spin"></div> : <>Login</>}
                   </button>
