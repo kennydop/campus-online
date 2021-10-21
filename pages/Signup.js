@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
-import { UserIcon, MailIcon, LockClosedIcon, PhotographIcon, AcademicCapIcon} from "@heroicons/react/outline";
+import { UserIcon, MailIcon, LockClosedIcon} from "@heroicons/react/outline";
 import AuthLeft from "../components/AuthLeft";
 import {useRouter} from 'next/router';
 import { useAuth } from "../contexts/AuthContext";

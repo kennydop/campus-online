@@ -4,7 +4,7 @@ import Avatar from "../images/avatar.jpg"
 import { useState } from "react";
 import { auth, storage } from '../firebase/firebase';
 import {useRouter} from 'next/router';
-import NotAuthorized from "../components/notAuthorized";
+import NotAuthorized from "../components/NotAuthorized";
 import { useAuth } from "../contexts/AuthContext";
 
 function AddProfileImg() {

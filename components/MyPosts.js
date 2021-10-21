@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { db } from '../firebase/firebase';
 import Post from './Post';
 import FlipMove from 'react-flip-move';
