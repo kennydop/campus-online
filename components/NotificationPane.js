@@ -15,18 +15,15 @@ function NotificationPane() {
                 <div className='self-center text-gray-500 dark:text-gray-400 items-center'>Notifications</div>
             </div>
             <div className='hide-scrollbar overflow-y-auto h-full cursor-default'>
+                <Notification text={`All your notifications appear hear`}/>
                 <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`}/>
-                <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`}/>
-                <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`} read={true}/>
-                <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`} read={true}/>
-                <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`} read={true}/>
-                <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`} read={true}/>
-                <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`} read={true}/>
-                <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`}/>
-                <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`} read={true}/>
-                <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`}/>
-                <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`} read={true}/>
-                <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`}/>
+                <Notification text={`Check out what's trending, ${currentUser.displayName}`}/>
+                <Notification text={`Make your first post`} read={true}/>
+                <Notification text={`Choose between global or home feed to see what's happening globally or on your campus`} read={true}/>
+                <Notification text={`You can update yout info in your profile`} read={true}/>
+                <Notification text={`Text with friends on the chats page`} read={true}/>
+                <Notification text={`Choose between light and dark theme from settings`} read={true}/>
+                <div className='mt-20'/>
             </div>
         </div>
     )

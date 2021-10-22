@@ -10,7 +10,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 
 function Header() {
-    const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+    const { tabActive, prevTab, prevPrevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
     const { currentUser } = useAuth();
     const [enterSearchMode, setEnterSearchMode] = useState(false);
     const router = useRouter();
@@ -84,7 +84,7 @@ function Header() {
                     </div>
             </div>
             </div>
-                {(tabActive==='settings' || tabActive==='notification') && <div onClick={()=>{setTabActive(prevTab); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
+                {(tabActive==='settings' || tabActive==='notification') && <div onClick={()=>{setTabActive(prevTab==='settings' || prevTab==='notification' ? prevPrevTab : prevTab); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
                 <div>
                     <NotificationPane/>
                 </div>

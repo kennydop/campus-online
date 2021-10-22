@@ -65,7 +65,7 @@ const messages = [
 		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fchats%2Ftom.jpg?alt=media&token=2ea4feb3-09d4-45ea-b4fe-4946a9c9bc7d',
 		sender: 'tom🏳‍🌈',
 		time: '10/21/2021 11:54',
-		text: "When's it",
+		text: "When's it?",
 		read: true,
 	},
 	{

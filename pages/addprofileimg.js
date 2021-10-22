@@ -117,28 +117,11 @@ function AddProfileImg() {
                         router.replace('/addcollege')
                         }).catch((error)=>{
                             setError(error.message)
+                            setLoading(false)
                         })
-                }).then(
-                setLoading(false)
-                )
+                })
             })
         }
-        const uploadTask = storage.ref(`profilePictures/${currentUser.uid}`).putString(urltp, 'data_url');
-                uploadTask.on("state_change", null, (error) => setError(error.message),
-                ()=> {
-            // when the upload completes
-                storage.ref('profilePictures').child(currentUser.uid).getDownloadURL().then(url => {
-                    auth.currentUser.updateProfile({
-                        photoURL: url
-                    }).then(()=>{
-                        router.replace('/addcollege')
-                        }).catch((error)=>{
-                            setError(error.message)
-                        })
-                }).then(
-                setLoading(false)
-                )
-            })
     }
 
     return (
