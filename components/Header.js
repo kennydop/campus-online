@@ -27,15 +27,15 @@ function Header() {
     },[tabActive, enterSearchMode])
     
     function handleHome(){
-        if(tabActive==='home')
-            return;
-        setPrevPrevTab(prevTab); 
-        setPrevTab(tabActive);
         if(typeof window === 'object' && router.pathname === '/'){
             window.scrollTo({top: 0, behavior: 'smooth'})
         }else{
         router.push('/');
         }
+        if(tabActive==='home')
+            return;
+        setPrevPrevTab(prevTab); 
+        setPrevTab(tabActive);
         setTabActive('home')
     }
 
