@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
 				break;
 		}
 
-		return auth.signInWithRedirect(provider).catch((error)=>{alert(error.code); console.error(error); return error})
+		return auth.signInWithRedirect(provider)
 	}
 
 	function logout() {

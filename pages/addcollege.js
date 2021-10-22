@@ -65,7 +65,7 @@ function AddCollege({colleges}) {
     }
 
     return (
-        <div className = "h-screen flex flex-col items-center justify-center dark:bg-bdark-100">
+        <div className = "h-screen flex flex-col items-center justify-center bg-white dark:bg-bdark-100">
             <div className = "mb-10"><h1 className = "text-lg font-bold text-gray-500 dark:text-gray-400">Finish Setting up your Account</h1></div>
                 {error&&<p className='errorMsg'>{error}</p>}
             <div className = "bg-blue-grey-50 dark:bg-bdark-200 rounded-full justify-center h-12 w-80 mb-5 p-1">
