@@ -63,8 +63,9 @@ function Login() {
           setError('Please check your internet connection')
           break;
         default:
-          setError('Unable to login, try again please')
-          console.log(error)
+          setError(error.message)
+          console.error(error)
+          alert(error.code)
           break;
       }
     }
