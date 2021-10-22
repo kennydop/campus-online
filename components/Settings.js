@@ -13,11 +13,8 @@ function Settigs() {
     const { logout } = useAuth();
     const router = useRouter()
     useEffect(()=>{
-        console.log(theme)
-        console.log(typeof(theme))
         if(!theme || theme === 'system'){
             setTheme(resolvedTheme)
-            console.log(theme)
         }
     },[])
 
