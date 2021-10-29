@@ -12,11 +12,9 @@ export const updateUserInfo = async (req, res) => {
             }
         }
         try {
-            const user = await User.findByIdAndUpdate(req.params.id, {
-            $set: req.body,
-            });
-            const userToReturn = await User.findById(req.params.id);
-            res.status(200).json(userToReturn);
+            await User.findByIdAndUpdate(req.params.id, {$set: req.body,});
+            const user = await User.findById(req.params.id);
+            res.status(200).json(user);
         } catch (error) {
             return res.status(500).json(error);
         }

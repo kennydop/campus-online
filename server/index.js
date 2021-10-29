@@ -3,9 +3,10 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import helmet from "helmet"
 import morgan from "morgan";
-import userRoute from "./routes/users.js"
+import userRoute from "./routes/users.js";
 import authRoute from "./routes/auth.js";
 import postRoute from "./routes/posts.js";
+import storyRoute from "./routes/stories.js";
 
 dotenv.config();
 const app = express();
@@ -23,6 +24,7 @@ app.use(morgan("common"));
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
+app.use("/api/stories", storyRoute);
 
 app.listen(5000, () => {
   console.log("Backend server is running!");
