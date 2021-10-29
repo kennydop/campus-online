@@ -84,6 +84,19 @@ export const getFollowSuggestions = async (req, res) => {
         console.log(error);
     }
 }
+
+//search user
+export const searchUser = async (req, res) => {
+    try{
+        const matches = await User.find({ username: { $regex : req.params.st, $options: "i"} });
+        res.status(200).json(matches);
+    }catch(error){
+        console.log(error);
+        res.status(500).json(error);
+    }
+}
+
+
 //unfollow a user
 
 // router.put("/:id/unfollow", async (req, res) => {
