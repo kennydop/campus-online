@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { createNewPost, deletePost, getAPost, getFeedPosts, getGlobalPosts, getUserPosts, handlePostLike, updatePost } from "../controllers/postsControllers.js";
+import { createNewComment, createNewPost, deleteComment, deletePost, getAllComments, getAPost, getFeedPosts, getGlobalPosts, getUserPosts, handlePostLike, updatePost } from "../controllers/postsControllers.js";
 
 const router = Router();
 
@@ -12,9 +12,6 @@ router.put("/:id", updatePost);
 //delete a post
 router.delete("/:id", deletePost);
 
-//like / dislike a post
-router.put("/:id/like", handlePostLike);
-
 //get a post
 router.get("post/:id", getAPost);
 
@@ -26,5 +23,17 @@ router.get("/global", getGlobalPosts);
 
 // get user posts
 router.get("/user/:id", getUserPosts);
+
+//like / dislike a post
+router.put("/:id/like", handlePostLike);
+
+// comment on a post
+router.put("/:id/comment", createNewComment)
+
+// get all comments
+router.get("/:id/comments", getAllComments)
+
+// delete comment
+router.delete("/:id/comment", deleteComment)
 
 export default router;

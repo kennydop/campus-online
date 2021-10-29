@@ -7,8 +7,8 @@ export const createNewPost = async (req, res) => {
     try {
         const savedPost = await newPost.save();
         res.status(200).json(savedPost);
-    } catch (err) {
-        res.status(500).json(err);
+    } catch (error) {
+        res.status(500).json(error);
     }
 }
 
@@ -21,8 +21,8 @@ export const updatePost = async (req, res) => {
         } else {
             res.status(403).json("you can update only your post");
         }
-    } catch (err) {
-        res.status(500).json(err);
+    } catch (error) {
+        res.status(500).json(error);
     }
 }
 
@@ -35,23 +35,25 @@ export const deletePost = async (req, res) => {
         } else {
             res.status(403).json("you can't delete this post");
         }
-    } catch (err) {
-    res.status(500).json(err);
+    } catch (error) {
+    res.status(500).json(error);
     }
 }
 
 export const handlePostLike = async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id);
+        var post = await Post.findById(req.params.id);
         if (!post.likes.includes(req.body.userId)) {
             await post.updateOne({ $push: { likes: req.body.userId } });
-            res.status(200).json("The post has been liked");
+            post = await Post.findById(req.params.id);
+            const newNumOfLikes = await post.likes
+            res.status(200).json(newNumOfLikes);
         } else {
             await post.updateOne({ $pull: { likes: req.body.userId } });
             res.status(200).json("The post has been disliked");
         }
-    } catch (err) {
-    res.status(500).json(err);
+    } catch (error) {
+    res.status(500).json(error);
     }
 }
 
@@ -59,8 +61,8 @@ export const getAPost = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
         res.status(200).json(post);
-    } catch (err) {
-        res.status(500).json(err);
+    } catch (error) {
+        res.status(500).json(error);
     }
 }
 
@@ -70,15 +72,15 @@ export const getFeedPosts = async (req, res) => {
         const userPosts = await Post.find({ userId: currentUser._id });
         const friendPosts = await Promise.all(
             currentUser.followings.map((friendId) => {
-            return Post.find({ userId: friendId });
+                return Post.find({ userId: friendId });
             })
         );
         const localPosts = await Post.find({college: currentUser.college})
         var allPosts = [...userPosts, ...friendPosts, ...localPosts];
         res.json(allPosts)
-    } catch (err) {
-        res.status(500).json(err);
-        console.log(err)
+    } catch (error) {
+        res.status(500).json(error);
+        console.log(error)
     }
 }
 
@@ -86,8 +88,8 @@ export const getGlobalPosts = async (req, res) => {
     try {
         const allPosts = await Post.find();
         res.json(allPosts)
-    } catch (err) {
-        res.status(500).json(err);
+    } catch (error) {
+        res.status(500).json(error);
     }
 }
 
@@ -96,8 +98,39 @@ export const getUserPosts =  async (req, res) => {
         const userPosts = await Post.find({ userId: req.params.id });
         res.json(userPosts)
         console.log(userPosts)
-    } catch (err) {
-        res.status(500).json(err);
-        console.log(err)
+    } catch (error) {
+        res.status(500).json(error);
+        console.log(error)
     }
 }
+
+export const getAllComments = async (req, res) => {
+    Post.find()
+}
+
+export const createNewComment = async (req, res) => {
+    try{
+        var post = await Post.findById(req.params.id)
+        await post.updateOne({$push: {comments: req.body}})
+        post = await Post.findById(req.params.id)
+        const newComments = await post.comments
+        res.status(200).json(newComments)
+    }catch(error){
+        res.status(500).json(error)
+        console.log(error)
+    }
+}
+
+export const deleteComment = async (req, res) => {
+    try{
+        var post = await Post.findById(req.params.id)
+        await post.updateOne({$pull: {comments: req.body}})
+        post = await Post.findById(req.params.id)
+        const newComments = await post.comments
+        res.status(200).json(newComments)
+    }catch(error){
+        res.status(500).json(error)
+        console.log(error)
+    }
+}
+

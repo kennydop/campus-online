@@ -17,8 +17,8 @@ export const createNewUser = async (req, res) => {
         //save user and respond
         const user = await newUser.save();
         res.status(200).json(user);
-    } catch (err) {
-        res.status(500).json(err)
+    } catch (error) {
+        res.status(500).json(error)
     }
 }
 
@@ -31,9 +31,9 @@ export const logInUser = async (req, res) => {
         !validPassword && res.status(400).json("wrong password")
     
         res.status(200).json(user)
-    } catch (err) {
-        res.status(500).json(err)
-        console.log(err)
+    } catch (error) {
+        res.status(500).json(error)
+        console.log(error)
     }
 }
 
@@ -45,8 +45,8 @@ export const resetUserPassword = async (req, res) => {
     
         const user = await User.findByIdAndUpdate(req.body.userId, {password: hashedPassword})
         res.status(200).json(user);
-    } catch (err) {
-        res.status(500).json(err)
-        console.log(err)
+    } catch (error) {
+        res.status(500).json(error)
+        console.log(error)
     }
 }

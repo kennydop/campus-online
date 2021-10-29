@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { deleteUser, getAUser, handleFollow, updateUserInfo } from "../controllers/usersControllers.js";
+import { deleteUser, getAUser, handleFollow, updateUserInfo, getFollowSuggestions } from "../controllers/usersControllers.js";
 
 const router = Router();
 
@@ -15,5 +15,7 @@ router.get("/:id", getAUser);
 //follow a user
 router.put("/:id/follow", handleFollow);
 
+//get follow suggestions
+router.get("/:id/suggestions", getFollowSuggestions);
 
 export default router;
