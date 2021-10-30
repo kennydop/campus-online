@@ -20,8 +20,8 @@ function ProfileToFollow({name, pic, blurData}) {
     }, [])
     
     return (
-        <div className='flex items-center border-b dark:border-bdark-200 px-2 py-4 text-gray-500 dark:text-gray-400 cursor-default'>
-            <div className='h-12 w-12 rounded-full overflow-hidden relative'>
+        <div className='flex items-center bg-white dark:bg-bdark-100 rounded-lg shadow-md px-2 py-4 mb-2 text-gray-500 dark:text-gray-400 cursor-default w-72'>
+            <div className='h-9 w-9 rounded-full overflow-hidden relative'>
                 <Image 
                     className='object-cover rounded-full'
                     src={pic}
@@ -32,9 +32,9 @@ function ProfileToFollow({name, pic, blurData}) {
             </div>
             <div className='ml-3'>
                 <p>{name}</p>
-                <p className='text-xs font-light w-full truncate'>{college}</p>
+                <p className='text-xs font-light w-4/6 truncate'>{college}</p>
             </div>
-            <div className={`p-1 absolute right-6 mb-5 dark:text-gray-200 rounded-lg shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-xs ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={()=>{buttonText === 'Follow'?setButtonText('Following'):setButtonText('Follow')}}>{buttonText}</div>
+            <div className={`py-1 px-1.5 absolute right-6 mb-5 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-xs ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={()=>{buttonText === 'Follow'?setButtonText('Following'):setButtonText('Follow')}}>{buttonText}</div>
         </div>
     )
 }

@@ -1,27 +1,21 @@
-import FeedLayout from "../components/FeedLayout";
-import Trending from "../components/Trending";
+import FeedContent from "../components/FeedContent";
 import Stories from "../components/Stories";
-import SiteLayout from "../components/SiteLayout";
-import PeopleYouMightKnow from "../components/PeopleYouMightKnow";
+import { FeedLayout } from "../Layouts/Layouts";
 
 function Feed() {
     
     return (
-            <div className='flex flex-grow bg-blue-grey-50 dark:bg-bdark-200 justify-center h-full'>
-                <Trending />
-                <div>
-                <Stories />
-                <FeedLayout />
-                </div>
-                <PeopleYouMightKnow/>
-            </div>
+        <div>
+            <Stories />
+            <FeedContent />
+        </div>
     )
 }
 Feed.getLayout = function getLayout(page) {
     return (
-        <SiteLayout>
+        <FeedLayout>
             {page}
-        </SiteLayout>
+        </FeedLayout>
     )
 }
 export default Feed

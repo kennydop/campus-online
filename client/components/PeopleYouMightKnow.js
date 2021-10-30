@@ -29,11 +29,14 @@ const profiles = [
 
 function PeopleYouMightKnow() {
     return (
-        <div className='hidden xl:w-1/4 xl:block h-full sticky top-20 m-2 mt-3 p-2 bg-white dark:bg-bdark-100 rounded-lg shadow-md'>
-            <div className='border-b dark:border-bdark-200 p-2 text-gray-500 dark:text-gray-400 text-center font-bold'>
+        <div className='hidden lg:block w-full sticky top-16 mt-16 p-2'>
+            <div className='p-2 text-gray-500 dark:text-gray-400 text-center font-bold cursor-default'>
                 <p>Suggestions to follow</p>
             </div>
             {profiles.map((profile)=> <ProfileToFollow key={profile.key} name={profile.name} pic={profile.pic} blurData={profile.blurData}/>)}
+            <div className='text-center text-pink-500  cursor-pointer hover:font-bold fit-content mx-auto'>
+                <p>More</p>
+            </div>
         </div>
     )
 }

@@ -114,3 +114,9 @@ select{
     width: fit-content;
     height: fit-content;
 }
+
+@variants responsive{
+    .minus-header{
+        height: calc(100vh - 50px);
+    }
+}

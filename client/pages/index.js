@@ -1,6 +1,5 @@
 import Feed from './feed';
 import Login from './Login';
-import SiteLayout from '../components/SiteLayout';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from "../firebase/firebase";
 import { useState } from 'react';
@@ -14,6 +13,7 @@ export default function Home() {
     db.collection('users').doc(currentUser.uid).get().then((doc)=>{
       if(doc.exists){
           setNewbie(false)
+          router.push('/feed')
         }
         else{
           if(currentUser.photoURL){
@@ -29,18 +29,12 @@ export default function Home() {
   return (
     <div className='bg-blue-grey-50 dark:bg-bdark-200'>
     {currentUser?
-        !newbie ? <Feed/> : <></>
+        // !newbie ? <Feed/> :
+      <></>
     :
     <Login/>
     }
 
     </div>
-  )
-}
-Home.getLayout = function getLayout(page) {
-  return (
-      <SiteLayout>
-          {page}
-      </SiteLayout>
   )
 }

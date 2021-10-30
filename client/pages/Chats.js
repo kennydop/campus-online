@@ -1,6 +1,6 @@
 import Chat from '../components/Chat'
 import NotAuthorized from '../components/NotAuthorized';
-import SiteLayout from '../components/SiteLayout';
+import { SiteLayout } from '../Layouts/Layouts';
 import { useAuth } from '../contexts/AuthContext';
 
 const messages = [

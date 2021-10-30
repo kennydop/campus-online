@@ -1,7 +1,7 @@
 import AddPost from "./AddPost"
 import Posts from "./Posts"
 
-function FeedLayout() {
+function FeedContent() {
     return (
         <div className='flex flex-col'>
             <div className='mx-auto'>
@@ -13,4 +13,4 @@ function FeedLayout() {
     )
 }
 
-export default FeedLayout
+export default FeedContent
