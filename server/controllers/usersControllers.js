@@ -88,7 +88,7 @@ export const getFollowSuggestions = async (req, res) => {
 //search user
 export const searchUser = async (req, res) => {
     try{
-        const matches = await User.find({ username: { $regex : req.params.st, $options: "i"} });
+        const matches = await User.find({ username: { $regex : req.query.search, $options: "i"} });
         res.status(200).json(matches);
     }catch(error){
         console.log(error);

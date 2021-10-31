@@ -19,6 +19,6 @@ router.put("/:id/follow", handleFollow);
 router.get("/:id/suggestions", getFollowSuggestions);
 
 //search user
-router.get('/search/:st', searchUser)
+router.get("/", searchUser)
 
 export default router;
