@@ -5,11 +5,11 @@ import { ProfileLayout } from '../Layouts/Layouts';
 
 function Profile() {
     return (
-        <div className='flex-1 flex-col w-screen md:w-full justify-center'>
+        <>
             <ProfileCard />
             <About/>
             <MyPosts/>
-        </div>
+        </>
     )
 }
 Profile.getLayout = function getLayout(page) {

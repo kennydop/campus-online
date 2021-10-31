@@ -119,4 +119,7 @@ select{
     .minus-header{
         height: calc(100vh - 50px);
     }
+    .w-tt {
+        width: 23.5%;
+    }
 }

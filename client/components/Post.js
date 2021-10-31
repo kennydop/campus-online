@@ -67,12 +67,12 @@ const Post = forwardRef(({key, id, name, email, timestamp, image, message, postI
     }
 
     return (
-        <div ref={ref} className='w-screen p-1.5 md:w-102'>
+        <div ref={ref} className='w-screen p-1.5 md:w-105'>
             <div className='p-2 rounded-lg shadow-md bg-white dark:bg-bdark-100 flex flex-grow flex-col'>
                 <div className='py-1 text-center flex space-x-4 border-b border-gray-200 dark:border-bdark-200'>
                     <img className='h-9 w-9 rounded-full object-cover' src={image}/>
                     <div className='flex justify-center items-center space-x-5'>
-                        <p className='text-gray-600 dark:text-gray-400'>{name}</p>
+                        <p className='text-gray-600 dark:text-gray-400 text-lg'>{name}</p>
                         {timestamp && <TimePast date={new Date(timestamp?.toDate())}/>}
                     </div>
                 </div>

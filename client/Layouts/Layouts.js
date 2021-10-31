@@ -8,12 +8,10 @@ export function FeedLayout({children}) {
         <>
             <Header/>
             <ButtomNavbar/>
-            <div className='flex flex-grow bg-blue-grey-50 dark:bg-bdark-200 justify-center'>
-                <main>{children}</main>
-                <div>
-                    <Trending />
-                    <PeopleYouMightKnow/>
-                </div>
+            <div className='flex flex-grow bg-blue-grey-50 dark:bg-bdark-200 justify-center h-full'>
+                <Trending />
+                {children}
+                <PeopleYouMightKnow/>
             </div>
         </>
     )
@@ -34,11 +32,9 @@ export function ProfileLayout({children}){
         <>
             <Header/>
             <ButtomNavbar/>
-            <div className='flex'>
-                {children}
-                <div className='mr-6'>
-                    <Trending/>
-                    <PeopleYouMightKnow/>
+            <div className='justify-center'>
+                <div>
+                    {children}
                 </div>
             </div>
         </>

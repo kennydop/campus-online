@@ -15,41 +15,41 @@ function Login() {
   const { loginWithProvider, login } = useAuth()
 
   async function loginWithEmail(){
-    setError('');
-    setLoginLoading(true);
-    if(!email){
-      setError("Please enter your Email");
-      setLoginLoading(false);
-    }
-    else if(!password){
-      setError("Please enter a Password");
-      setLoginLoading(false);
-    }else{
-      try{
-        await login(email, password)
-        router.replace('/')
-      }
-      catch(error){
-        switch (error.code) {
-          case 'auth/user-not-found':
-            setError('Account not found')
-            break;
-          case 'auth/wrong-password':
-            setError('Invalid password')
-            break;
-          case 'auth/network-request-failed':
-            setError('Please check your internet connection')
-            break;
-          case "auth/invalid-email":
-            setError('Invalid Email')
-            break;
-          default:
-            setError('Unable to login, try again please')
-            break;
-        }
-      }
-      setLoginLoading(false);
-    }
+    // setError('');
+    // setLoginLoading(true);
+    // if(!email){
+    //   setError("Please enter your Email");
+    //   setLoginLoading(false);
+    // }
+    // else if(!password){
+    //   setError("Please enter a Password");
+    //   setLoginLoading(false);
+    // }else{
+    //   try{
+    //     await login(email, password)
+    //     router.replace('/')
+    //   }
+    //   catch(error){
+    //     switch (error.code) {
+    //       case 'auth/user-not-found':
+    //         setError('Account not found')
+    //         break;
+    //       case 'auth/wrong-password':
+    //         setError('Invalid password')
+    //         break;
+    //       case 'auth/network-request-failed':
+    //         setError('Please check your internet connection')
+    //         break;
+    //       case "auth/invalid-email":
+    //         setError('Invalid Email')
+    //         break;
+    //       default:
+    //         setError('Unable to login, try again please')
+    //         break;
+    //     }
+    //   }
+    //   setLoginLoading(false);
+    // }
   }
 
   async function loginWithSocials(pvd){
@@ -86,7 +86,8 @@ function Login() {
               <input
                 value={email}
                 onChange={e=> setEmail(e.target.value)}
-                type="text"
+                type="email"
+                required={true}
                 placeholder="Email"
                 autoComplete="email"
                 className="infofield"

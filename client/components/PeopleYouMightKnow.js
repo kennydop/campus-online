@@ -29,7 +29,7 @@ const profiles = [
 
 function PeopleYouMightKnow() {
     return (
-        <div className='hidden lg:block w-full sticky top-16 mt-16 p-2'>
+        <div className='hidden h-full lg:block sticky top-20 pb-2 w-tt'>
             <div className='p-2 text-gray-500 dark:text-gray-400 text-center font-bold cursor-default'>
                 <p>Suggestions to follow</p>
             </div>
