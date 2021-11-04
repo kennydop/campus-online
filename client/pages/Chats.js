@@ -1,5 +1,5 @@
 import Chat from '../components/Chat'
-import NotAuthorized from '../components/NotAuthorized';
+import { useRef, useState } from 'react';
 import { SiteLayout } from '../Layouts/Layouts';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -88,7 +88,7 @@ const messages = [
 		key: '11',
 		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fmoon.jpg?alt=media&token=319ab979-efbf-4a6b-a5c6-da76b933e1be',
 		sender: '🌝mo.on🌚',
-		time: '10/19/2021 4:11',
+		time: '10/19/2021 1:11',
 		text: 'Thank you',
 		read: true,
 	},
@@ -96,30 +96,45 @@ const messages = [
 		key: '12',
 		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Frue.jpg?alt=media&token=bd05af33-a8ca-457e-b67b-d0e86387c4f5',
 		sender: 'rue',
-		time: '10/19/2021 12:56',
+		time: '10/19/2021 4:56',
 		text: 'Cool',
 		read: true,
 	},
 ]
 
 function Chats(){
-	const {currentUser} = useAuth()
-	
+	const {currentUser} = useAuth();
+	const messageRef = useRef(null);
+	const [ showChat, setShowChat ] = useState(false);
+	const sendMessage = async (e) => {
+		e.preventDefault()
+	}
+
 	return(	
-		currentUser?
-		<div className='bg-blue-grey-50 dark:bg-bdark-200'>
-			<div className='flex h-full'>
-				<div className='w-full md:w-96 md:left-0 md:sticky h-full overflow-y-auto bg-white dark:bg-bdark-100 shadow-md'>
-					<div className='mb-14 md:mb-1'>
-						{messages.map(message=>
-							<Chat key={message.key} img={message.img} sender={message.sender} text={message.text} time={message.time} read={message.read}/>
-							)}
+		<div className='flex bg-blue-grey-50 dark:bg-bdark-200 minus-header justify-center items-center'>
+			<div className='flex h-full w-full lg:h-5/6 lg:w-3/5 rounded-lg overflow-hidden lg:border border-pink-500'>
+				<div className='w-full md:w-2/5 md:left-0 h-full overflow-y-auto bg-white dark:bg-bdark-100 shadow-md'>
+					{messages.map(message=>
+						<Chat key={message.key} img={message.img} sender={message.sender} text={message.text} time={message.time} read={message.read}/>
+					)}
+					<div className='mt-14 md:mt-0'></div>
+				</div>
+				<div className='hidden md:block w-full md:w-3/5 h-full border-l border-pink-500 overflow-y-auto relative'>
+					<div className='h-88p'>
+
+					</div>
+					<div className='shadow-mdt h-12p w-full bg-white dark:bg-bdark-100 flex items-center justify-center'>
+						<form className='flex flex-1 items-center justify-center'>
+							<input className='outline-none bg-blue-grey-50 dark:bg-bdark-200 placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 rounded-full focus:ring-1 focus:ring-gray-500 h-8 p-2 overflow-hidden w-10/12' 
+								ref={messageRef}
+								type='text'
+								placeholder="Type a message"/>
+							<button hidden onClick={sendMessage}></button>
+						</form>
 					</div>
 				</div>
 			</div>
 		</div>
-		:
-		<NotAuthorized/>
 	)
 }
 Chats.getLayout = function getLayout(page) {

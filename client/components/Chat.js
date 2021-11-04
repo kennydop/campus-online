@@ -9,7 +9,7 @@ function Chat({key, img, sender, text, time, read}){
 				<img className='h-12 w-12 object-cover rounded-full text-center' src={img}/>
 			</div>
 			<div className='flex flex-col'>
-				<p className={`self-start ${read?'text-gray-500 dark:text-gray-400':'text-pink-500'}`}>{text}</p>
+				<p className={`self-start truncate w-44 ${read?'text-gray-500 dark:text-gray-400':'text-pink-500'}`}>{text}</p>
 				<p className={`self-start text-sm font-light ${read?'text-gray-500 dark:text-gray-400':'text-pink-500'}`}>{sender}</p>
 			</div>
 			{/* <div className = 'absolute bottom-3 right-3'><p className={`text-xs font-light ${read ? 'text-gray-400 dark:text-gray-500' : 'text-pink-500'}`}>{time}</p></div> */}

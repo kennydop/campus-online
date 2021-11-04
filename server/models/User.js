@@ -4,20 +4,20 @@ const UserSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      require: true,
+      // require: true,
       min: 3,
       max: 20,
       unique: true,
     },
     email: {
       type: String,
-      required: true,
+      // required: true,
       max: 50,
       unique: true,
     },
     password: {
       type: String,
-      required: true,
+      // required: true,
       min: 6,
     },
     profilePicture: {
@@ -27,6 +27,10 @@ const UserSchema = new mongoose.Schema(
     coverPicture: {
       type: String,
       default: "",
+    },
+    provider: {
+      type: String,
+      default: "email"
     },
     college: {
       type: String,

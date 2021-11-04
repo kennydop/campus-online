@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 
+// update user info
 export const updateUserInfo = async (req, res) => {
     if (req.body.userId === req.params.id || req.body.isAdmin) {
         if (req.body.password) {
@@ -23,6 +24,7 @@ export const updateUserInfo = async (req, res) => {
     }
 }
 
+// delete a user
 export const deleteUser = async (req, res) => {
     if (req.body.userId === req.params.id || req.body.isAdmin) {
         try {
@@ -36,9 +38,12 @@ export const deleteUser = async (req, res) => {
     }
 }
 
+// get a user
 export const getAUser = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
+        var user = await User.findOne({username: req.params.id});
+        if(!user){user = await User.findOne({email: req.params.id})};
+        if(!user){ user = await User.findById(req.params.id) };
         const { password, updatedAt, ...other } = user._doc;
         res.status(200).json(other);
     } catch (error) {
@@ -46,6 +51,8 @@ export const getAUser = async (req, res) => {
     }
 }
 
+
+// follow a user
 export const handleFollow = async (req, res) => {
     if (req.body.userId !== req.params.id) {
         try {

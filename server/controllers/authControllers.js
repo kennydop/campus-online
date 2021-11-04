@@ -10,13 +10,14 @@ export const createNewUser = async (req, res) => {
 
         //create new user
         const newUser = new User({
-        username: req.body.username,
-        email: req.body.email,
-        password: hashedPassword,
+            username: req.body.username,
+            email: req.body.email,
+            password: hashedPassword,
         });
         //save user and respond
         const user = await newUser.save();
-        res.status(200).json(user);
+        const { password, ...other } = user._doc;
+        res.status(200).json(other);
     } catch (error) {
         res.status(500).json(error)
     }
@@ -24,13 +25,35 @@ export const createNewUser = async (req, res) => {
 
 export const logInUser = async (req, res) => {
     try {
-        const user = await User.findOne({ email: req.body.email });
+        var user = await User.findOne({ email: req.body.email });
+        if(!user) {user = await User.findOne({ username: req.body.email })}
         !user && res.status(404).json("user not found");
     
         const validPassword = await bcrypt.compare(req.body.password, user.password)
         !validPassword && res.status(400).json("wrong password")
-    
-        res.status(200).json(user)
+
+        const { password, ...other } = user._doc;
+        res.status(200).json(other)
+    } catch (error) {
+        res.status(500).json(error)
+        console.log(error)
+    }
+}
+
+export const logInWithProvider = async (req, res) => {
+    try {
+        var user = await User.findOne({ email: req.body.email });
+        if(!user) {user = await User.findOne({ username: req.body.email })}
+        if(!user){
+            const newUser = new User({
+                username: req.body.username,
+                email: req.body.email,
+                provider: req.params.provider,
+            });
+            user = await newUser.save();
+        }
+        const { password, ...other } = user._doc;
+        res.status(200).json(other);
     } catch (error) {
         res.status(500).json(error)
         console.log(error)
