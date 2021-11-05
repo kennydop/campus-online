@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Chat from '../components/Chat'
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { SiteLayout } from '../Layouts/Layouts';
 import { useAuth } from '../contexts/AuthContext';
+import { useActiveTab } from "../contexts/ActiveTabContext";
 
 const messages = [
 	{
@@ -106,6 +108,15 @@ function Chats(){
 	const {currentUser} = useAuth();
 	const messageRef = useRef(null);
 	const [ showChat, setShowChat ] = useState(false);
+	const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+
+    useEffect(()=>{
+        if(tabActive==='chat')return; 
+        setPrevPrevTab(prevTab); 
+        setPrevTab(tabActive); 
+        setTabActive('chat');
+    },[])
+	
 	const sendMessage = async (e) => {
 		e.preventDefault()
 	}
