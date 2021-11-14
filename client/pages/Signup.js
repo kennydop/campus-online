@@ -19,39 +19,40 @@ function Signup() {
 	async function registerWithEmail () {
 		setError('');
 		setSignUpLoading(true);
-		if(!name){
-			setError("Please enter a Username");
-			setSignUpLoading(false)
-		}
-		else if(!email){
-			setError("Please enter your Email");
-			setSignUpLoading(false);
-		}
-		else if(!password){
-			setError("Please enter a Password");
-			setSignUpLoading(false);
-		}
-		else{
+		// if(!name){
+		// 	setError("Please enter a Username");
+		// 	setSignUpLoading(false)
+		// }
+		// else if(!email){
+		// 	setError("Please enter your Email");
+		// 	setSignUpLoading(false);
+		// }
+		// else if(!password){
+		// 	setError("Please enter a Password");
+		// 	setSignUpLoading(false);
+		// }
+		// else{
 			try{
 				await signup(email, password, name)
-				router.replace('/addprofileimg')
+				// router.replace('/addprofileimg')
 			}
 			catch(error){
-				switch (error.code) {
-					case 'auth/network-request-failed':
-						setError('Please check your internet connection')
-					break;
-					case "auth/invalid-email":
-						setError('Invalid Email')
-					break;
-					default:
-						setError('Unable to create account, try again please')
-					break;
+				// switch (error.code) {
+				// 	case 'auth/network-request-failed':
+				// 		setError('Please check your internet connection')
+				// 	break;
+				// 	case "auth/invalid-email":
+				// 		setError('Invalid Email')
+				// 	break;
+				// 	default:
+				// 		setError('Unable to create account, try again please')
+				// 	break;
+        console.log(error)
 				}
-			}
+			// }
 			setSignUpLoading(false);
 		}
-	}
+	// }
 	
 	async function loginWithSocials(pvd){
 		try{

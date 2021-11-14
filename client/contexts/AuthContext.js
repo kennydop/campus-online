@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect, createContext } from "react"
 import { auth, firebaseApp } from "../firebase/firebase"
+import axios from "axios"
 
 const AuthContext = createContext()
 
@@ -9,16 +10,26 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState()
+  var userToken = ''
 	const [loading, setLoading] = useState(true)
 	
+	// async function signup(email, password, name) {
+	// 	return auth.createUserWithEmailAndPassword(email, password).then((userAuth)=>{
+	// 		userAuth.user.updateProfile({
+	// 			displayName: name,
+	// 		})
+	// 	})
+	// }
 	async function signup(email, password, name) {
-		return auth.createUserWithEmailAndPassword(email, password).then((userAuth)=>{
-			userAuth.user.updateProfile({
-				displayName: name,
-			})
-		})
+		// axios.post("http://localhost:5000/api/auth/register", {username: name, password: password, email: email}).then((token)=>{
+    //   userToken = token.data.token
+    //   console.log(token.data.token)
+    //   return userToken
+    // }).catch((error)=>{
+    //   return error
+    // })
 	}
-	
+
 	function login(email, password) {
 		return auth.signInWithEmailAndPassword(email, password)
 	}
