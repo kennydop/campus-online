@@ -1,40 +1,70 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
-
+import { getToken, COOKIE_OPTIONS, getRefreshToken } from "../authStrategies/authenticate.js";
+import jwt from "jsonwebtoken";
 
 export const createNewUser = async (req, res) => {
     try {
-        //generate new password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+      //generate new password
+      // const salt = await bcrypt.genSalt(10);
+      // const hashedPassword = await bcrypt.hash(req.body.password, salt);
+      //create new user
 
-        //create new user
-        const newUser = new User({
-            username: req.body.username,
-            email: req.body.email,
-            password: hashedPassword,
-        });
-        //save user and respond
-        const user = await newUser.save();
-        const { password, ...other } = user._doc;
-        res.status(200).json(other);
-    } catch (error) {
-        res.status(500).json(error)
-    }
+      // const newUser = new User({
+      //     username: req.body.username,
+      //     email: req.body.email,
+      //     password: hashedPassword,
+      // });
+      //save user and respond
+      // const user = await newUser.save();
+      
+      User.register(
+        new User({ username: req.body.username,
+          email: req.body.email
+        }),
+        req.body.password,
+        (error, user) => {
+          if (error) {
+            res.status(500).json(error)
+          } else {
+            const token = getToken({ _id: user._id, username: user.username, email: user.email })
+            const refreshToken = getRefreshToken({ _id: user._id, username: user.username, email: user.email })
+            user.refreshToken.push({ refreshToken })
+            user.save((error, user) => {
+              if (error) {
+                res.statusCode = 500
+                res.send(error)
+                console.log(error)
+              } else {
+                res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
+                res.send({ success: true, token })
+              }
+            })
+          }
+        }
+      )
+  } catch (error) {
+      res.status(500).json(error)
+  }
 }
 
-export const logInUser = async (req, res) => {
+export const logInUser = async (req, res, next) => {
     try {
-        var user = await User.findOne({ email: req.body.email });
-        if(!user) {user = await User.findOne({ username: req.body.email })}
-        !user && res.status(404).json("user not found");
-    
-        const validPassword = await bcrypt.compare(req.body.password, user.password)
-        !validPassword && res.status(400).json("wrong password")
-
-        const { password, ...other } = user._doc;
-        res.status(200).json(other)
+      const token = getToken({ _id: req.user._id, username: req.user.username, email: req.user.email, college: req.user.college, profilePicture: req.user.profilePicture, coverPicture: req.user.coverPicture, description: req.user.description, city: req.user.city, from: req.user.from, relationship: req.user.relationship, provider: req.user.provider })
+      const refreshToken = getRefreshToken({  _id: req.user._id, username: req.user.username, email: req.user.email, college: req.user.college, profilePicture: req.user.profilePicture, coverPicture: req.user.coverPicture, description: req.user.description, city: req.user.city, from: req.user.from, relationship: req.user.relationship, provider: req.user.provider })
+      await User.findOne({ username: req.user.username}).then((user)=>{
+          user.refreshToken.push({ refreshToken })
+          user.save((error, user) => {
+            if (error) {
+              res.status(500).json(error)
+            } else {
+              res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
+              res.send({ success: true, token })
+            }
+          })
+        })
     } catch (error) {
+      next(error)
         res.status(500).json(error)
         console.log(error)
     }
@@ -44,14 +74,14 @@ export const logInWithProvider = async (req, res) => {
     try {
         var user = await User.findOne({ email: req.body.email });
         if(!user) {user = await User.findOne({ username: req.body.email })}
-        if(!user){
-            const newUser = new User({
-                username: req.body.username,
-                email: req.body.email,
-                provider: req.params.provider,
-            });
-            user = await newUser.save();
-        }
+        // if(!user){
+        //     const newUser = new User({
+        //         username: req.body.username,
+        //         email: req.body.email,
+        //         provider: req.params.provider,
+        //     });
+        //     user = await newUser.save();
+        // }
         const { password, ...other } = user._doc;
         res.status(200).json(other);
     } catch (error) {
@@ -72,4 +102,86 @@ export const resetUserPassword = async (req, res) => {
         res.status(500).json(error)
         console.log(error)
     }
+}
+
+
+//refresh token
+export const refreshToken = (req, res, next) => {
+  const { signedCookies = {} } = req
+  const { refreshToken } = signedCookies
+
+  if (refreshToken) {
+    try {
+      const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+      const userId = payload._id
+      User.findOne({ _id: userId }).then(
+        user => {
+          if (user) {
+            // Find the refresh token against the user record in database
+            const tokenIndex = user.refreshToken.findIndex(
+              item => item.refreshToken === refreshToken
+            )
+
+            if (tokenIndex === -1) {
+              res.status(401).json("Unauthorized")
+              next()
+            } else {
+              const token = getToken({ _id: userId, username: user.username, email: user.email, college: user.college, profilePicture: user.profilePicture, coverPicture: user.coverPicture, description: user.description, city: user.city, from: user.from, relationship: user.relationship, provider: user.provider })
+              // If the refresh token exists, then create new one and replace it.
+              const newRefreshToken = getRefreshToken({ _id: userId, username: user.username, email: user.email, college: user.college, profilePicture: user.profilePicture, coverPicture: user.coverPicture, description: user.description, city: user.city, from: user.from, relationship: user.relationship, provider: user.provider })
+              user.refreshToken[tokenIndex] = { refreshToken: newRefreshToken }
+              user.save((error, user) => {
+                if (error) {
+                  res.status(500).json(error)
+                  next()
+                } else {
+                  res.cookie("refreshToken", newRefreshToken, COOKIE_OPTIONS)
+                  res.send({ success: true, token })
+                  next()
+                }
+              })
+            }
+          } else {
+            res.status(401).json("Unauthorized")
+            next()
+          }
+        },
+        error => next(error)
+      )
+    } catch (error) {
+      res.status(401).json("Unauthorized")
+      next()
+    }
+  } else {
+    res.status(401).json("Unauthorized")
+    next()
+  }
+}
+
+export const logOutUser = async (req, res, next) => {
+  const { signedCookies = {} } = req
+  const { refreshToken } = signedCookies
+
+  //remove active refresh token
+  User.findById(req.user._id).then(
+    user => {
+      const tokenIndex = user.refreshToken.findIndex(
+        item => item.refreshToken === refreshToken
+      )
+
+      if (tokenIndex !== -1) {
+        user.refreshToken.id(user.refreshToken[tokenIndex]._id).remove()
+      }
+
+      user.save((error, user) => {
+        if (error) {
+          res.status(500).json(error)
+        } else {
+          res.clearCookie("refreshToken", COOKIE_OPTIONS)
+          res.send({ success: true })
+        }
+      })
+    },
+    error => next(error)
+  )
 }

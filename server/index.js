@@ -8,8 +8,19 @@ import authRoute from "./routes/auth.js";
 import postRoute from "./routes/posts.js";
 import storyRoute from "./routes/stories.js";
 import cors from "cors";
+import session from "express-session";
+import passport from "passport";
+import cookieParser from "cookie-parser";
 
-dotenv.config();
+import("./authStrategies/JWTStrategry.js");
+import("./authStrategies/authenticate.js");
+import("./authStrategies/LocalStrategy.js");
+
+if (process.env.NODE_ENV !== "production") {
+  // Load environment variables from .env file in non prod environments
+  dotenv.config();
+}
+
 const app = express();
 const corsOptions ={
   origin:'http://localhost:3000', 
@@ -25,8 +36,11 @@ mongoose.connect(process.env.MONGO_URL,
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common")); // remove before deploying
+app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(cors(corsOptions));
+app.use(passport.initialize());
 
+//routes
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
