@@ -1,55 +1,35 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import { MailIcon, LockClosedIcon} from "@heroicons/react/outline";
+import { LockClosedIcon, UserIcon} from "@heroicons/react/outline";
 import AuthLeft from '../components/AuthLeft'
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../contexts/AuthContext";
+import axios from "axios";
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const username = useRef();
+  const password = useRef();
   const [loginLoading, setLoginLoading] = useState(false);
-  const [password, setpassword] = useState("");
   const [error, setError] = useState(false);
   const router = useRouter();
-  const { loginWithProvider, login } = useAuth()
+  const { loginWithProvider, login, setCurrentUser } = useAuth()
 
-  async function loginWithEmail(){
-    // setError('');
-    // setLoginLoading(true);
-    // if(!email){
-    //   setError("Please enter your Email");
-    //   setLoginLoading(false);
-    // }
-    // else if(!password){
-    //   setError("Please enter a Password");
-    //   setLoginLoading(false);
-    // }else{
-    //   try{
-    //     await login(email, password)
-    //     router.replace('/')
-    //   }
-    //   catch(error){
-    //     switch (error.code) {
-    //       case 'auth/user-not-found':
-    //         setError('Account not found')
-    //         break;
-    //       case 'auth/wrong-password':
-    //         setError('Invalid password')
-    //         break;
-    //       case 'auth/network-request-failed':
-    //         setError('Please check your internet connection')
-    //         break;
-    //       case "auth/invalid-email":
-    //         setError('Invalid Email')
-    //         break;
-    //       default:
-    //         setError('Unable to login, try again please')
-    //         break;
-    //     }
-    //   }
-    //   setLoginLoading(false);
-    // }
+  async function loginWithEmail(e){
+    e.preventDefault();
+    setError('');
+    setLoginLoading(true);
+      try{
+        await login(username.current.value, password.current.value)
+        if(router.pathname !== '/'){
+          router.replace('/')
+        }
+      }
+      catch(error){
+        console.log(error)
+        setLoginLoading(false)
+
+      }
   }
 
   async function loginWithSocials(pvd){
@@ -71,7 +51,7 @@ function Login() {
       <div className="w-screen flex justify-center items-center bg-blue-grey-50 dark:bg-bdark-200">
         <AuthLeft/>
         <div className = "flex h-screen self-center w-screen lg:w-2/5 items-center justify-center bg-white dark:bg-bdark-100 lg:bg-transparent lg:dark:bg-transparent">
-            <form autoComplete='on' className="authForm">
+            <form autoComplete='on' className="authForm" onSubmit={loginWithEmail}>
             <div className="mb-6" >
               <svg xmlns="http://www.w3.org/2000/svg" width="187.676" height="35.77" viewBox="0 0 187.676 35.77">
                 <g id="Group_1" data-name="Group 1" transform="translate(-2.324 0)">
@@ -82,22 +62,23 @@ function Login() {
             </div>
             {error && <p className = "errorMsg" id = "injectError">{error}</p>}
             <div className="relative">
-              <MailIcon className="infoicons"/>
+              <UserIcon className="infoicons"/>
               <input
-                value={email}
-                onChange={e=> setEmail(e.target.value)}
-                type="email"
+                ref={username}
+                type="name"
+                minLength="3"
                 required={true}
-                placeholder="Email"
-                autoComplete="email"
+                placeholder="Username"
+                autoComplete="name"
                 className="infofield"
               />
             </div>
             <div className="relative">
               <LockClosedIcon className="infoicons"/>
               <input
-                value={password}
-                onChange={e=> setpassword(e.target.value)}
+                ref={password}
+                minLength="6"
+                required={true}
                 type="password"
                 placeholder="Password"
                 autoComplete="current-password"
@@ -106,7 +87,7 @@ function Login() {
             </div>
             <a href="#" className="self-center mb-1 text-sm text-gray-500 dark:text-gray-400 hover:font-bold">Forgot password?</a>
             <p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Don&apos;t have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=> router.push("/Signup")}>Create one</a></p>
-            <button disabled = {loginLoading} className="infobutton" type = "button" onClick = {loginWithEmail}>
+            <button disabled = {loginLoading} className="infobutton" type = "submit">
               {loginLoading ? <div className="loader mx-auto animate-spin"></div> : <>Login</>}
             </button>
             <div className = "flex flex-col mt-5 items-center justify center">

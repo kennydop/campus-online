@@ -24,7 +24,7 @@ export const createNewUser = async (req, res) => {
                 console.log(error)
               } else {
                 res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
-                res.send({ success: true, token })
+                res.send({ success: true, token, _id: user._id, username: user.username, email: user.email })
               }
             })
           }
@@ -35,6 +35,7 @@ export const createNewUser = async (req, res) => {
   }
 }
 
+//after user is has been authenticated
 export const logInUser = async (req, res, next) => {
     try {
       const token = getToken({ _id: req.user._id, username: req.user.username, email: req.user.email, college: req.user.college, profilePicture: req.user.profilePicture, coverPicture: req.user.coverPicture, description: req.user.description, city: req.user.city, from: req.user.from, relationship: req.user.relationship, provider: req.user.provider })
@@ -45,8 +46,9 @@ export const logInUser = async (req, res, next) => {
             if (error) {
               res.status(500).json(error)
             } else {
+              //sending the cookie
               res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
-              res.send({ success: true, token })
+              res.send({ success: true, refreshToken, token,  _id: req.user._id, username: req.user.username, email: req.user.email, college: req.user.college, profilePicture: req.user.profilePicture, coverPicture: req.user.coverPicture, description: req.user.description, city: req.user.city, from: req.user.from, relationship: req.user.relationship, provider: req.user.provider })
             }
           })
         })
@@ -96,6 +98,8 @@ export const resetUserPassword = async (req, res) => {
 export const refreshToken = (req, res, next) => {
   const { signedCookies = {} } = req
   const { refreshToken } = signedCookies
+  console.log("signed cookies", signedCookies)
+  console.log("refresh token", refreshToken)
 
   if (refreshToken) {
     try {
@@ -123,7 +127,7 @@ export const refreshToken = (req, res, next) => {
                   next()
                 } else {
                   res.cookie("refreshToken", newRefreshToken, COOKIE_OPTIONS)
-                  res.send({ success: true, token })
+                  res.send({ success: true, token, _id: userId, username: user.username, email: user.email, college: user.college, profilePicture: user.profilePicture, coverPicture: user.coverPicture, description: user.description, city: user.city, from: user.from, relationship: user.relationship, provider: user.provider })
                   next()
                 }
               })

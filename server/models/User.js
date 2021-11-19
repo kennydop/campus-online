@@ -23,11 +23,6 @@ const UserSchema = new mongoose.Schema(
       max: 50,
       unique: true,
     },
-    // password: {
-    //   type: String,
-    //   // required: true,
-    //   min: 6,
-    // },
     profilePicture: {
       type: String,
       default: "",
@@ -71,10 +66,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ['Single', 'In a relationship', 'Married'],
     },
-    // authStrategy: {
-    //   type: String,
-    //   default: "local",
-    // },
     refreshToken: {
       type: [Session],
     },

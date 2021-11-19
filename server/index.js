@@ -8,7 +8,6 @@ import authRoute from "./routes/auth.js";
 import postRoute from "./routes/posts.js";
 import storyRoute from "./routes/stories.js";
 import cors from "cors";
-import session from "express-session";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 
@@ -23,7 +22,7 @@ if (process.env.NODE_ENV !== "production") {
 
 const app = express();
 const corsOptions ={
-  origin:'http://localhost:3000', 
+  origin: true, 
   credentials:true,            //access-control-allow-credentials:true
   optionSuccessStatus:200
 }

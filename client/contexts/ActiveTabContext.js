@@ -7,9 +7,9 @@ export function useActiveTab(){
 }
 
 export function ActiveTab({children}){
-    const ssat = sessionStorage.getItem('activeTab')
-    const sspt = sessionStorage.getItem('prevTab')
-    const ssppt = sessionStorage.getItem('prevPrevTab')
+    const ssat = typeof window !== 'undefined' && sessionStorage.getItem('activeTab')
+    const sspt = typeof window !== 'undefined' && sessionStorage.getItem('prevTab')
+    const ssppt = typeof window !== 'undefined' && sessionStorage.getItem('prevPrevTab')
     const [tabActive, set_TabActive] = useState(ssat !== null ? ssat : 'home')
     const [prevTab, set_PrevTab] = useState(sspt !== null  ? sspt : 'home')
     const [prevPrevTab, set_PrevPrevTab] = useState(ssppt !== null  ? ssppt : 'home')

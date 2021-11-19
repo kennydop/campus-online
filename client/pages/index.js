@@ -9,32 +9,41 @@ export default function Home() {
   const {currentUser} = useAuth()
   const [newbie, setNewbie] = useState()
   const router = useRouter()
-  if(currentUser){
-    db.collection('users').doc(currentUser.uid).get().then((doc)=>{
-      if(doc.exists){
-          setNewbie(false)
-          router.push('/feed')
-        }
-        else{
-          if(currentUser.photoURL){
-            router.replace('/addcollege');
-          }else{
-            router.replace('/addprofileimg');
-          }
-          setNewbie(true)
-        }
-    })
+  if(currentUser.token){
+    console.log(currentUser)
+    // db.collection('users').doc(currentUser.uid).get().then((doc)=>{
+    //   if(doc.exists){
+    //       setNewbie(false)
+    //       router.push('/feed')
+    //     }
+    //     else{
+    //       if(currentUser.photoURL){
+    //         router.replace('/addcollege');
+    //       }else{
+    //         router.replace('/addprofileimg');
+    //       }
+    //       setNewbie(true)
+    //     }
+    // })
+    if(currentUser.college){
+      router.push('/feed')
+    }else{
+      if(currentUser.photoURL){
+        router.replace('/addcollege');
+      }else{
+        router.replace('/addprofileimg');
+      }
+    }
   }
 
   return (
     <div className='bg-blue-grey-50 dark:bg-bdark-200'>
-    {currentUser?
+    {currentUser.token?
         // !newbie ? <Feed/> :
       <></>
     :
     <Login/>
     }
-
     </div>
   )
 }

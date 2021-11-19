@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, createContext } from "react"
+import { useContext, useState, useEffect, createContext, useCallback } from "react"
 import { auth, firebaseApp } from "../firebase/firebase"
 import axios from "axios"
 
@@ -10,7 +10,6 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState()
-  var userToken = ''
 	const [loading, setLoading] = useState(true)
 	
 	// async function signup(email, password, name) {
@@ -20,18 +19,50 @@ export function AuthProvider({ children }) {
 	// 		})
 	// 	})
 	// }
-	async function signup(email, password, name) {
-		// axios.post("http://localhost:5000/api/auth/register", {username: name, password: password, email: email}).then((token)=>{
-    //   userToken = token.data.token
-    //   console.log(token.data.token)
-    //   return userToken
-    // }).catch((error)=>{
-    //   return error
-    // })
+	async function signup(email, password, username) {
+		axios.post("http://localhost:5000/api/auth/register", {username, password, email}, {withCredentials: true, credentials: 'include'}).then((res)=>{
+      setCurrentUser(res.data)  
+      return currentUser
+    }).catch((error)=>{
+      console.log(error)
+      throw error
+    })
+    // fetch("http://localhost:5000/api/auth/register", {
+    //   method: "POST",
+    //   credentials: "include",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ username, password, email }),
+    // }).then(async res=>{
+    //     setCurrentUser(await res.json())
+    //     // localStorage.setItem("token", res.data.token)  
+    //     return currentUser
+    //   }).catch((error)=>{
+    //     console.log(error)
+    //     throw error
+    //   })
+
 	}
 
-	function login(email, password) {
-		return auth.signInWithEmailAndPassword(email, password)
+	function login(username, password) {
+    axios.post("http://localhost:5000/api/auth/login", {username, password}, {withCredentials: true, credentials: 'include'}).then((res)=>{
+      setCurrentUser(res.data)
+      return currentUser
+    }).catch((error)=>{
+      console.log(error)
+    })
+
+    // fetch("http://localhost:5000/api/auth/login", {
+    //   method: "POST",
+    //   credentials: "include",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ username, password }),
+    // }).then(async res=>{
+    //     setCurrentUser(await res.json())
+    //     return currentUser
+    //   }).catch((error)=>{
+    //     console.log(error)
+    //     throw error
+    //   })
 	}
 	
 	function loginWithProvider(pvd){
@@ -56,17 +87,85 @@ export function AuthProvider({ children }) {
 	}
 	
 	
-	useEffect(() => {
-		const unsubscribe = auth.onAuthStateChanged(user => {
-			setCurrentUser(user)
-			setLoading(false)
-		})
+	// useEffect(() => {
+	// 	const unsubscribe = auth.onAuthStateChanged(user => {
+	// 		setCurrentUser(user)
+	// 		setLoading(false)
+	// 	})
 		
-		return unsubscribe
-	}, [])
-	
+	// 	return unsubscribe
+	// }, [])
+
+  // useEffect(() => {
+  //   if(currentUser.token){
+  //     axios.get("http://localhost:5000/api/users/currentUser",{ headers: {Authorization: `Bearer ${currentUser.token}`}}).then((res)=>{
+  //       setCurrentUser(res.data)
+  //       console.log(res.data)
+  //     }).catch((error)=>{
+  //       console.log(error)
+  //       return error
+  //     })
+  //   }
+	// }, [])
+
+  const verifyUser = useCallback(() => {
+    axios.put("http://localhost:5000/api/auth/refreshtoken", {}, {withCredentials: true, credentials: 'include'}).then((res)=>{
+      console.log(res)
+      setCurrentUser(res.data)
+      setLoading(false)
+    }).catch((error)=>{
+      setCurrentUser((oldValues) => {
+        return { ...oldValues, token: null }
+      })
+      setLoading(false)
+    })
+    // call refreshToken every 5 minutes to renew the authentication token.
+    setTimeout(verifyUser, 5 * 60 * 1000)
+  }, [setCurrentUser])
+
+//   fetch("http://localhost:5000/api/auth/refreshtoken", {
+//     method: "PUT",
+//     credentials: "include",
+//     headers: { "Content-Type": "application/json" },
+//   }).then(async response => {
+//     if (response.ok) {
+//       const data = await response.json()
+//       setCurrentUser(data)
+//       setLoading(false)
+//     } else {
+//       setCurrentUser(oldValues => {
+//         return { ...oldValues, token: null }
+//       })
+//       setLoading(false)
+//     }
+//     // call refreshToken every 5 minutes to renew the authentication token.
+//     setTimeout(verifyUser, 5 * 60 * 1000)
+//   })
+// }, [setCurrentUser])
+
+  useEffect(() => {
+    verifyUser()
+  }, [verifyUser])
+
+  async function getUserInfo(token){
+    if(currentUser.token){
+      console.log(currentUser)
+      axios.get("http://localhost:5000/api/users/currentUser",{ headers: {Authorization: `Bearer ${token}`}}).then((res)=>{
+        setCurrentUser(res.data)
+        console.log(res.data)
+        return res.data
+      }).catch((error)=>{
+        console.log(error)
+        return error
+      })
+  }else{
+    console.log("no token")
+  }
+  }
 	const value = {
 		currentUser,
+    setCurrentUser,
+    getUserInfo,
 		loginWithProvider,
 		login,
 		signup,

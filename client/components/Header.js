@@ -63,7 +63,7 @@ function Header() {
                         <div className="md:hidden flex text-center">
                             <img onClick={()=>{setPrevTab(tabActive); router.push('/Profile'); setTabActive('profile');}}
                                 className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer text-center ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
-                                src = {currentUser.photoURL}/>
+                                src = {currentUser.profilePicture}/>
                         </div>
                         <div onClick={()=>{router.push('/'); setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('home'); }} className="flex items-center cursor-pointer px-4 flex-shrink" href = "/">
                             <svg xmlns="http://www.w3.org/2000/svg" width="137.426" height="26.357" viewBox="0 0 137.426 26.357">
@@ -93,7 +93,7 @@ function Header() {
                     <div className = "hidden md:flex px-5 text-center">
                         <img onClick = {()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive);  router.push('/Profile'); setTabActive('profile');}}
                         className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
-                        src={currentUser.photoURL}/>
+                        src={currentUser.profilePicture}/>
                     </div>
             </div>
             </div>
