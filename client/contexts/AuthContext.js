@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
 	// }
 	async function signup(email, password, username) {
 		axios.post("http://localhost:5000/api/auth/register", {username, password, email}, {withCredentials: true, credentials: 'include'}).then((res)=>{
+      console.log(res)
       setCurrentUser(res.data)  
       return currentUser
     }).catch((error)=>{
@@ -45,10 +46,11 @@ export function AuthProvider({ children }) {
 
 	function login(username, password) {
     axios.post("http://localhost:5000/api/auth/login", {username, password}, {withCredentials: true, credentials: 'include'}).then((res)=>{
+      console.log(res)  
       setCurrentUser(res.data)
       return currentUser
     }).catch((error)=>{
-      console.log(error)
+      return error
     })
 
     // fetch("http://localhost:5000/api/auth/login", {
@@ -57,8 +59,8 @@ export function AuthProvider({ children }) {
     //   headers: { "Content-Type": "application/json" },
     //   body: JSON.stringify({ username, password }),
     // }).then(async res=>{
-    //     setCurrentUser(await res.json())
-    //     return currentUser
+    //   setCurrentUser(await res.json())
+    //   return currentUser
     //   }).catch((error)=>{
     //     console.log(error)
     //     throw error
@@ -110,7 +112,6 @@ export function AuthProvider({ children }) {
 
   const verifyUser = useCallback(() => {
     axios.put("http://localhost:5000/api/auth/refreshtoken", {}, {withCredentials: true, credentials: 'include'}).then((res)=>{
-      console.log(res)
       setCurrentUser(res.data)
       setLoading(false)
     }).catch((error)=>{
@@ -118,6 +119,7 @@ export function AuthProvider({ children }) {
         return { ...oldValues, token: null }
       })
       setLoading(false)
+      console.log(error)
     })
     // call refreshToken every 5 minutes to renew the authentication token.
     setTimeout(verifyUser, 5 * 60 * 1000)

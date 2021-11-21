@@ -23,7 +23,8 @@ function Feed() {
     
     return (
         <div>
-            <Stories />
+            {/* <Stories userId={currentUser._id}/> */}
+            <div className='mt-6'></div>
             <FeedContent />
         </div>
     )

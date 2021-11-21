@@ -48,7 +48,7 @@ export const logInUser = async (req, res, next) => {
             } else {
               //sending the cookie
               res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
-              res.send({ success: true, refreshToken, token,  _id: req.user._id, username: req.user.username, email: req.user.email, college: req.user.college, profilePicture: req.user.profilePicture, coverPicture: req.user.coverPicture, description: req.user.description, city: req.user.city, from: req.user.from, relationship: req.user.relationship, provider: req.user.provider })
+              res.send({ success: true, token,  _id: req.user._id, username: req.user.username, email: req.user.email, college: req.user.college, profilePicture: req.user.profilePicture, coverPicture: req.user.coverPicture, description: req.user.description, city: req.user.city, from: req.user.from, relationship: req.user.relationship, provider: req.user.provider })
             }
           })
         })

@@ -41,11 +41,11 @@ export const deleteUser = async (req, res) => {
 // get a user
 export const getAUser = async (req, res) => {
     try {
-        const userId = req.query.userId;
-        const username = req.query.username;
-        const user = username ? await User.findOne({username: username}) : await User.findById(userId);
-        const { password, updatedAt, ...other } = user._doc;
-        res.status(200).json(other);
+        var user = await User.findOne({username: req.params.id});
+        if (!user){
+          user = await User.findById(req.params.id)
+        }
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json(error);
     }
@@ -84,7 +84,6 @@ export const getFollowSuggestions = async (req, res) => {
             {_id: {$ne: req.params.id}},
             {followers: {$ne: req.params.id}}
         ]});
-        console.log(matches)
         res.status(200).json(matches);
     }catch(error){
         res.status(500).json(error);

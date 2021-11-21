@@ -21,6 +21,7 @@ function Profile() {
             <ProfileCard />
             <About/>
             <MyPosts/>
+            <div className='pt-20'></div>
         </>
     )
 }

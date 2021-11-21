@@ -10,6 +10,10 @@ const StorySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    username: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String,
       max: 500,

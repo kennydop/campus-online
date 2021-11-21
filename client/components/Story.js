@@ -4,7 +4,7 @@ import { PlusIcon } from "@heroicons/react/outline"
 import Image from 'next/image'
 import { useAuth } from "../contexts/AuthContext";
 
-function Story({name, src, blurData}) {
+function Story({id, userId, name, src, type, description, likes}) {
     const {currentUser} = useAuth()
     if(name.length > 8){
         name = name.substring(0, 8) + '...';
@@ -18,8 +18,6 @@ function Story({name, src, blurData}) {
                     className='object-cover rounded-full'
                     src={src}
                     layout='fill'
-                    placeholder='blur'
-                    blurDataURL={blurData}
                     />
                 </div>
             </div>
