@@ -13,7 +13,7 @@ router.post("/login", passport.authenticate("local"), logInUser);
 router.post("/login/:provider", logInWithProvider);
 
 //RESET PASWORD
-router.post("/resetpassword", resetUserPassword);
+router.put("/resetpassword/:id", resetUserPassword);
 
 //REFRESH TOKEN
 router.put("/refreshtoken", refreshToken)

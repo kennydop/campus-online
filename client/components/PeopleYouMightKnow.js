@@ -41,7 +41,7 @@ function PeopleYouMightKnow() {
 
     return (
       suggestions?
-        <div className='hidden h-full lg:block sticky top-20 pb-2 w-tt'>
+        <div className='hidden lg:block h-full sticky top-20 m-2 mt-3 p-2 w-tt'>
             <div className='p-2 text-gray-500 dark:text-gray-400 text-center font-bold cursor-default'>
                 <p>Suggestions to follow</p>
             </div>

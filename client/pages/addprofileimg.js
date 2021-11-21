@@ -6,6 +6,7 @@ import { auth, storage } from '../firebase/firebase';
 import {useRouter} from 'next/router';
 import NotAuthorized from "../components/NotAuthorized";
 import { useAuth } from "../contexts/AuthContext";
+import axios from "axios";
 
 function AddProfileImg() {
     
@@ -95,15 +96,13 @@ function AddProfileImg() {
             return;
         }
         if(!url){
-            urltp = defaultProfileImage;
-                auth.currentUser.updateProfile({
-                        photoURL: urltp
-                    }).then(()=>{
-                        router.replace('/addcollege')
-                        }).catch((error)=>{
-                            setError(error.message)
-                            setLoading(false)
-                        })
+          const bgColors = ["000D6B", "125C13", "3E065F", "082032", "FF414D"]
+          axios.put(`http://localhost:5000/api/users/${currentUser._id}`, { profilePicture: `https://ui-avatars.com/api/?name=${encodeURIComponent((currentUser.username).replace(/[^a-zA-Z ]/g, ""))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`}).then(()=>{
+            router.replace('/addcollege')
+            }).catch((error)=>{
+                setError(error.message)
+                setLoading(false)
+            })
         } else{
             urltp = url;
             const uploadTask = storage.ref(`profilePictures/${currentUser.uid}`).putString(urltp, 'data_url');

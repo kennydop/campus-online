@@ -1,5 +1,4 @@
 import User from "../models/User.js";
-import bcrypt from "bcrypt";
 import { getToken, COOKIE_OPTIONS, getRefreshToken } from "../authStrategies/authenticate.js";
 import jwt from "jsonwebtoken";
 
@@ -80,17 +79,12 @@ export const logInWithProvider = async (req, res) => {
 }
 
 export const resetUserPassword = async (req, res) => {
-    try {
-      //generate new password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    
-        const user = await User.findByIdAndUpdate(req.body.userId, {password: hashedPassword})
-        res.status(200).json(user);
-    } catch (error) {
-        res.status(500).json(error)
-        console.log(error)
-    }
+  try {
+    const user = await User.findById(req.params.id)
+    user.changePassword(req.body.oldpassword, req.body.newpassword, function(error, user){ if(error){res.status(401).json(error)}else{res.status(200).json(user)} })
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 }
 
 
