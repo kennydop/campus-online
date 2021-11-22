@@ -8,7 +8,7 @@ export function useAuth() {
 	return useContext(AuthContext)
 }
 
-const uprotectedRoutes = ['/login', '/signup']
+const uprotectedRoutes = ['/login', '/signup', '/[profile]']
 
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState()

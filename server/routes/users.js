@@ -1,6 +1,6 @@
 import {Router} from "express";
 import { verifyUser } from "../authStrategies/authenticate.js";
-import { deleteUser, getAUser, handleFollow, updateUserInfo, getFollowSuggestions, searchUser, checkFollow } from "../controllers/usersControllers.js";
+import { deleteUser, getAUser, handleFollow, updateUserInfo, getFollowSuggestions, getNotLoggedInFollowSuggestions, searchUser, checkFollow } from "../controllers/usersControllers.js";
 
 const router = Router();
 
@@ -23,7 +23,8 @@ router.put("/:id/follow", handleFollow);
 router.get("/isfollowing", checkFollow);
 
 //get follow suggestions
-router.get("/:id/suggestions", getFollowSuggestions);
+router.get("/suggestions/nl", getNotLoggedInFollowSuggestions); //not logged in
+router.get("/:id/suggestions", getFollowSuggestions); //logged in 
 
 //search user
 router.get("/", searchUser)

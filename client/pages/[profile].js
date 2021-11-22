@@ -15,33 +15,47 @@ function Profile() {
     const { currentUser } = useAuth()
     const [ admin, setAdmin] = useState()
     const [ user, setUser] = useState()
+    const [ loggedIn, setLoggedIn] = useState()
 
     useEffect(()=>{
-      if(currentUser.username === router.query.profile){
-        setUser(currentUser)
-        setAdmin(true);
-        if(tabActive==='profile')return; 
-        setPrevPrevTab(prevTab); 
-        setPrevTab(tabActive); 
-        setTabActive('profile');
+      if(currentUser){
+        setLoggedIn(true)
+        if(currentUser.username === router.query.profile){
+          setUser(currentUser)
+          setAdmin(true);
+          if(tabActive==='profile')return; 
+          setPrevPrevTab(prevTab); 
+          setPrevTab(tabActive); 
+          setTabActive('profile');
+        }else{
+          setPrevPrevTab(prevTab); 
+          setPrevTab(tabActive); 
+          setTabActive('');
+          setAdmin(false)
+          axios.get(`http://localhost:5000/api/users/${router.query.profile}`, { params:{ currentUser: currentUser._id} }).then((res)=>{
+            setUser(res.data)
+          }).catch((error)=>{
+            router.replace('/404')
+            console.log(error)
+          })
+        }
       }else{
-        setPrevPrevTab(prevTab); 
-        setPrevTab(tabActive); 
-        setTabActive('');
         setAdmin(false)
-        axios.get(`http://localhost:5000/api/users/${router.query.profile}`, { params:{ currentUser: currentUser._id} }).then((res)=>{
+        setLoggedIn(false)
+        if(router.isReady){
+          axios.get(`http://localhost:5000/api/users/${router.query.profile}`).then((res)=>{
           setUser(res.data)
         }).catch((error)=>{
           router.replace('/404')
           console.log(error)
-        })
+        })}
       }
-    },[])
+    },[router.isReady])
     
     return (
         user ?
         <>
-            <ProfileCard admin={admin} user={user} userId={admin?null:currentUser._id}/>
+            <ProfileCard admin={admin} user={user} userId={!admin ? (loggedIn ? currentUser._id : null) : null} loggedIn={loggedIn}/>
             <About admin={admin} user={user}/>
             <MyPosts admin={admin} user={user}/>
             <div className='pt-20'></div>

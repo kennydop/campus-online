@@ -102,6 +102,16 @@ export const getFollowSuggestions = async (req, res) => {
         console.log(error);
     }
 }
+//not logged in suggestions
+export const getNotLoggedInFollowSuggestions = async (req, res) => {
+    try{
+        const matches = await User.find();
+        res.status(200).json(matches);
+    }catch(error){
+        res.status(500).json(error);
+        console.log(error);
+    }
+}
 
 //search user
 export const searchUser = async (req, res) => {

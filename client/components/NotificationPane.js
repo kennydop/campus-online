@@ -16,8 +16,8 @@ function NotificationPane() {
             </div>
             <div className='hide-scrollbar overflow-y-auto h-full cursor-default'>
                 <Notification text={`All your notifications appear hear`}/>
-                <Notification text={`Hello, ${currentUser.displayName}. Connect with friends and have fun!!`}/>
-                <Notification text={`Check out what's trending, ${currentUser.displayName}`}/>
+                <Notification text={`Hello, ${currentUser.username}. Connect with friends and have fun!!`}/>
+                <Notification text={`Check out what's trending, ${currentUser.username}`}/>
                 <Notification text={`Make your first post`} read={true}/>
                 <Notification text={`Choose between global or home feed to see what's happening globally or on your campus`} read={true}/>
                 <Notification text={`You can update yout info in your profile`} read={true}/>

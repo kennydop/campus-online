@@ -34,9 +34,15 @@ function PeopleYouMightKnow() {
   const [suggestions, setSuggestions] = useState()
 
   useEffect(()=>{
-    axios.get(`http://localhost:5000/api/users/${currentUser._id}/suggestions`).then((res)=>{
-      setSuggestions(res.data)
-    })
+    if(currentUser){
+      axios.get(`http://localhost:5000/api/users/${currentUser._id}/suggestions`).then((res)=>{
+        setSuggestions(res.data)
+      })
+    }else{
+      axios.get(`http://localhost:5000/api/users/suggestions/nl`).then((res)=>{
+        setSuggestions(res.data)
+      })
+    }
   },[])
 
     return (
