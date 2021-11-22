@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import TimePast from "./TimePast"
 
-function Comment({key, username, image, comment, timestamp}) {
+function Comment({ username, image, comment, timestamp}) {
     return (
         <div className='fit-content flex flex-col items-start p-2 my-2 ml-6 rounded-lg shadow-md bg-white dark:bg-bdark-100 cursor-default'>
             <div className='flex items-center justify-center'>

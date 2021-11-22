@@ -1,18 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { db } from '../firebase/firebase';
 import Post from './Post';
 import FlipMove from 'react-flip-move';
-import { useAuth } from '../contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import PeopleYouMightKnow from './PeopleYouMightKnow';
 import axios from 'axios';
 
-function MyPosts() {
-    const { currentUser } = useAuth();
+function MyPosts({ admin, user }) {
     const [myPosts, setMyPosts] = useState();
 
     useEffect(()=>{
-      axios.get(`http://localhost:5000/api/posts/user/${currentUser._id}`).then((res)=>{
+      axios.get(`http://localhost:5000/api/posts/user/${user._id}`).then((res)=>{
         setMyPosts(res.data)
       })
     }, [])
@@ -39,7 +36,7 @@ function MyPosts() {
           <PeopleYouMightKnow/>
           </>:
           <div className="text-gray-500 dark:text-gray-400 mt-10">
-          You have not made any posts yet
+          {admin ? "You have not made any posts yet" : `${user.username} has not made any posts yet`}
         </div>
         }
       </div>

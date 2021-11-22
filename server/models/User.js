@@ -66,6 +66,16 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ['Single', 'In a relationship', 'Married'],
     },
+    posts: {
+      type: Number,
+      default: 0
+    },
+    birthday: {
+      type: String,
+    },
+    level: {
+      type: String,
+    },
     refreshToken: {
       type: [Session],
     },

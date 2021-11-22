@@ -8,6 +8,7 @@ import NotificationPane from "./NotificationPane";
 import { useRouter } from 'next/router';
 import { useAuth } from "../contexts/AuthContext";
 import { useActiveTab } from "../contexts/ActiveTabContext";
+import Link from "next/link";
 
 function Header() {
     const { tabActive, prevTab, prevPrevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
@@ -61,9 +62,9 @@ function Header() {
                     {/*left*/}
                     <div className = "flex items-center md:pb-0 px-2 md:px-0 mx-auto justify-between">
                         <div className="md:hidden flex text-center">
-                            <img onClick={()=>{setPrevTab(tabActive); router.push('/Profile'); setTabActive('profile');}}
+                            <Link href={`/${currentUser.username}`}><img onClick={()=>{setPrevTab(tabActive); setTabActive('profile');}}
                                 className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer text-center ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
-                                src = {currentUser.profilePicture}/>
+                                src = {currentUser.profilePicture}/></Link>
                         </div>
                         <div onClick={()=>{router.push('/'); setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('home'); }} className="flex items-center cursor-pointer px-4 flex-shrink" href = "/">
                             <svg xmlns="http://www.w3.org/2000/svg" width="137.426" height="26.357" viewBox="0 0 137.426 26.357">
@@ -91,9 +92,9 @@ function Header() {
                     <div onClick = {()=>{if(tabActive==='chat')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/Chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
                     <div onClick = {()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div>
                     <div className = "hidden md:flex px-5 text-center">
-                        <img onClick = {()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive);  router.push('/Profile'); setTabActive('profile');}}
+                        <Link href={`/${currentUser.username}`}><img onClick = {()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('profile');}}
                         className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
-                        src={currentUser.profilePicture}/>
+                        src={currentUser.profilePicture}/></Link>
                     </div>
             </div>
             </div>

@@ -36,7 +36,15 @@ export const getAUser = async (req, res) => {
         if (!user){
           user = await User.findById(req.params.id)
         }
-        res.status(200).json(user);
+        if(req.query.currentUser){
+          console.log(req.query.currentUser)
+          const following = await user.followers.includes(req.query.currentUser)
+          const {refreshToken, updatedAt, ...other} = user._doc
+          const uts = {...other, isfollowing: following}
+          res.status(200).json(uts)
+        }else{
+          res.status(200).json(user);
+        }
     } catch (error) {
         res.status(500).json(error);
     }
@@ -64,6 +72,19 @@ export const handleFollow = async (req, res) => {
     } else {
         res.status(403).json("you cant follow yourself");
     }
+}
+// check if following a user
+export const checkFollow = async (req, res) => {
+  try {
+    const user = User.find({username: req.body.currentUser})
+    if(user.followings.includes(req.body.userToCheck)){
+      res.status(200).json("you are already following this user")
+    }else{
+      res.status(200).json("you are not following this user")
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
 }
 
 //get suggested to follows

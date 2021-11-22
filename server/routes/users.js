@@ -1,6 +1,6 @@
 import {Router} from "express";
 import { verifyUser } from "../authStrategies/authenticate.js";
-import { deleteUser, getAUser, handleFollow, updateUserInfo, getFollowSuggestions, searchUser } from "../controllers/usersControllers.js";
+import { deleteUser, getAUser, handleFollow, updateUserInfo, getFollowSuggestions, searchUser, checkFollow } from "../controllers/usersControllers.js";
 
 const router = Router();
 
@@ -18,6 +18,9 @@ router.get("/:id", getAUser);
 
 //follow a user
 router.put("/:id/follow", handleFollow);
+
+//check if following user
+router.get("/isfollowing", checkFollow);
 
 //get follow suggestions
 router.get("/:id/suggestions", getFollowSuggestions);
