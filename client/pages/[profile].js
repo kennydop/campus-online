@@ -32,6 +32,7 @@ function Profile() {
         axios.get(`http://localhost:5000/api/users/${router.query.profile}`, { params:{ currentUser: currentUser._id} }).then((res)=>{
           setUser(res.data)
         }).catch((error)=>{
+          router.replace('/404')
           console.log(error)
         })
       }

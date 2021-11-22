@@ -39,7 +39,7 @@ export const getAUser = async (req, res) => {
         if(req.query.currentUser){
           console.log(req.query.currentUser)
           const following = await user.followers.includes(req.query.currentUser)
-          const {refreshToken, updatedAt, ...other} = user._doc
+          const {refreshToken, updatedAt, __v, ...other} = user._doc
           const uts = {...other, isfollowing: following}
           res.status(200).json(uts)
         }else{

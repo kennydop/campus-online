@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 import Image from "next/image"
 import Avatar from "../images/avatar.jpg"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { auth, storage } from '../firebase/firebase';
 import {useRouter} from 'next/router';
 import NotAuthorized from "../components/NotAuthorized";
@@ -21,7 +21,12 @@ function AddProfileImg() {
     const router = useRouter();
     const { currentUser } = useAuth();
     const defaultProfileImage = 'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'
-
+  
+    useEffect(()=>{
+    if(currentUser.profilePicture){
+      router.replace('/')
+    }
+  },[])
 
     const handleImageChange = (e) => {
         setError('');

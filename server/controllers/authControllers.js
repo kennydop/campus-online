@@ -92,8 +92,6 @@ export const resetUserPassword = async (req, res) => {
 export const refreshToken = (req, res, next) => {
   const { signedCookies = {} } = req
   const { refreshToken } = signedCookies
-  console.log("signed cookies", signedCookies)
-  console.log("refresh token", refreshToken)
 
   if (refreshToken) {
     try {
@@ -146,7 +144,7 @@ export const refreshToken = (req, res, next) => {
 export const logOutUser = async (req, res, next) => {
   const { signedCookies = {} } = req
   const { refreshToken } = signedCookies
-
+  console.log("from logout: " + refreshToken)
   //remove active refresh token
   User.findById(req.user._id).then(
     user => {

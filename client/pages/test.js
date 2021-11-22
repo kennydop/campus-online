@@ -3,7 +3,7 @@ import { useState } from "react"
 
 function Test() {
   const [info, setInfo]=useState()
-  const { getUserInfo, currentUser } = useAuth()
+  const { currentUser } = useAuth()
   return (
     <div className='flex flex-col w-screen h-screen justify-center items-center'>
       <div className='border h-64 w-2/5 overflow-scroll'>

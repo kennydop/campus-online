@@ -9,8 +9,8 @@ export default function Home() {
   const {currentUser} = useAuth()
   const [newbie, setNewbie] = useState()
   const router = useRouter()
-  if(currentUser.token){
-    console.log(currentUser)
+  
+  if(currentUser){
     // db.collection('users').doc(currentUser.uid).get().then((doc)=>{
     //   if(doc.exists){
     //       setNewbie(false)
@@ -38,7 +38,7 @@ export default function Home() {
 
   return (
     <div className='bg-blue-grey-50 dark:bg-bdark-200'>
-    {currentUser.token?
+    {currentUser?
         // !newbie ? <Feed/> :
       <></>
     :

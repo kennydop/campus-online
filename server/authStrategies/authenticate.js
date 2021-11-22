@@ -6,7 +6,7 @@ export const COOKIE_OPTIONS = {
   httpOnly: true,
   // Since localhost is not having https protocol,
   // secure cookies do not work correctly (in postman)
-  secure: false,
+  secure: !dev,
   signed: true,
   maxAge: (60 * 60 * 24 * 30) * 1000,
   // sameSite: "none",
