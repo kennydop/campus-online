@@ -97,7 +97,7 @@ function Header() {
                       src={currentUser.profilePicture}/></Link>
                   </div>
               </div>:
-              <div className="flex items-center justify-end space-x-5 mr-8">
+              <div className="hidden md:flex items-center justify-end space-x-5 mr-8">
                 <button className='h-8 w-24 rounded-full shadow-md  text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl bg-pink-500 text-white dark:text-gray-200' onClick={()=>{router.replace('/login')}}>Login</button>
                 <button className='h-8 w-24 rounded-full shadow-md border border-pink-500 text-pink-500 text-center bg-white dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:text-pink-500 dark:shadow-lg dark:hover:shadow-xl' onClick={()=>{router.replace('/signup')}}>Sign Up</button>
               </div>}

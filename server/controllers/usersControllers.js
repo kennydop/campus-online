@@ -1,32 +1,48 @@
 import User from "../models/User.js";
+import Post from "../models/Post.js";
+
+const bgColors = ["000D6B", "125C13", "3E065F", "082032", "FF414D"]
 
 // update user info
 export const updateUserInfo = async (req, res) => {
-    if (req.body.userId === req.params.id || req.body.isAdmin) {
-      try {
-        await User.findByIdAndUpdate(req.params.id, {$set: req.body,});
-        const user = await User.findById(req.params.id);
+  try {
+    await User.findByIdAndUpdate(req.params.id, {$set: req.body,});
+    if(req.body.name){
+      const user = await User.findById(req.params.id)
+      if(user.profilePicture.startsWith("https://ui-avatars.com/api/?name=")){
+        user.profilePicture = `https://ui-avatars.com/api/?name=${encodeURIComponent((req.body.name))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`
+        user.save()
         res.status(200).json(user);
-      } catch (error) {
-        return res.status(500).json(error);
       }
-    } else {
-    return res.status(403).json("You can update only your account!");
+    }else{
+      const user = await User.findById(req.params.id);
+      res.status(200).json(user);
     }
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json(error);
+  }
 }
 
 // delete a user
 export const deleteUser = async (req, res) => {
-    if (req.body.userId === req.params.id || req.body.isAdmin) {
-        try {
-            await User.findByIdAndDelete(req.params.id);
-            res.status(200).json("Account has been deleted");
-        } catch (error) {
-            return res.status(500).json(error);
-        }
-    } else {
-        return res.status(403).json("You can delete only your account!");
-    }
+  try {
+    await User.updateMany({followers: req.params.id}, 
+      { $pull: { followers: req.params.id } }, 
+      { multi: true })
+    await Post.updateMany({likes: req.params.id}, 
+      { $pull: { likes: req.params.id } }, 
+      { multi: true })
+    await Post.updateMany({"comments.userId": req.params.id}, 
+      { $pull: { comments: {userId: req.params.id }} }, 
+      { multi: true })
+    // await Story.findOneAndDelete({userId: req.params.id})
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).json("Account has been deleted");
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json(error);
+  }
 }
 
 // get a user
@@ -50,28 +66,29 @@ export const getAUser = async (req, res) => {
     }
 }
 
-
 // follow a user
 export const handleFollow = async (req, res) => {
-    if (req.body.userId !== req.params.id) {
-        try {
-            const user = await User.findById(req.params.id);
-            const currentUser = await User.findById(req.body.userId);
-                if (!user.followers.includes(req.body.userId)) {
-                    await user.updateOne({ $push: { followers: req.body.userId } });
-                    await currentUser.updateOne({ $push: { followings: req.params.id } });
-                    res.status(200).json("user has been followed");
-                } else {
-                    await user.updateOne({ $pull: { followers: req.body.userId } });
-                    await currentUser.updateOne({ $pull: { followings: req.params.id } });
-                    res.status(200).json("user has been unfollowed");
-                }
-        } catch (error) {
-            res.status(500).json(error);
-        }
-    } else {
-        res.status(403).json("you cant follow yourself");
+  if (req.body.userId !== req.params.id) {
+    try {
+      const user = await User.findById(req.params.id);
+      const currentUser = await User.findById(req.body.userId);
+      if (!user.followers.includes(req.body.userId)) {
+        //follow
+        await user.updateOne({ $push: { followers: req.body.userId } });
+        await currentUser.updateOne({ $push: { followings: req.params.id } });
+        res.status(200).json("user has been followed");
+      } else {
+        //unfollow
+        await user.updateOne({ $pull: { followers: req.body.userId } });
+        await currentUser.updateOne({ $pull: { followings: req.params.id } });
+        res.status(200).json("user has been unfollowed");
+      }
+    } catch (error) {
+        res.status(500).json(error);
     }
+  } else {
+      res.status(403).json("you cant follow yourself");
+  }
 }
 // check if following a user
 export const checkFollow = async (req, res) => {
@@ -92,14 +109,24 @@ export const getFollowSuggestions = async (req, res) => {
     try{
         const user = await User.findById(req.params.id);
         const matches = await User.find( {$and: [
-            {$or: [{from: user.from}, {city: user.city}]},
+            {$or: [{from: { $regex : user.from ? user.from.split(',')[0] : '_', $options: "i"}}, {city: { $regex : user.city ? user.city.split(',')[0] : '_', $options: "i"}}, {from: { $regex : user.city ? user.city.split(',')[0] : '_', $options: "i"}}, {city: { $regex : user.from ? user.from.split(',')[0] : '_', $options: "i"}},{college: user.college}]},
             {_id: {$ne: req.params.id}},
             {followers: {$ne: req.params.id}}
         ]});
-        res.status(200).json(matches);
+        if(matches.length <= 5){
+          const usernames = []
+          matches.forEach(match=>{
+            usernames.push(match.username)
+          })
+          const _matches = await User.find( {$and: [{followers: {$ne: req.params.id}}, {_id: {$ne: req.params.id}}, {username: {$nin: usernames}}]});
+          matches.concat(_matches);
+          res.status(200).json(matches.concat(_matches))
+        }else{
+          res.status(200).json(matches)
+        }
     }catch(error){
-        res.status(500).json(error);
-        console.log(error);
+      res.status(500).json(error);
+      console.log(error);
     }
 }
 //not logged in suggestions

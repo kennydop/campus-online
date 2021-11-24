@@ -1,15 +1,16 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import { useRef, useState } from "react";
-import { UserIcon, MailIcon, LockClosedIcon} from "@heroicons/react/outline";
+import { UserIcon, MailIcon, LockClosedIcon, AtSymbolIcon} from "@heroicons/react/outline";
 import AuthLeft from "../components/AuthLeft";
 import {useRouter} from 'next/router';
 import { useAuth } from "../contexts/AuthContext";
-
+import axios from "axios";
 
 function Signup() {
-	const { signup, loginWithProvider } = useAuth()
+	const { setCurrentUser } = useAuth()
 	const username = useRef();
+	const name = useRef();
 	const email = useRef();
 	const password = useRef();
 	const [error, setError] = useState();
@@ -21,31 +22,28 @@ function Signup() {
 		setError('');
 		setSignUpLoading(true);
     try{
-      await signup(email.current.value, password.current.value, username.current.value)
-      router.replace('/addprofileimg')
-    }
-    catch(error){
+      axios.post("http://localhost:5000/api/auth/register", {username: username.current.value, password: password.current.value, email: email.current.value, name: name.current.value}, {withCredentials: true, credentials: 'include'}).then((res)=>{
+        if(res.data.success === true){
+          setCurrentUser(res.data)
+          router.replace('/addprofileimg')
+        }else{
+          setError("A user with the given" + Object.keys(res.data.keyValue)[0] + " already registered")
+        }
+      }).catch((error)=>{
+        console.log(error)
+        setSignUpLoading(false);
+        alert(error)
+      })
+    }catch(error){
       setSignUpLoading(false)
       console.log(error)
     }
 			setSignUpLoading(false);
-		}
-	
-	async function loginWithSocials(pvd){
-		try{
-			router.replace('/')
-			await loginWithProvider(pvd)
-		}catch(error){
-			switch (error.code) {
-			case 'auth/network-request-failed':
-				setError('Please check your internet connection')
-				break;
-			default:
-				setError('Unable to login, try again please')
-				break;
-			}
-		}
 	}
+	
+  async function loginWithSocials(pvd){
+    router.push("http://localhost:5000/api/auth/"+pvd)
+  }
 
 	return (
 		<div className="w-screen flex justify-center items-center bg-blue-grey-50 dark:bg-bdark-200 overflow-auto">
@@ -62,42 +60,58 @@ function Signup() {
 
 					</div>
 					{error && <p className = "errorMsg" id = "injectError">{error}</p>}
-					<div>
+					<div className="relative">
 						<UserIcon className="infoicons"/>
 						<input
-						ref={username}
+						ref={name}
             minLength="3"
             required={true}
 						type="text"
-						placeholder="Create Username"
+						placeholder="Name"
 						autoComplete="name"
+						title="name"
 						className="infofield"
 					/>
 					</div>
-					<div>
+					<div className="relative">
+						<AtSymbolIcon className="infoicons"/>
+						<input
+						ref={username}
+            minLength="3"
+            pattern="^[A-Za-z0-9_]{3,15}$"
+            required={true}
+						type="text"
+						placeholder="Create Username"
+						autoComplete="new name"
+						className="infofield"
+            title="please use only letters, numbers and underscores"
+					/>
+					</div>
+					<div className="relative">
 						<MailIcon className="infoicons"/>
 						<input
 						ref={email}
 						type="email"
             required={true}
-						placeholder="Enter Email"
+						placeholder="Email"
 						autoComplete="email"
 						className="infofield"
             pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
             title="example@example.com"
             />
 					</div>
-					<div>
+					<div className="relative">
 						<LockClosedIcon className="infoicons"/>
 						<input
 						ref={password}
 						type="password"
+						title="password"
             required={true}
 						placeholder="Create Password"
 						autoComplete="new-password"
 						className="infofield"/>
 					</div>
-					<p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Already have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=>{router.push('/')}}>Login</a></p>
+					<p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Already have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=>{router.push('/login')}}>Login</a></p>
 					<button disabled={signUpLoading} className="infobutton prevent-default" type = "submit">
 						{signUpLoading ? <div className="loader mx-auto animate-spin"></div> : <>Sign Up</>}
 					</button>

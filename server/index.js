@@ -10,10 +10,12 @@ import storyRoute from "./routes/stories.js";
 import cors from "cors";
 import passport from "passport";
 import cookieParser from "cookie-parser";
+import cookieSession from "cookie-session";
 
 import("./authStrategies/JWTStrategry.js");
 import("./authStrategies/authenticate.js");
 import("./authStrategies/LocalStrategy.js");
+import("./authStrategies/SocialsStrategy.js");
 
 if (process.env.NODE_ENV !== "production") {
   // Load environment variables from .env file in non prod environments
@@ -37,7 +39,11 @@ app.use(helmet());
 app.use(morgan("common")); // remove before deploying
 app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(cors(corsOptions));
+app.use(
+  cookieSession({ name: "session", keys: ["lama"], maxAge: 24 * 60 * 60 * 100 })
+);
 app.use(passport.initialize());
+app.use(passport.session());
 
 //routes
 app.use("/api/auth", authRoute);

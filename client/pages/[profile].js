@@ -21,8 +21,13 @@ function Profile() {
       if(currentUser){
         setLoggedIn(true)
         if(currentUser.username === router.query.profile){
-          setUser(currentUser)
-          setAdmin(true);
+          axios.get(`http://localhost:5000/api/users/${router.query.profile}`).then((res)=>{
+            setUser(res.data)
+            setAdmin(true);
+          }).catch((error)=>{
+            router.replace('/404')
+            console.log(error)
+          })
           if(tabActive==='profile')return; 
           setPrevPrevTab(prevTab); 
           setPrevTab(tabActive); 
@@ -50,7 +55,7 @@ function Profile() {
           console.log(error)
         })}
       }
-    },[router.isReady])
+    },[router.isReady, router.query.profile])
     
     return (
         user ?
@@ -60,7 +65,7 @@ function Profile() {
             <MyPosts admin={admin} user={user}/>
             <div className='pt-20'></div>
         </> :
-          <div className="mt-32">
+          <div className="mt-8">
             <div className="loader mx-auto animate-spin"></div>
           </div>
     )

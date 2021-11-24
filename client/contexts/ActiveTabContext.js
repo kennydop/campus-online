@@ -25,9 +25,9 @@ export function ActiveTab({children}){
     }
 
     useEffect(() => {
-        sessionStorage.setItem('activeTab', tabActive === null || tabActive === 'undefined' ?'home':tabActive)
-        sessionStorage.setItem('prevTab',  tabActive === null || tabActive === 'undefined' ?'home':prevTab)
-        sessionStorage.setItem('prevPrevTab',  tabActive === null || tabActive === 'undefined' ?'home':prevPrevTab)
+      sessionStorage.setItem('activeTab', tabActive === null || tabActive === 'undefined' ?'home':tabActive)
+      sessionStorage.setItem('prevTab',  tabActive === null || tabActive === 'undefined' ?'home':prevTab)
+      sessionStorage.setItem('prevPrevTab',  tabActive === null || tabActive === 'undefined' ?'home':prevPrevTab)
     })
 
     const value = {

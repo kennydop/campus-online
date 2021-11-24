@@ -5,12 +5,18 @@ import axios from 'axios'
 import { useState } from 'react'
 import Link from "next/link"
 
-function ProfileToFollow({name, pic, college, id, userId}) {
+function ProfileToFollow({username, pic, college, id, userId}) {
   const [buttonText, setButtonText] = useState('Follow')
-
+  var sn = ''
+  var sun = ''
   if(college.length > 24){
     college = college.substring(0, 24) + '...';
-}
+  }
+  if(username.length > 15){
+    sun = username.substring(0, 15) + '...';
+  }else{
+    sun = username
+  }
 
   function followUser(){
     setButtonText(".....................")
@@ -24,18 +30,18 @@ function ProfileToFollow({name, pic, college, id, userId}) {
   }
 
   return (
-    <div className='flex items-center bg-white dark:bg-bdark-100 rounded-lg shadow-md px-2 py-4 mb-2 text-gray-500 dark:text-gray-400 w-full'>
+    <div className='flex items-center border-b dark:border-bdark-200 px-2 py-4 mb-2 text-gray-500 dark:text-gray-400 w-full'>
       <div className='max-h-9 w-9 rounded-full overflow-hidden'>
-        <Link href={`/${name}`}><img
+        <Link href={`/${username}`}><img
           className='object-cover rounded-full cursor-pointer'
           src={pic}
         /></Link>
       </div>
       <div className='ml-3'>
-        <Link href={`/${name}`}><p className="cursor-pointer">{name}</p></Link>
-        <p className='text-xs font-light'>{college}</p>
+        <Link href={`/${username}`}><p className="cursor-pointer text-sm">{sun}</p></Link>
+        <p className='text-xs font-extralight'>{college}</p>
       </div>
-      <div className={`py-1 px-1.5 absolute right-6 mb-5 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-xs ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={followUser}>{buttonText}</div>
+      <div className={`py-1 px-1.5 absolute right-6 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-xs ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={followUser}>{buttonText}</div>
     </div>
   )
 }

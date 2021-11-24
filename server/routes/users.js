@@ -8,7 +8,7 @@ const router = Router();
 router.get("/currentUser", verifyUser, (req, res) => {res.send(req.user)})
 
 //update user
-router.put("/:id", updateUserInfo);
+router.put("/:id", verifyUser, updateUserInfo);
 
 //delete user
 router.delete("/:id", deleteUser);

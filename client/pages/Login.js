@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import { LockClosedIcon, UserIcon} from "@heroicons/react/outline";
+import { AtSymbolIcon, LockClosedIcon } from "@heroicons/react/outline";
 import AuthLeft from '../components/AuthLeft'
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
@@ -13,39 +13,35 @@ function Login() {
   const [loginLoading, setLoginLoading] = useState(false);
   const [error, setError] = useState(false);
   const router = useRouter();
-  const { loginWithProvider, login, setCurrentUser } = useAuth()
+  const { setCurrentUser } = useAuth()
+
+  useEffect(() => {
+  if(router.query.errorM)
+    setError(router.query.errorM)
+  }, [router.query, router.isReady])
 
   async function loginWithEmail(e){
     e.preventDefault();
     setError('');
     setLoginLoading(true);
-      try{
-        await login(username.current.value, password.current.value)
-        if(router.pathname !== '/'){
-          router.replace('/')
-        }
-      }
-      catch(error){
-        console.log(error)
+    try{
+      axios.post("http://localhost:5000/api/auth/login", {username, password}, {withCredentials: true, credentials: 'include'}).then((res)=>{
+      setCurrentUser(res.data)
+      router.replace("/")
+      }).catch((error)=>{
+        setError("Incorrect Credentials")
         setLoginLoading(false)
+      })
+    }
+    catch(error){
+      console.log(error)
+      setLoginLoading(false)
 
-      }
+    }
   }
 
   async function loginWithSocials(pvd){
-    try{
-      router.replace('/')
-      await loginWithProvider(pvd)
-    }catch(error){
-      switch (error.code) {
-        case 'auth/network-request-failed':
-          setError('Please check your internet connection')
-          break;
-        default:
-          setError('Unable to login, try again please')
-          break;
-      }
-    }
+    router.push("http://localhost:5000/api/auth/"+pvd)
   }
     return (
       <div className="w-screen flex justify-center items-center bg-blue-grey-50 dark:bg-bdark-200">
@@ -62,11 +58,13 @@ function Login() {
             </div>
             {error && <p className = "errorMsg" id = "injectError">{error}</p>}
             <div className="relative">
-              <UserIcon className="infoicons"/>
+              <AtSymbolIcon className="infoicons"/>
               <input
                 ref={username}
                 type="name"
                 minLength="3"
+                pattern="^[A-Za-z0-9_]{3,15}$"
+                title="please use only letters, numbers and underscores"
                 required={true}
                 placeholder="Username"
                 autoComplete="name"
@@ -83,10 +81,11 @@ function Login() {
                 placeholder="Password"
                 autoComplete="current-password"
                 className="infofield"
+                title="password"
               />
             </div>
             <a href="#" className="self-center mb-1 text-sm text-gray-500 dark:text-gray-400 hover:font-bold">Forgot password?</a>
-            <p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Don&apos;t have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=> router.push("/Signup")}>Create one</a></p>
+            <p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Don&apos;t have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=> router.push("/signup")}>Create one</a></p>
             <button disabled = {loginLoading} className="infobutton" type = "submit">
               {loginLoading ? <div className="loader mx-auto animate-spin"></div> : <>Login</>}
             </button>

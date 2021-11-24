@@ -1,23 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useRouter} from 'next/router';
-import {db, firebaseApp} from '../firebase/firebase';
+import {db} from '../firebase/firebase';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { AcademicCapIcon } from '@heroicons/react/outline';
+import NotFound from "./404"
+import axios from 'axios';
 
 function AddCollege({colleges}) {
-    const {currentUser} = useAuth();
+    const {currentUser, setCurrentUser} = useAuth();
     const router = useRouter();
     const [college, setCollege] = useState("");
     const [error, setError] = useState("");
     const [filledColleges, setfilledColleges] = useState(false);
-    const [confirmCollegeLoading, setconfirmCollegeLoading] = useState(false);
+    const [confirmCollegeLoading, setConfirmCollegeLoading] = useState(false);
 
     useEffect(()=>{
-      if(currentUser.college){
-        router.replace('/')
-        return
-      }
       if(college){
           fillColleges();
       }else{
@@ -26,7 +24,6 @@ function AddCollege({colleges}) {
     },[])
     async function refillColleges(){
         if(!filledColleges){
-            var colleges = new Array();
             await db.collection("universities").get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                     var collegeOption = document.createElement("option");
@@ -49,26 +46,29 @@ function AddCollege({colleges}) {
     }
 
     async function confirmCollege(){
-        setconfirmCollegeLoading(true)
+        setConfirmCollegeLoading(true)
         setError("")
         if(college){
             if(college === "Select College"){
                 setError('Please select your college');
-                setconfirmCollegeLoading(false);
+                setConfirmCollegeLoading(false);
                 return;
             }
-            await db.collection("users").doc(currentUser.uid).set({college: college, username: currentUser.displayName, email: currentUser.email, profilePic: currentUser.photoURL, phone: currentUser.phoneNumber});
-            const collegeRef = db.collection('universities').doc(college);
-            const increment = firebaseApp.firestore.FieldValue.increment(1);
-            await collegeRef.update({ registeredUsers: increment });
-            router.replace('/');
+            axios.put(`http://localhost:5000/api/users/${currentUser._id}`, { college }, { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
+              setCurrentUser((oldValues) => {return {token: oldValues.token, ...res.data}})
+              router.replace('/')
+            }).catch((error)=>{
+              setError(error.message)
+              console.log(error.message)
+            })
         }else{
             setError('Please select your college');
-            setconfirmCollegeLoading(false);
+            setConfirmCollegeLoading(false);
         }
     }
 
     return (
+      !currentUser.college ?
         <div className = "h-screen flex flex-col items-center justify-center bg-white dark:bg-bdark-100">
             <div className = "mb-10"><h1 className = "text-lg font-bold text-gray-500 dark:text-gray-400">Finish Setting up your Account</h1></div>
                 {error&&<p className='errorMsg'>{error}</p>}
@@ -84,6 +84,8 @@ function AddCollege({colleges}) {
                 </button>
             </div>
         </div>
+        :
+        <NotFound/>
     )
 }
 export async function getStaticProps() {

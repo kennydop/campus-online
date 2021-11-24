@@ -12,28 +12,38 @@ const UserSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      // require: true,
       min: 3,
       max: 20,
       unique: true,
     },
+    name: {
+      type: String,
+      min: 3,
+      max: 20,
+    },
     email: {
       type: String,
-      // required: true,
       max: 50,
       unique: true,
     },
+    gender: {
+      type: String,
+    },
     profilePicture: {
       type: String,
-      default: "",
     },
     coverPicture: {
       type: String,
-      default: "",
     },
     provider: {
       type: String,
       default: "email"
+    },
+    providerId:{
+      type: String
+    },
+    providerToken:{
+      type: String
     },
     college: {
       type: String,

@@ -1,13 +1,12 @@
 /* eslint-disable jsx-a11y/alt-text */
 import Image from "next/image"
 import Avatar from "../images/avatar.jpg"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { auth, storage } from '../firebase/firebase';
 import {useRouter} from 'next/router';
-import NotAuthorized from "../components/NotAuthorized";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
-
+import NotFound from "./404"
 function AddProfileImg() {
     
     const [imgPreview, setImgPreview] = useState(null);
@@ -20,13 +19,6 @@ function AddProfileImg() {
     const [url, setUrl] = useState();
     const router = useRouter();
     const { currentUser } = useAuth();
-    const defaultProfileImage = 'https://i.pinimg.com/474x/01/6a/80/016a8077b311d3ece44fa4f5138c652d.jpg'
-  
-    useEffect(()=>{
-    if(currentUser.profilePicture){
-      router.replace('/')
-    }
-  },[])
 
     const handleImageChange = (e) => {
         setError('');
@@ -102,12 +94,14 @@ function AddProfileImg() {
         }
         if(!url){
           const bgColors = ["000D6B", "125C13", "3E065F", "082032", "FF414D"]
-          axios.put(`http://localhost:5000/api/users/${currentUser._id}`, { profilePicture: `https://ui-avatars.com/api/?name=${encodeURIComponent((currentUser.username).replace(/[^a-zA-Z ]/g, ""))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`}).then(()=>{
-            router.replace('/addcollege')
-            }).catch((error)=>{
-                setError(error.message)
-                setLoading(false)
-            })
+          axios.put(`http://localhost:5000/api/users/${currentUser._id}`, 
+            { profilePicture: `https://ui-avatars.com/api/?name=${encodeURIComponent((currentUser.name))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`}, 
+            { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then(()=>{
+              router.replace('/addcollege')
+              }).catch((error)=>{
+                  setError(error.message)
+                  setLoading(false)
+              })
         } else{
             urltp = url;
             const uploadTask = storage.ref(`profilePictures/${currentUser.uid}`).putString(urltp, 'data_url');
@@ -129,7 +123,7 @@ function AddProfileImg() {
     }
 
     return (
-        currentUser ?
+        !currentUser.profilePicture ?
         <div className = "h-screen flex flex-col items-center justify-center dark:bg-bdark-100">
             <div className = "mb-6 text-center">
                 <h1 className = "mb-5 text-lg font-bold text-gray-500 dark:text-gray-400">Finish Setting up your Account</h1>
@@ -156,7 +150,7 @@ function AddProfileImg() {
             </div>
         </div>
         :
-        <NotAuthorized/>
+        <NotFound/>
     )
 }
 
