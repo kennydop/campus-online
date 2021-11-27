@@ -6,28 +6,31 @@ import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useEffect } from 'react';
 
 export default function Global() {
-    const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+  const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
 
-    useEffect(()=>{
-        if(tabActive==='global')return; 
-        setPrevPrevTab(prevTab); 
-        setPrevTab(tabActive); 
-        setTabActive('global');
-    },[])
+  useEffect(()=>{
+    if(!currentUser.token){
+      router.replace('/')
+    }
+    if(tabActive==='global')return; 
+    setPrevPrevTab(prevTab); 
+    setPrevTab(tabActive); 
+    setTabActive('global');
+  },[])
     
-    return (
-        <div>
-            {/* <Stories/> */}
-            <div className='mt-6'></div>
-            <FeedContent />
-        </div>
-    )
+  return (
+    <div>
+      {/* <Stories/> */}
+      <div className='mt-6'></div>
+      <FeedContent />
+    </div>
+  )
 }
 
 Global.getLayout = function getLayout(page) {
-    return (
-        <FeedLayout>
-            {page}
-        </FeedLayout>
-    )
+  return (
+    <FeedLayout>
+      {page}
+    </FeedLayout>
+  )
 }

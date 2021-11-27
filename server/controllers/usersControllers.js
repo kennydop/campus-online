@@ -1,22 +1,34 @@
 import User from "../models/User.js";
 import Post from "../models/Post.js";
+import cloudinary from "../utils/cloudinary.js";
 
 const bgColors = ["000D6B", "125C13", "3E065F", "082032", "FF414D"]
 
 // update user info
 export const updateUserInfo = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.params.id, {$set: req.body,});
-    if(req.body.name){
+    const newPP = ''
+    if(req.body.name && !req.body.profilePicture){
       const user = await User.findById(req.params.id)
       if(user.profilePicture.startsWith("https://ui-avatars.com/api/?name=")){
-        user.profilePicture = `https://ui-avatars.com/api/?name=${encodeURIComponent((req.body.name))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`
-        user.save()
-        res.status(200).json(user);
+        newPP = `https://ui-avatars.com/api/?name=${encodeURIComponent((req.body.name))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`
+        const info = {...req.body, profilePicture: newPP}
+        const newUser = await User.findByIdAndUpdate(req.params.id, {$set: info});
+        res.status(200).json(newUser);
       }
-    }else{
-      const user = await User.findById(req.params.id);
-      res.status(200).json(user);
+    }
+    else{
+      if(req.body.profilePicture){
+        const uploadResponse = await cloudinary.uploader.upload(req.body.profilePicture, {
+          upload_preset: 'co_profilepics', resource_type: "image"
+        });
+        const {profilePicture, ...other} = req.body
+        other.profilePicture = "https://res.cloudinary.com/kennydop/image/upload/ar_1:1,c_fill,g_auto:faces,r_max,w_100/campus-online/profile-pictures/"+uploadResponse.public_id+"."+uploadResponse.format
+        const newUser = await User.findByIdAndUpdate(req.params.id, {$set: other});
+        res.status(200).json(newUser);
+      }
+      const newUser = await User.findByIdAndUpdate(req.params.id, {$set: req.body});
+      res.status(200).json(newUser);
     }
   } catch (error) {
     console.log(error)

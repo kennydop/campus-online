@@ -1,7 +1,6 @@
 import { HomeIcon, LocationMarkerIcon, HeartIcon, CakeIcon, TemplateIcon, AcademicCapIcon } from '@heroicons/react/solid'
 
 function About({ admin, user }) {
-  console.log(user)
 	return (
 		<div className='md:mx-auto w-full md:w-8/12 bg-white dark:bg-bdark-100 shadow-md rounded-lg cursor-default'>
 			<div className='text-gray-500 dark:text-gray-400 py-3 pl-4 border-b dark:border-bdark-50'>About</div>

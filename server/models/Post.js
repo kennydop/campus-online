@@ -1,7 +1,8 @@
 import mongoose from "mongoose"
 
 const CommentSchema = new mongoose.Schema({
-  userId:{
+  
+  authorId:{
     type: String,
     required: true,
   },
@@ -11,9 +12,32 @@ const CommentSchema = new mongoose.Schema({
   }
 })
 
+const PollSchema = new mongoose.Schema({
+  pick:{
+    type: String,
+    required: true,
+  },
+  votes:{
+    type: Number,
+    required: true,
+  }
+})
+
 const PostSchema = new mongoose.Schema(
   {
-    userId: {
+    authorId: {
+      type: String,
+      required: true,
+    },
+    authorName: {
+      type: String,
+      required: true,
+    },
+    authorUsername: {
+      type: String,
+      required: true,
+    },
+    authorImg: {
       type: String,
       required: true,
     },
@@ -21,11 +45,14 @@ const PostSchema = new mongoose.Schema(
       type: String,
       max: 500,
     },
-    img: {
+    media: {
       type: String,
     },
-    postType: {
+    type: {
       type: String,
+    },
+    poll: {
+      type: [PollSchema]
     },
     college: {
       type: String,

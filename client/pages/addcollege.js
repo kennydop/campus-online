@@ -8,98 +8,99 @@ import NotFound from "./404"
 import axios from 'axios';
 
 function AddCollege({colleges}) {
-    const {currentUser, setCurrentUser} = useAuth();
-    const router = useRouter();
-    const [college, setCollege] = useState("");
-    const [error, setError] = useState("");
-    const [filledColleges, setfilledColleges] = useState(false);
-    const [confirmCollegeLoading, setConfirmCollegeLoading] = useState(false);
+  const {currentUser, setCurrentUser} = useAuth();
+  const router = useRouter();
+  const [college, setCollege] = useState("");
+  const [error, setError] = useState("");
+  const [filledColleges, setfilledColleges] = useState(false);
+  const [confirmCollegeLoading, setConfirmCollegeLoading] = useState(false);
 
-    useEffect(()=>{
-      if(college){
-          fillColleges();
-      }else{
-          refillColleges()
-      }
-    },[])
-    async function refillColleges(){
-        if(!filledColleges){
-            await db.collection("universities").get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                    var collegeOption = document.createElement("option");
-                    collegeOption.innerHTML = doc.id;
-                    document.getElementById('colleges').appendChild(collegeOption)
-                    setfilledColleges(true);
-                });
-            });
-        }
+  useEffect(()=>{
+    if(colleges){
+      fillColleges();
+    }else{
+      refillColleges()
     }
-    function fillColleges(){
-        colleges.forEach(col => {
-                if(!filledColleges){
-                var collegeOption = document.createElement("option");
-                collegeOption.innerHTML = col;
-                document.getElementById('colleges').appendChild(collegeOption)
-                setfilledColleges(true);
-            }
-        });
-    }
-
-    async function confirmCollege(){
-        setConfirmCollegeLoading(true)
-        setError("")
-        if(college){
-            if(college === "Select College"){
-                setError('Please select your college');
-                setConfirmCollegeLoading(false);
-                return;
-            }
-            axios.put(`http://localhost:5000/api/users/${currentUser._id}`, { college }, { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
-              setCurrentUser((oldValues) => {return {token: oldValues.token, ...res.data}})
-              router.replace('/')
-            }).catch((error)=>{
-              setError(error.message)
-              console.log(error.message)
-            })
-        }else{
-            setError('Please select your college');
-            setConfirmCollegeLoading(false);
-        }
-    }
-
-    return (
-      !currentUser.college ?
-        <div className = "h-screen flex flex-col items-center justify-center bg-white dark:bg-bdark-100">
-            <div className = "mb-10"><h1 className = "text-lg font-bold text-gray-500 dark:text-gray-400">Finish Setting up your Account</h1></div>
-                {error&&<p className='errorMsg'>{error}</p>}
-            <div className = "bg-blue-grey-50 dark:bg-bdark-200 rounded-full justify-center h-12 w-80 mb-5 p-1">
-                <label htmlFor='colleges' className='flex w-full h-full justify-end'>
-                    <AcademicCapIcon className="text-gray-500 dark:text-gray-400 w-6 text-center mx-2"/>
-                    <select id = 'colleges' value={college} onChange = {e=>setCollege(e.target.value)} required = "required" className = "bg-blue-grey-50 dark:bg-bdark-200 text-gray-500 dark:text-gray-400"><option>Select College</option></select>
-                </label>
-            </div>
-            <div className = "mt-6">
-                <button disabled={confirmCollegeLoading} type = "button" className = "infobutton" onClick={confirmCollege}>
-                    {confirmCollegeLoading ? <div className="loader mx-auto animate-spin"></div> : <>Confirm</>}
-                </button>
-            </div>
-        </div>
-        :
-        <NotFound/>
-    )
-}
-export async function getStaticProps() {
-    var colleges = new Array();
-    await db.collection("universities").get().then((querySnapshot) => {
+  },[])
+  async function refillColleges(){
+    if(!filledColleges){
+      await db.collection("universities").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-            colleges.push(doc.id);
+          var collegeOption = document.createElement("option");
+          collegeOption.innerHTML = doc.id;
+          document.getElementById('colleges').appendChild(collegeOption)
+          setfilledColleges(true);
         });
-    });
-
-    return {
-        props: {
-            colleges,
-        },
+      });
     }
+  }
+  function fillColleges(){
+    colleges.forEach(col => {
+      if(!filledColleges){
+        var collegeOption = document.createElement("option");
+        collegeOption.innerHTML = col;
+        document.getElementById('colleges').appendChild(collegeOption)
+        setfilledColleges(true);
+      }
+    });
+  }
+
+  async function confirmCollege(){
+    setConfirmCollegeLoading(true)
+    setError("")
+    if(college){
+      if(college === "Select College"){
+        setError('Please select your college');
+        setConfirmCollegeLoading(false);
+        return;
+      }
+      axios.put(`http://localhost:5000/api/users/${currentUser._id}`, { college }, { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
+        setCurrentUser((oldValues) => {return {token: oldValues.token, ...res.data}})
+        currentUser.profilePicture ? router.replace('/feed') : router.replace('/addprofileimg')
+      }).catch((error)=>{
+        setError(error.message)
+        console.log(error.message)
+      })
+    }else{
+      setError('Please select your college');
+      setConfirmCollegeLoading(false);
+    }
+  }
+
+  return (
+    !currentUser.college ?
+    <div className = "h-screen flex flex-col items-center justify-center bg-white dark:bg-bdark-100">
+      <div className = "mb-10"><h1 className = "text-lg font-bold text-gray-500 dark:text-gray-400">Finish Setting up your Account</h1></div>
+        {error&&<p className='errorMsg'>{error}</p>}
+      <div className = "bg-blue-grey-50 dark:bg-bdark-200 rounded-full justify-center h-12 w-80 mb-5 p-1">
+        <label htmlFor='colleges' className='flex w-full h-full justify-end'>
+          <AcademicCapIcon className="text-gray-500 dark:text-gray-400 w-6 text-center mx-2"/>
+          <select id = 'colleges' value={college} onChange = {e=>setCollege(e.target.value)} required = "required" className = "bg-blue-grey-50 dark:bg-bdark-200 text-gray-500 dark:text-gray-400"><option>Select College</option></select>
+        </label>
+      </div>
+      <div className = "mt-6">
+        <button disabled={confirmCollegeLoading} type = "button" className = "infobutton" onClick={confirmCollege}>
+          {confirmCollegeLoading ? <div className="loader mx-auto animate-spin"></div> : <>Confirm</>}
+        </button>
+      </div>
+    </div>
+      :
+    <NotFound/>
+  )
+}
+
+export async function getStaticProps() {
+  var colleges = new Array();
+  await db.collection("universities").get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      colleges.push(doc.id);
+    });
+  });
+
+  return {
+    props: {
+      colleges,
+    },
+  }
 }
 export default AddCollege

@@ -132,20 +132,19 @@ function Chats(){
 				</div>
 				<div className='hidden md:block w-full md:w-3/5 h-full border-l border-pink-500 overflow-y-auto relative'>
 					<div className='h-88p'>
-
-					</div>
-					<div className='shadow-mdt h-12p w-full bg-white dark:bg-bdark-100 flex items-center justify-center'>
-						<form className='flex flex-1 items-center justify-center'>
-							<input className='outline-none bg-blue-grey-50 dark:bg-bdark-200 placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 rounded-full focus:ring-1 focus:ring-gray-500 h-8 p-2 overflow-hidden w-10/12' 
-								ref={messageRef}
-								type='text'
-								placeholder="Type a message"/>
-							<button hidden onClick={sendMessage}></button>
-						</form>
-					</div>
 				</div>
+        <div className='shadow-mdt h-12p w-full bg-white dark:bg-bdark-100 flex items-center justify-center'>
+          <form className='flex flex-1 items-center justify-center'>
+            <input className='outline-none bg-blue-grey-50 dark:bg-bdark-200 placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 rounded-full focus:ring-1 focus:ring-gray-500 h-8 p-2 overflow-hidden w-10/12' 
+              ref={messageRef}
+              type='text'
+              placeholder="Type a message"/>
+            <button hidden onClick={sendMessage}></button>
+          </form>
+        </div>
 			</div>
 		</div>
+	</div>
 	)
 }
 Chats.getLayout = function getLayout(page) {

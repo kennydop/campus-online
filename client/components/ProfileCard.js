@@ -16,7 +16,7 @@ function ProfileCard({ admin, user, userId, loggedIn }) {
     }
     if(followBtnText==="...") return
     setFollowBtnText("...")
-    axios.put(`http://localhost:5000/api/users/${user._id}/follow`, {userId}).then((res)=>{
+    axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${user._id}/follow`, {userId}).then((res)=>{
     if(res.data === "user has been followed"){
       setFollowBtnText('Unfollow')
       }else if(res.data === "user has been unfollowed"){
@@ -28,9 +28,9 @@ function ProfileCard({ admin, user, userId, loggedIn }) {
   return (
     <div className='md:mx-auto w-full md:w-8/12 bg-white dark:bg-bdark-100 shadow-md rounded-b-lg md:my-6 mb-6 md:rounded-lg overflow-hidden'>
       <div className='relative w-full h-52 md:h-60 overflow-hidden'>
-          <img src={ user?.coverPicture ? user.coverPicture : defaultCoverPicture}
-          className='w-full h-full object-cover'/>
-          {admin && <div className='absolute right-0 bottom-0 py-1 px-3 bg-gray-500 dark:bg-bdark-200 bg-opacity-70 cursor-pointer'><CameraIcon className='h-4 text-white dark:text-gray-400'/></div>}
+        <img src={ user?.coverPicture ? user.coverPicture : defaultCoverPicture}
+        className='w-full h-full object-cover'/>
+        {admin && <div className='absolute right-0 bottom-0 py-1 px-3 bg-gray-500 dark:bg-bdark-200 bg-opacity-70 cursor-pointer'><CameraIcon className='h-4 text-white dark:text-gray-400'/></div>}
       </div>
         <div className='relative w-full dark:bg-bdark-100 flex flex-col pb-2'>
           <div className='flex flex-col'>
@@ -46,7 +46,7 @@ function ProfileCard({ admin, user, userId, loggedIn }) {
           </div>
           <div className='absolute -top-20 left-1/2 -ml-14 lg:-top-20 lg:left-32'>
             <div className='relative'>
-              <img className = "h-28 w-28 lg:h-36 lg:w-36 object-cover rounded-full border-4 border-white dark:border-bdark-100 cursor-pointer" src = {user.profilePicture}/>
+              <img className = "h-28 w-28 lg:h-36 lg:w-36 object-cover rounded-full border-4 border-white dark:border-bdark-100 cursor-pointer" src = {user.profilePicture.startsWith("https://pbs.twimg.com/profile_images") ? user.profilePicture.replace("normal", "400x400") : user.profilePicture}/>
               {admin && <div className='absolute right-4 bottom-2 py-2 px-2 bg-gray-500 dark:bg-bdark-200 bg-opacity-90 rounded-full cursor-pointer transition hover:scale-105'><CameraIcon className='h-3 text-white dark:text-gray-400'/></div>}
             </div>
           </div>

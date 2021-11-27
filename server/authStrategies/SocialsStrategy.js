@@ -63,9 +63,10 @@ passport.use(
       clientID: process.env.FACEBOOK_ID,
       clientSecret: process.env.FACEBOOK_SECRET,
       callbackURL: "/api/auth/facebook/callback",
-      profileFields: ['id', 'email', 'gender', 'birthday', 'location', 'name', 'picture', 'hometown' ],
+      profileFields: ['id', 'email', 'gender', 'birthday', 'location', 'name', 'picture.type(large)', 'hometown' ],
     },
     function (accessToken, refreshToken, profile, done) {
+      console.log(profile)
       User.findOne({providerId: profile.id}, function (error, user) {
         if(!user){
           var newUser = new User({

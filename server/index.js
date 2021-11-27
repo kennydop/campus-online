@@ -16,7 +16,6 @@ import("./authStrategies/JWTStrategry.js");
 import("./authStrategies/authenticate.js");
 import("./authStrategies/LocalStrategy.js");
 import("./authStrategies/SocialsStrategy.js");
-
 if (process.env.NODE_ENV !== "production") {
   // Load environment variables from .env file in non prod environments
   dotenv.config();
@@ -34,13 +33,13 @@ mongoose.connect(process.env.MONGO_URL,
   .catch(error => console.log(error));
 
 //middleware
-app.use(express.json());
+app.use(express.json({ limit: '70mb' }));
 app.use(helmet());
 app.use(morgan("common")); // remove before deploying
 app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(cors(corsOptions));
 app.use(
-  cookieSession({ name: "session", keys: ["lama"], maxAge: 24 * 60 * 60 * 100 })
+  cookieSession({ name: "session", keys: [process.env.COOKIE_SECRET], maxAge: 24 * 60 * 60 * 100 })
 );
 app.use(passport.initialize());
 app.use(passport.session());

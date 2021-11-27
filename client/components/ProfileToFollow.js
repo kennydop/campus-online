@@ -5,22 +5,27 @@ import axios from 'axios'
 import { useState } from 'react'
 import Link from "next/link"
 
-function ProfileToFollow({username, pic, college, id, userId}) {
+function ProfileToFollow({name, username ,pic, college, id, userId}) {
   const [buttonText, setButtonText] = useState('Follow')
   var sn = ''
   var sun = ''
   if(college.length > 24){
     college = college.substring(0, 24) + '...';
   }
-  if(username.length > 15){
-    sun = username.substring(0, 15) + '...';
+  if(username.length > 20){
+    sun = username.substring(0, 20) + '...';
   }else{
     sun = username
   }
+  if(name.length > 15){
+    sn = name.substring(0, 15) + '...';
+  }else{
+    sn = name
+  }
 
   function followUser(){
-    setButtonText(".....................")
-    axios.put(`http://localhost:5000/api/users/${id}/follow`, {userId}).then((res)=>{
+    setButtonText("................")
+    axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${id}/follow`, {userId}).then((res)=>{
     if(res.data === "user has been followed"){
         setButtonText('Unfollow')
       }else if(res.data === "user has been unfollowed"){
@@ -38,7 +43,8 @@ function ProfileToFollow({username, pic, college, id, userId}) {
         /></Link>
       </div>
       <div className='ml-3'>
-        <Link href={`/${username}`}><p className="cursor-pointer text-sm">{sun}</p></Link>
+        <Link href={`/${username}`}><p className="cursor-pointer text-sm">{sn}</p></Link>
+        <Link href={`/${username}`}><p className="cursor-pointer text-xs">@{sun}</p></Link>
         <p className='text-xs font-extralight'>{college}</p>
       </div>
       <div className={`py-1 px-1.5 absolute right-6 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-xs ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={followUser}>{buttonText}</div>

@@ -13,7 +13,7 @@ router.put("/:id", updatePost);
 router.delete("/:id", deletePost);
 
 //get a post
-router.get("post/:id", getAPost);
+router.get("/:id", getAPost);
 
 //get feed posts
 router.get("/home/:id", getFeedPosts);

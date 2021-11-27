@@ -1,14 +1,25 @@
 import Post from "../models/Post.js";
 import User from "../models/User.js";
-
+import cloudinary from "../utils/cloudinary.js";
 
 export const createNewPost = async (req, res) => {
-	const newPost = new Post(req.body);
-	try {
-		const savedPost = await newPost.save();
-		res.status(200).json(savedPost);
+  try {
+    if(req.body.type !== "text"){
+      const uploadResponse = await cloudinary.uploader.upload(req.body.media, {
+        upload_preset: 'co_posts', resource_type: "auto"
+      });
+      const post = {...req.body, media: uploadResponse.public_id+"."+uploadResponse.format}
+      const newPost = new Post(post);
+      const savedPost = await newPost.save();
+      res.status(200).json(savedPost);
+    }else{
+      const newPost = new Post(req.body);
+      const savedPost = await newPost.save();
+      res.status(200).json(savedPost);
+    }
 	} catch (error) {
 		res.status(500).json(error);
+    console.log(error)
 	}
 }
 
@@ -75,9 +86,10 @@ export const getFeedPosts = async (req, res) => {
 				return Post.find({ userId: friendId });
 			})
 		);
-		const localPosts = await Post.find({college: currentUser.college})
-		var allPosts = [...userPosts, ...friendPosts, ...localPosts];
-		res.json(allPosts)
+		const localPosts = await Post.find({$and: [{college: currentUser.college}, {authorId: {$nin: [...currentUser.followings, currentUser._id]}}]})
+		const allPosts = [...userPosts, ...friendPosts, ...localPosts];
+    allPosts.sort((a,b) => (new Date(a.updatedAt) < new Date(b.updatedAt)) ? 1 : ((new Date(b.updatedAt) < new Date(a.updatedAt)) ? -1 : 0))
+		res.status(200).json(allPosts)
 	} catch (error) {
 		res.status(500).json(error);
 		console.log(error)
@@ -95,9 +107,8 @@ export const getGlobalPosts = async (req, res) => {
 
 export const getUserPosts =  async (req, res) => {
 	try {
-		const userPosts = await Post.find({ userId: req.params.id });
-		res.json(userPosts)
-		console.log(userPosts)
+		const userPosts = await Post.find({ authorId: req.params.id });
+		res.status(200).json(userPosts)
 	} catch (error) {
 		res.status(500).json(error);
 		console.log(error)
