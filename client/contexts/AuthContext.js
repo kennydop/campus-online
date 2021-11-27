@@ -41,8 +41,7 @@ export function AuthProvider({ children }) {
 	}
 
 	function logout() {
-    setCurrentUser(null)
-    router.replace("/")
+    router.replace("/login")
     axios.get("http://localhost:5000/api/auth/logout", { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'})
 	}
 

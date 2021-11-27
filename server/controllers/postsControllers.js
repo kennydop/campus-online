@@ -26,7 +26,7 @@ export const createNewPost = async (req, res) => {
 export const updatePost = async (req, res) => {
 	try {
 		const post = await Post.findById(req.params.id);
-		if (post.userId === req.body.userId) {
+		if (post.authorId === req.body.authorId) {
 			await post.updateOne({ $set: req.body });
 			res.status(200).json("the post has been updated");
 		} else {
@@ -40,7 +40,7 @@ export const updatePost = async (req, res) => {
 export const deletePost = async (req, res) => {
 	try {
 		const post = await Post.findById(req.params.id);
-		if (post.userId === req.body.userId) {
+		if (post.authorId === req.body.authorId) {
 			await post.deleteOne();
 			res.status(200).json("the post has been deleted");
 		} else {
@@ -54,13 +54,13 @@ export const deletePost = async (req, res) => {
 export const handlePostLike = async (req, res) => {
 	try {
 		var post = await Post.findById(req.params.id);
-		if (!post.likes.includes(req.body.userId)) {
-			await post.updateOne({ $push: { likes: req.body.userId } });
+		if (!post.likes.includes(req.body.authorId)) {
+			await post.updateOne({ $push: { likes: req.body.authorId } });
 			post = await Post.findById(req.params.id);
 			const newNumOfLikes = await post.likes
 			res.status(200).json(newNumOfLikes);
 		} else {
-			await post.updateOne({ $pull: { likes: req.body.userId } });
+			await post.updateOne({ $pull: { likes: req.body.authorId } });
 			res.status(200).json("The post has been disliked");
 		}
 	} catch (error) {
@@ -80,16 +80,30 @@ export const getAPost = async (req, res) => {
 export const getFeedPosts = async (req, res) => {
 	try {
 		const currentUser = await User.findById(req.params.id);
-		const userPosts = await Post.find({ userId: currentUser._id });
+		const userPosts = await Post.find({ authorId: currentUser._id });
 		const friendPosts = await Promise.all(
 			currentUser.followings.map((friendId) => {
-				return Post.find({ userId: friendId });
+				return Post.find({ authorId: friendId });
 			})
 		);
 		const localPosts = await Post.find({$and: [{college: currentUser.college}, {authorId: {$nin: [...currentUser.followings, currentUser._id]}}]})
-		const allPosts = [...userPosts, ...friendPosts, ...localPosts];
+    // userPosts.length !== 0 && allPosts.concat(userPosts)
+    // friendPosts.length !== 0 && allPosts.concat(friendPosts)
+    // localPosts.length !== 0 && allPosts.concat(localPosts)
+		const allPosts = [...userPosts, ...localPosts]
+    friendPosts.map((posts)=>{
+      if (posts.length !== 0){
+        posts.map((post)=>{
+          allPosts.push(post)
+        })
+      }
+    })
     allPosts.sort((a,b) => (new Date(a.updatedAt) < new Date(b.updatedAt)) ? 1 : ((new Date(b.updatedAt) < new Date(a.updatedAt)) ? -1 : 0))
-		res.status(200).json(allPosts)
+		// console.log(":::::::::::::::::::::::::::allPosts", allPosts)
+		// console.log(":::::::::::::::::::::::::::userPosts", userPosts)
+		// console.log(":::::::::::::::::::::::::::friendPosts", friendPosts)
+		// console.log(":::::::::::::::::::::::::::localPosts", localPosts)
+    res.status(200).json(allPosts)
 	} catch (error) {
 		res.status(500).json(error);
 		console.log(error)

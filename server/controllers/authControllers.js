@@ -176,7 +176,7 @@ export const logOutUser = async (req, res, next) => {
           res.status(500).json(error)
         } else {
           res.clearCookie("refreshToken", COOKIE_OPTIONS)
-          res.send({ success: true })
+          res.redirect({ success: true })
         }
       })
     },
