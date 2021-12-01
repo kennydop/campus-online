@@ -5,7 +5,7 @@ import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 
 function PostDialog() {
-  const { currentUser } = useAuth()
+  const { currentUser, setRefreshPosts } = useAuth()
   const { prevTab, prevPrevTab, setTabActive } = useActiveTab()
   const postRef = useRef(null);
   const mediaRef = useRef(null);
@@ -66,6 +66,7 @@ function PostDialog() {
         authorImg: currentUser.profilePicture
       }).then(()=>{
         setPosting(false)
+        setRefreshPosts(true)
         close.current.click()
       }).catch((error)=>{
         setError(error)

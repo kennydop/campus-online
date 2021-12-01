@@ -87,14 +87,14 @@ function Header() {
         {/*right*/}
         {currentUser ? 
         <div className = "hidden md:flex md:items-center md:justify-end md:mr-8 lg:mr-16">
-          <div onClick = {()=>{handleHome()}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
-          <div onClick = {()=>{handleGlobal()}}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
-          <div onClick = {()=>{if(tabActive==='chat')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/Chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
-          <div onClick = {()=>{if(tabActive==='post')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('post'); }}><HeaderIcon active = {tabActive === 'post'?true:undefined} Icon = {PlusCircleIcon}/></div>
-          <div onClick = {()=>{if(tabActive==='notification')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('notification')}}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
-          <div onClick = {()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div>
+          <div title="home" onClick = {()=>{handleHome()}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
+          <div title="global" onClick = {()=>{handleGlobal()}}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
+          <div title="chat" onClick = {()=>{if(tabActive==='chat')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/Chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
+          <div title="make a post" onClick = {()=>{if(tabActive==='post')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('post'); }}><HeaderIcon active = {tabActive === 'post'?true:undefined} Icon = {PlusCircleIcon}/></div>
+          <div title="notifications" onClick = {()=>{if(tabActive==='notification')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('notification')}}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
+          <div title="settings" onClick = {()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div>
           <div className = "hidden md:flex text-center pl-3">
-              <Link href={`/${currentUser.username}`}><img onClick = {()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('profile');}}
+              <Link href={`/${currentUser.username}`}><img title="account" onClick = {()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('profile');}}
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
               src={currentUser.profilePicture}/></Link>
           </div>

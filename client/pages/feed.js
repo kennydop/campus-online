@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import FeedContent from "../components/FeedContent";
-import Stories from "../components/Stories";
+import AddPost from "../components/AddPost"
+import Posts from "../components/Posts"
 import { FeedLayout } from "../Layouts/Layouts";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useEffect } from 'react';
@@ -24,8 +24,14 @@ function Feed() {
   return (
     <div>
       {/* <Stories userId={currentUser._id}/> */}
-      <div className='mt-6'></div>
-      <FeedContent />
+      <div className='mt-2'></div>
+        <div className='flex flex-col'>
+          <div className='mx-auto'>
+            <AddPost/>
+            <Posts/>
+          </div>
+        <div className='pt-20'></div>
+      </div>
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import {Router} from "express";
-import { createNewComment, createNewPost, deleteComment, deletePost, getAllComments, getAPost, getFeedPosts, getGlobalPosts, getUserPosts, handlePostLike, updatePost } from "../controllers/postsControllers.js";
+import { createNewComment, createNewPost, deleteComment, deletePost, getAPost, getFeedPosts, getGlobalPosts, getUserPosts, handlePostLike, updatePost } from "../controllers/postsControllers.js";
+import { verifyUser } from "../authStrategies/authenticate.js";
 
 const router = Router();
 
@@ -10,7 +11,7 @@ router.post("/", createNewPost);
 router.put("/:id", updatePost);
 
 //delete a post
-router.delete("/:id", deletePost);
+router.delete("/:id", verifyUser, deletePost);
 
 //get a post
 router.get("/:id", getAPost);
@@ -30,10 +31,7 @@ router.put("/:id/like", handlePostLike);
 // comment on a post
 router.put("/:id/comment", createNewComment)
 
-// get all comments
-router.get("/:id/comments", getAllComments)
-
 // delete comment
-router.delete("/:id/comment", deleteComment)
+router.delete("/:id/comment", verifyUser, deleteComment)
 
 export default router;

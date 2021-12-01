@@ -12,33 +12,8 @@ const uprotectedRoutes = ['/login', '/signup', '/', '/[profile]', '/404']
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState()
 	const [loading, setLoading] = useState(true)
+  const [refreshPosts, setRefreshPosts] = useState()
 	const router = useRouter()
-
-	async function signup(email, password, username, name) {
-		axios.post("http://localhost:5000/api/auth/register", {username, password, email, name}, {withCredentials: true, credentials: 'include'}).then((res)=>{
-      console.log(res)
-      if(res.data.success === true){
-        alert('signed up')
-        setCurrentUser(res.data)
-        return "signed up"
-      }else{
-        alert('exists')
-        return "User with the " + Object.keys(res.data.keyValue)[0] + " " + res.data.keyValue[(Object.keys(res.data.keyValue)[0])] + " already exists"
-      }
-    }).catch((error)=>{
-      console.log(error)
-      alert(error)
-    })
-	}
-
-	function login(username, password) {
-    axios.post("http://localhost:5000/api/auth/login", {username, password}, {withCredentials: true, credentials: 'include'}).then((res)=>{
-      setCurrentUser(res.data)
-      router.replace("/")
-    }).catch((error)=>{
-      alert("Incorrect Credentials")
-    })
-	}
 
 	function logout() {
     router.replace("/login")
@@ -84,6 +59,8 @@ export function AuthProvider({ children }) {
 
 	const value = {
 		currentUser,
+    refreshPosts,
+    setRefreshPosts,
     setCurrentUser,
 		logout,
 	}

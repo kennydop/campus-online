@@ -24,25 +24,25 @@ function AddCollege({colleges}) {
   },[])
   async function refillColleges(){
     if(!filledColleges){
-      await db.collection("universities").get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
+      await axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/colleges").then((cols)=>{        
+        cols.data.forEach((col) => {
           var collegeOption = document.createElement("option");
-          collegeOption.innerHTML = doc.id;
+          collegeOption.innerHTML = col.name;
           document.getElementById('colleges').appendChild(collegeOption)
-          setfilledColleges(true);
         });
       });
+      setfilledColleges(true);
     }
   }
   function fillColleges(){
     colleges.forEach(col => {
       if(!filledColleges){
         var collegeOption = document.createElement("option");
-        collegeOption.innerHTML = col;
+        collegeOption.innerHTML = col.name;
         document.getElementById('colleges').appendChild(collegeOption)
-        setfilledColleges(true);
       }
     });
+    setfilledColleges(true);
   }
 
   async function confirmCollege(){
@@ -54,7 +54,7 @@ function AddCollege({colleges}) {
         setConfirmCollegeLoading(false);
         return;
       }
-      axios.put(`http://localhost:5000/api/users/${currentUser._id}`, { college }, { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
+      axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}`, { college }, { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
         setCurrentUser((oldValues) => {return {token: oldValues.token, ...res.data}})
         currentUser.profilePicture ? router.replace('/feed') : router.replace('/addprofileimg')
       }).catch((error)=>{
@@ -90,13 +90,8 @@ function AddCollege({colleges}) {
 }
 
 export async function getStaticProps() {
-  var colleges = new Array();
-  await db.collection("universities").get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      colleges.push(doc.id);
-    });
-  });
-
+  const colleges = await (await axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/colleges")).data
+  
   return {
     props: {
       colleges,

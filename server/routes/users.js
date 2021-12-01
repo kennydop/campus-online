@@ -29,4 +29,5 @@ router.get("/:id/suggestions", getFollowSuggestions); //logged in
 //search user
 router.get("/", searchUser)
 
+
 export default router;

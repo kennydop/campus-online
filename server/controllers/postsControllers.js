@@ -8,7 +8,7 @@ export const createNewPost = async (req, res) => {
       const uploadResponse = await cloudinary.uploader.upload(req.body.media, {
         upload_preset: 'co_posts', resource_type: "auto"
       });
-      const post = {...req.body, media: uploadResponse.public_id+"."+uploadResponse.format}
+      const post = {...req.body, media: req.body.type === "image" ? uploadResponse.public_id+"."+uploadResponse.format : uploadResponse.public_id}
       const newPost = new Post(post);
       const savedPost = await newPost.save();
       res.status(200).json(savedPost);
@@ -39,30 +39,24 @@ export const updatePost = async (req, res) => {
 
 export const deletePost = async (req, res) => {
 	try {
-		const post = await Post.findById(req.params.id);
-		if (post.authorId === req.body.authorId) {
-			await post.deleteOne();
-			res.status(200).json("the post has been deleted");
-		} else {
-			res.status(403).json("you can't delete this post");
-		}
+		await Post.findByIdAndDelete(req.params.id).then(()=>
+			res.status(200).json("the post has been deleted")
+    )
 	} catch (error) {
-	res.status(500).json(error);
+	res.status(403).json(error);
 	}
 }
 
 export const handlePostLike = async (req, res) => {
 	try {
 		var post = await Post.findById(req.params.id);
-		if (!post.likes.includes(req.body.authorId)) {
-			await post.updateOne({ $push: { likes: req.body.authorId } });
-			post = await Post.findById(req.params.id);
-			const newNumOfLikes = await post.likes
-			res.status(200).json(newNumOfLikes);
+		if (!post.likes.includes(req.query.userId)) {
+			await post.updateOne({ $push: { likes: req.query.userId } });
 		} else {
-			await post.updateOne({ $pull: { likes: req.body.authorId } });
-			res.status(200).json("The post has been disliked");
+			await post.updateOne({ $pull: { likes: req.query.userId } });
 		}
+    post = await Post.findById(req.params.id);
+    res.status(200).json(post);
 	} catch (error) {
 	res.status(500).json(error);
 	}
@@ -87,9 +81,6 @@ export const getFeedPosts = async (req, res) => {
 			})
 		);
 		const localPosts = await Post.find({$and: [{college: currentUser.college}, {authorId: {$nin: [...currentUser.followings, currentUser._id]}}]})
-    // userPosts.length !== 0 && allPosts.concat(userPosts)
-    // friendPosts.length !== 0 && allPosts.concat(friendPosts)
-    // localPosts.length !== 0 && allPosts.concat(localPosts)
 		const allPosts = [...userPosts, ...localPosts]
     friendPosts.map((posts)=>{
       if (posts.length !== 0){
@@ -98,17 +89,14 @@ export const getFeedPosts = async (req, res) => {
         })
       }
     })
-    allPosts.sort((a,b) => (new Date(a.updatedAt) < new Date(b.updatedAt)) ? 1 : ((new Date(b.updatedAt) < new Date(a.updatedAt)) ? -1 : 0))
-		// console.log(":::::::::::::::::::::::::::allPosts", allPosts)
-		// console.log(":::::::::::::::::::::::::::userPosts", userPosts)
-		// console.log(":::::::::::::::::::::::::::friendPosts", friendPosts)
-		// console.log(":::::::::::::::::::::::::::localPosts", localPosts)
+    allPosts.sort((a,b) => (new Date(a.createdAt) < new Date(b.createdAt)) ? 1 : ((new Date(b.createdAt) < new Date(a.createdAt)) ? -1 : 0))
     res.status(200).json(allPosts)
 	} catch (error) {
 		res.status(500).json(error);
 		console.log(error)
 	}
 }
+
 
 export const getGlobalPosts = async (req, res) => {
 	try {
@@ -122,6 +110,7 @@ export const getGlobalPosts = async (req, res) => {
 export const getUserPosts =  async (req, res) => {
 	try {
 		const userPosts = await Post.find({ authorId: req.params.id });
+    userPosts.sort((a,b) => (new Date(a.updatedAt) < new Date(b.updatedAt)) ? 1 : ((new Date(b.updatedAt) < new Date(a.updatedAt)) ? -1 : 0))
 		res.status(200).json(userPosts)
 	} catch (error) {
 		res.status(500).json(error);
@@ -129,17 +118,13 @@ export const getUserPosts =  async (req, res) => {
 	}
 }
 
-export const getAllComments = async (req, res) => {
-	Post.find()
-}
 
 export const createNewComment = async (req, res) => {
 	try{
 		var post = await Post.findById(req.params.id)
 		await post.updateOne({$push: {comments: req.body}})
 		post = await Post.findById(req.params.id)
-		const newComments = await post.comments
-		res.status(200).json(newComments)
+		res.status(200).json(post)
 	}catch(error){
 		res.status(500).json(error)
 		console.log(error)
@@ -148,11 +133,9 @@ export const createNewComment = async (req, res) => {
 
 export const deleteComment = async (req, res) => {
 	try{
-		var post = await Post.findById(req.params.id)
-		await post.updateOne({$pull: {comments: req.body}})
+		var post = await Post.findByIdAndUpdate(req.params.id, {$pull: {comments: {_id: req.query.comment}}})
 		post = await Post.findById(req.params.id)
-		const newComments = await post.comments
-		res.status(200).json(newComments)
+    res.status(200).json(post)
 	}catch(error){
 		res.status(500).json(error)
 		console.log(error)

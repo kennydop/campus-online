@@ -2,7 +2,6 @@ import {Router} from "express";
 import { createNewUser, logInUser, logOutUser, resetUserPassword, logInWithProvider, refreshToken, socialsLoginSuccess, socialsLoginFailed } from "../controllers/authControllers.js"
 import passport from "passport";
 import { verifyUser } from "../authStrategies/authenticate.js";
-import User from "../models/User.js";
 
 const router = Router();
 

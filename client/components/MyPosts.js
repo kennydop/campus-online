@@ -6,14 +6,13 @@ import PeopleYouMightKnow from './PeopleYouMightKnow';
 import axios from 'axios';
 
 function MyPosts({ admin, user }) {
-  const [myPosts, setMyPosts] = useState();
+  const [myPosts, setMyPosts] = useState(null);
 
   useEffect(()=>{
     axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/user/${user._id}`).then((res)=>{
       setMyPosts(res.data)
-      console.log(res.data)
     })
-  }, [])
+  }, [user])
   return (
     <>
       <div className='my-5 border-b dark:border-bdark-100 text-gray-500 dark:text-gray-400 py-3 pl-4 md:mx-auto w-full md:w-8/12 cursor-default'>Posts</div>
@@ -24,14 +23,7 @@ function MyPosts({ admin, user }) {
             {myPosts?.map((post)=>(
             <Post
               key={post._id}
-              id={post._id}
-              authorName={post.authorName}
-              authorUsername={post.authorUsername}
-              description={post.description}
-              timestamp={post.createdAt}
-              authorImg={post.authorImg}
-              media={post.media}
-              type={post.type}
+              _post={post}
             />))}
           </FlipMove>
           <PeopleYouMightKnow/>

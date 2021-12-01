@@ -1,12 +1,16 @@
 import User from "../models/User.js";
 import Post from "../models/Post.js";
 import cloudinary from "../utils/cloudinary.js";
+import College from "../models/College.js";
 
 const bgColors = ["000D6B", "125C13", "3E065F", "082032", "FF414D"]
 
 // update user info
 export const updateUserInfo = async (req, res) => {
   try {
+    if(req.body.college){
+      College.findOneAndUpdate({name: req.body.name}, {$push: {users: req.body.id}})
+    }
     const newPP = ''
     if(req.body.name && !req.body.profilePicture){
       const user = await User.findById(req.params.id)

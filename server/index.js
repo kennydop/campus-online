@@ -11,6 +11,7 @@ import cors from "cors";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import cookieSession from "cookie-session";
+import College from "./models/College.js";
 
 import("./authStrategies/JWTStrategry.js");
 import("./authStrategies/authenticate.js");
@@ -49,6 +50,10 @@ app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/stories", storyRoute);
+app.get("/api/colleges", async (req, res)=>{
+  const colleges = await College.find({})
+  res.status(200).json(colleges)
+})
 
 app.listen(5000, () => {
   console.log("Backend server is running!");
