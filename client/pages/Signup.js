@@ -23,12 +23,12 @@ function Signup() {
     setSignUpLoading(true);
     try{
       axios.post(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/auth/register", {username: username.current.value, password: password.current.value, email: email.current.value, name: name.current.value}, {withCredentials: true, credentials: 'include'}).then((res)=>{
-        if(res.data.success === true){
-          setCurrentUser(res.data)
-          router.replace('/addcollege')
-        }else{
+        if(res.data.message){
           setSignUpLoading(false)
           setError(res.data.message)
+        }else{
+          setCurrentUser(res.data)
+          router.replace('/addcollege')
         }
       }).catch((error)=>{
         console.log(error)

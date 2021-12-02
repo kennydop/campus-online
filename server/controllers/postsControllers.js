@@ -80,8 +80,8 @@ export const getFeedPosts = async (req, res) => {
 				return Post.find({ authorId: friendId });
 			})
 		);
-		const localPosts = await Post.find({$and: [{college: currentUser.college}, {authorId: {$nin: [...currentUser.followings, currentUser._id]}}]})
-		const allPosts = [...userPosts, ...localPosts]
+		// const localPosts = await Post.find({$and: [{college: currentUser.college}, {authorId: {$nin: [...currentUser.followings, currentUser._id]}}]})
+		const allPosts = [...userPosts]
     friendPosts.map((posts)=>{
       if (posts.length !== 0){
         posts.map((post)=>{

@@ -2,7 +2,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon, PlusCircleIcon, UserCircleIcon} from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
-import Settings from "../components/Settings";
 import { useEffect, useState, useRef } from "react";
 import NotificationPane from "./NotificationPane";
 import { useRouter } from 'next/router';
@@ -18,11 +17,14 @@ function Header() {
   const { currentUser, logout } = useAuth();
   const [enterSearchMode, setEnterSearchMode] = useState(false);
   const [showAccMenu, setShowAccMenu] = useState(false);
+  const [showMinAccMenu, setShowMinAccMenu] = useState(false);
   const router = useRouter();
   const accRef = useRef();
+  const minAccRef = useRef();
   const {theme, resolvedTheme, setTheme} = useTheme()
 
   useOnClickOutside(accRef, () =>setShowAccMenu(false))
+  useOnClickOutside(minAccRef, () =>setShowMinAccMenu(false))
 
   
   useEffect(()=>{
@@ -40,7 +42,7 @@ function Header() {
   },[])
 
   useEffect(()=>{
-    if(tabActive==='post'||tabActive==='settings'||tabActive==='notification' || enterSearchMode){
+    if(tabActive==='post' || tabActive==='notification' || enterSearchMode){
       document.body.classList.add('lg:mr-4')
       document.body.classList.add('overflow-hidden')
     }else{
@@ -83,9 +85,24 @@ function Header() {
         {/*left*/}
         <div className = "flex items-center md:pb-0 px-2 md:px-0 mx-auto justify-between">
           {currentUser && <div className="md:hidden flex text-center">
-            <Link href={`/${currentUser.username}`}><img onClick={()=>{setPrevTab(tabActive); setTabActive('profile');}}
+            <img onClick={()=>{setShowMinAccMenu(true)}}
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer text-center ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
-              src = {currentUser.profilePicture}/></Link>
+              src = {currentUser.profilePicture}/>
+              {showMinAccMenu && <div ref={accRef} className="absolute w-48 bg-white shadow-all top-11 rounded-lg overflow-hidden">
+              <Link href={`/${currentUser.username}`}>
+                <div onClick={()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('profile')}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2">
+                  <UserCircleIcon className="h-5 w-5"/>
+                  <p>Profile</p>
+                </div>
+              </Link>
+              <div onClick={()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings'); router.push("/settings")}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2">
+                <CogIcon className="h-5 w-5"/>
+                <p>Settings</p>
+              </div>
+              <div onClick={()=>logout()} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2 border-t border-gray-300 dark:border-bdark-200">
+                <p>Log Out</p>
+              </div>
+            </div>}
             </div>}
             <div onClick={()=>{router.push('/'); setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('home'); }} className="flex items-center cursor-pointer md:ml-8 lg:ml-16 ml-0 flex-shrink" href = "/">
               <svg xmlns="http://www.w3.org/2000/svg" width="137.426" height="26.357" viewBox="0 0 137.426 26.357">
@@ -110,10 +127,9 @@ function Header() {
         <div className = "hidden md:flex md:items-center md:justify-end md:mr-8 lg:mr-16">
           <div title="home" onClick = {()=>{handleHome()}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
           <div title="global" onClick = {()=>{handleGlobal()}}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
-          <div title="chat" onClick = {()=>{if(tabActive==='chat')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/Chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
+          <div title="chat" onClick = {()=>{if(tabActive==='chat')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
           <div title="make a post" onClick = {()=>{if(tabActive==='post')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('post'); }}><HeaderIcon active = {tabActive === 'post'?true:undefined} Icon = {PlusCircleIcon}/></div>
           <div title="notifications" onClick = {()=>{if(tabActive==='notification')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('notification')}}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
-          {/* <div title="settings" onClick = {()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div> */}
           <div className = "hidden md:block text-center pl-3 relative">
               <img title="account" onClick = {()=>setShowAccMenu(true)}
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
@@ -125,7 +141,7 @@ function Header() {
                   <p>Profile</p>
                 </div>
               </Link>
-              <div className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2">
+              <div onClick={()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings'); router.push("/settings")}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2">
                 <CogIcon className="h-5 w-5"/>
                 <p>Settings</p>
               </div>
@@ -140,13 +156,9 @@ function Header() {
           <button className='h-8 w-24 rounded-full shadow-md border border-pink-500 text-pink-500 text-center bg-white dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:text-pink-500 dark:shadow-lg dark:hover:shadow-xl' onClick={()=>{router.replace('/signup')}}>Sign Up</button>
         </div>}
       </div>
-      {(tabActive==='settings' || tabActive==='notification' || tabActive==='post') && <div onClick={()=>{setTabActive(prevTab==='settings' || prevTab==='notification' ? prevPrevTab : prevTab); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
+      {(tabActive==='notification' || tabActive==='post') && <div onClick={()=>{setTabActive(prevTab==='notification' ? prevPrevTab : prevTab); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
       {currentUser && <div>
           <NotificationPane/>
-      </div>}
-
-      {currentUser && <div>
-          <Settings/>
       </div>}
       {tabActive==='post' && <div>
           <PostDialog profilePicture={currentUser.profilePicture} userId={currentUser._id} college={currentUser.college}/>
