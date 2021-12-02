@@ -12,5 +12,5 @@ passport.use(
   new Strategy(opts, function (jwt_payload, done) {
     // Check against the DB only if necessary.
       return done(null, jwt_payload)
-    })
+  })
 )

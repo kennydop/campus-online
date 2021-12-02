@@ -61,9 +61,6 @@ function PostDialog() {
         description: postRef.current.value,
         media: mediaToPost && mediaToPost,
         college: currentUser.college,
-        authorName: currentUser.name,
-        authorUsername: currentUser.username,
-        authorImg: currentUser.profilePicture
       }).then(()=>{
         setPosting(false)
         setRefreshPosts(true)

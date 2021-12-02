@@ -5,9 +5,9 @@ import { ThemeProvider } from 'next-themes'
 import { AuthProvider } from '../contexts/AuthContext';
 import { ActiveTab } from '../contexts/ActiveTabContext';
 
-
 export default function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout || ((page) => <>{page}</>)
+
   return(
     <AuthProvider>
       <Head>

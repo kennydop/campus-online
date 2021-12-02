@@ -8,8 +8,8 @@ const Session = new mongoose.Schema({
   },
 });
 
-const UserSchema = new mongoose.Schema(
-  {
+
+const UserSchema = new mongoose.Schema({
     username: {
       type: String,
       min: 3,
@@ -76,15 +76,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ['Single', 'In a relationship', 'Married'],
     },
-    posts: {
-      type: Number,
-      default: 0
-    },
     birthday: {
       type: String,
     },
     level: {
       type: String,
+    },
+    preferences: {
+      type: {},
     },
     refreshToken: {
       type: [Session],
@@ -98,6 +97,7 @@ UserSchema.set("toJSON", {
     delete ret.refreshToken
     delete ret.updatedAt
     delete ret.__v
+    delete ret.provider
     return ret
   },
 })

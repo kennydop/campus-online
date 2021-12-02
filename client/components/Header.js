@@ -1,22 +1,43 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon, PlusCircleIcon} from "@heroicons/react/outline";
+import { SearchIcon, HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon, PlusCircleIcon, UserCircleIcon} from "@heroicons/react/outline";
 import HeaderIcon from "./HeaderIcon";
 import Settings from "../components/Settings";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import NotificationPane from "./NotificationPane";
 import { useRouter } from 'next/router';
 import { useAuth } from "../contexts/AuthContext";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import Link from "next/link";
 import PostDialog from "./PostDialog";
+import { useOnClickOutside } from "./Hooks";
+import { useTheme } from 'next-themes'
 
 function Header() {
   const { tabActive, prevTab, prevPrevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
-  const { currentUser } = useAuth();
+  const { currentUser, logout } = useAuth();
   const [enterSearchMode, setEnterSearchMode] = useState(false);
+  const [showAccMenu, setShowAccMenu] = useState(false);
   const router = useRouter();
+  const accRef = useRef();
+  const {theme, resolvedTheme, setTheme} = useTheme()
 
+  useOnClickOutside(accRef, () =>setShowAccMenu(false))
+
+  
+  useEffect(()=>{
+    if(currentUser.preferences){
+      if(!currentUser.preferences.theme){
+        setTheme(resolvedTheme)
+      }else{
+        setTheme(currentUser.preferences.theme)
+      }
+    }else{
+      if(!theme || theme === 'system'){
+        setTheme(resolvedTheme)
+      }
+    }
+  },[])
 
   useEffect(()=>{
     if(tabActive==='post'||tabActive==='settings'||tabActive==='notification' || enterSearchMode){
@@ -92,11 +113,26 @@ function Header() {
           <div title="chat" onClick = {()=>{if(tabActive==='chat')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/Chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
           <div title="make a post" onClick = {()=>{if(tabActive==='post')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('post'); }}><HeaderIcon active = {tabActive === 'post'?true:undefined} Icon = {PlusCircleIcon}/></div>
           <div title="notifications" onClick = {()=>{if(tabActive==='notification')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('notification')}}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
-          <div title="settings" onClick = {()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div>
-          <div className = "hidden md:flex text-center pl-3">
-              <Link href={`/${currentUser.username}`}><img title="account" onClick = {()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('profile');}}
+          {/* <div title="settings" onClick = {()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings')}}><HeaderIcon active = {tabActive === 'settings'?true:undefined} Icon = {CogIcon}/></div> */}
+          <div className = "hidden md:block text-center pl-3 relative">
+              <img title="account" onClick = {()=>setShowAccMenu(true)}
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
-              src={currentUser.profilePicture}/></Link>
+              src={currentUser.profilePicture}/>
+            {showAccMenu && <div ref={accRef} className="absolute w-40 bg-white shadow-all -right-5 top-8 rounded-lg overflow-hidden">
+              <Link href={`/${currentUser.username}`}>
+                <div onClick={()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('profile')}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2">
+                  <UserCircleIcon className="h-5 w-5"/>
+                  <p>Profile</p>
+                </div>
+              </Link>
+              <div className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2">
+                <CogIcon className="h-5 w-5"/>
+                <p>Settings</p>
+              </div>
+              <div onClick={()=>logout()} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2 border-t border-gray-300 dark:border-bdark-200">
+                <p>Log Out</p>
+              </div>
+            </div>}
           </div>
         </div>:
         <div className="hidden md:flex items-center justify-end space-x-5 mr-8">

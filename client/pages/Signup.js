@@ -20,15 +20,15 @@ function Signup() {
 	async function registerWithEmail (e) {
     e.preventDefault();
 		setError('');
-		setSignUpLoading(true);
+    setSignUpLoading(true);
     try{
       axios.post(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/auth/register", {username: username.current.value, password: password.current.value, email: email.current.value, name: name.current.value}, {withCredentials: true, credentials: 'include'}).then((res)=>{
         if(res.data.success === true){
           setCurrentUser(res.data)
-          router.replace('/addprofileimg')
+          router.replace('/addcollege')
         }else{
           setSignUpLoading(false)
-          setError("A user with the given" + Object.keys(res.data.keyValue)[0] + " already registered")
+          setError(res.data.message)
         }
       }).catch((error)=>{
         console.log(error)
@@ -39,7 +39,6 @@ function Signup() {
       setSignUpLoading(false)
       console.log(error)
     }
-			setSignUpLoading(false);
 	}
 	
   async function loginWithSocials(pvd){
@@ -84,7 +83,7 @@ function Signup() {
 						placeholder="Create Username"
 						autoComplete="new name"
 						className="infofield"
-            title="please use only letters, numbers and underscores"
+            title="use only letters, numbers and underscores"
 					/>
 					</div>
 					<div className="relative">

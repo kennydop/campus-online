@@ -9,6 +9,8 @@ import { defaultCoverPicture } from "../images/defaults"
 
 function ProfileCard({ admin, user, userId, loggedIn }) {
   const [ followBtnText, setFollowBtnText ] = useState(user.isfollowing ?'Unfollow' : 'Follow')
+  const [img, setImg] = useState()
+
   function followUser(){
     if(!loggedIn){
       router.replace('/login')
@@ -46,7 +48,8 @@ function ProfileCard({ admin, user, userId, loggedIn }) {
           </div>
           <div className='absolute -top-20 left-1/2 -ml-14 lg:-top-20 lg:left-32'>
             <div className='relative'>
-              <img className = "h-28 w-28 lg:h-36 lg:w-36 object-cover rounded-full border-4 border-white dark:border-bdark-100 cursor-pointer" src = {user.profilePicture.startsWith("https://pbs.twimg.com/profile_images") ? user.profilePicture.replace("normal", "400x400") : user.profilePicture}/>
+              <img className = "h-28 w-28 lg:h-36 lg:w-36 object-cover rounded-full border-4 border-white dark:border-bdark-100 cursor-pointer" 
+                src = {user.profilePicture.startsWith("https://pbs.twimg.com/profile_images") ? user.profilePicture.replace("normal", "400x400") : (user.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image/upload/") ? user.profilePicture.replace("w_100", "w_400") : user.profilePicture)}/>
               {admin && <div className='absolute right-4 bottom-2 py-2 px-2 bg-gray-500 dark:bg-bdark-200 bg-opacity-90 rounded-full cursor-pointer transition hover:scale-105'><CameraIcon className='h-3 text-white dark:text-gray-400'/></div>}
             </div>
           </div>

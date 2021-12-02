@@ -6,18 +6,6 @@ const CommentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  authorUsername:{
-    type: String,
-    required: true,
-  },
-  authorName:{
-    type: String,
-    required: true,
-  },
-  authorImg:{
-    type: String,
-    required: true,
-  },
   comment:{
     type: String,
     required: true,
@@ -40,18 +28,6 @@ const PollSchema = new mongoose.Schema({
 const PostSchema = new mongoose.Schema(
   {
     authorId: {
-      type: String,
-      required: true,
-    },
-    authorName: {
-      type: String,
-      required: true,
-    },
-    authorUsername: {
-      type: String,
-      required: true,
-    },
-    authorImg: {
       type: String,
       required: true,
     },

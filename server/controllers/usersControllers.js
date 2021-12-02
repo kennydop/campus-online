@@ -7,33 +7,30 @@ const bgColors = ["000D6B", "125C13", "3E065F", "082032", "FF414D"]
 
 // update user info
 export const updateUserInfo = async (req, res) => {
+  var newPP = ''
+  var info = {}
   try {
     if(req.body.college){
-      College.findOneAndUpdate({name: req.body.name}, {$push: {users: req.body.id}})
+      College.findOneAndUpdate({name: req.body.name}, {$inc: {users: 1}})
     }
-    const newPP = ''
-    if(req.body.name && !req.body.profilePicture){
+    if(req.body.profilePicture && !req.body.profilePicture.startsWith("https://ui-avatars.com/api/?name=")){
+      const uploadResponse = await cloudinary.uploader.upload(req.body.profilePicture, {
+        upload_preset: 'co_profilepics', resource_type: "image"
+      });
+      newPP = "https://res.cloudinary.com/kennydop/image/upload/w_100,q_auto/campus-online/profile-pictures/"+uploadResponse.public_id+"."+uploadResponse.format
+      const {profilePicture, ...other} = req.body
+      info = {...other, profilePicture: newPP}
+    }else if(req.body.name && !req.body.profilePicture){
       const user = await User.findById(req.params.id)
       if(user.profilePicture.startsWith("https://ui-avatars.com/api/?name=")){
         newPP = `https://ui-avatars.com/api/?name=${encodeURIComponent((req.body.name))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`
-        const info = {...req.body, profilePicture: newPP}
-        const newUser = await User.findByIdAndUpdate(req.params.id, {$set: info});
-        res.status(200).json(newUser);
+        info = {...req.body, profilePicture: newPP}
       }
+    }else{
+      info = req.body
     }
-    else{
-      if(req.body.profilePicture){
-        const uploadResponse = await cloudinary.uploader.upload(req.body.profilePicture, {
-          upload_preset: 'co_profilepics', resource_type: "image"
-        });
-        const {profilePicture, ...other} = req.body
-        other.profilePicture = "https://res.cloudinary.com/kennydop/image/upload/ar_1:1,c_fill,g_auto:faces,r_max,w_100/campus-online/profile-pictures/"+uploadResponse.public_id+"."+uploadResponse.format
-        const newUser = await User.findByIdAndUpdate(req.params.id, {$set: other});
-        res.status(200).json(newUser);
-      }
-      const newUser = await User.findByIdAndUpdate(req.params.id, {$set: req.body});
-      res.status(200).json(newUser);
-    }
+    const newUser = await User.findByIdAndUpdate(req.params.id, {$set: info});
+    res.status(200).json(newUser);
   } catch (error) {
     console.log(error)
     return res.status(500).json(error);

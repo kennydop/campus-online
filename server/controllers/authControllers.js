@@ -12,10 +12,14 @@ export const createNewUser = async (req, res) => {
         req.body.password,
         (error, user) => {
           if (error) {
-            res.status(200).json({success: false, ...error})
+            if(error.code){
+              res.status(200).json({success: false, name: "UserExistsError", message: "A user with the given email is already registered"})
+            }else{
+              res.status(200).json({success: false, name: "UserExistsError", message: "A user with the given username is already registered"})
+            }
           } else {
-            const token = getToken({ _id: user._id, username: user.username, name: user.name, email: user.email })
-            const refreshToken = getRefreshToken({ _id: user._id, username: user.username, name: user.name, email: user.email })
+            const token = getToken({ _id: user._id, username: user.username})
+            const refreshToken = getRefreshToken({ _id: user._id, username: user.username })
             user.refreshToken.push({ refreshToken })
             user.save((error, user) => {
               if (error) {
@@ -23,7 +27,7 @@ export const createNewUser = async (req, res) => {
                 console.log(error)
               } else {
                 res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
-                res.send({ success: true, token, _id: user._id, username: user.username, name: user.name, email: user.email })
+                res.send({ token, _id: user._id, username: user.username, name: user.name, email: user.email, preferences: user.preferences })
               }
             })
           }
@@ -31,16 +35,14 @@ export const createNewUser = async (req, res) => {
       )
   } catch (error) {
       res.status(500).json(error)
-      console.log(":::::::::::::::::::::::::::::::::22222222222222222 \n" + error)
-
   }
 }
 
 export const logInUser = async (req, res, next) => {
   try {
-    const token = getToken({ _id: req.user._id, username: req.user.username, name: req.user.name, email: req.user.email, college: req.user.college, profilePicture: req.user.profilePicture })
-    const refreshToken = getRefreshToken({  _id: req.user._id, username: req.user.username, name: req.user.name, email: req.user.email, college: req.user.college, profilePicture: req.user.profilePicture })
-    await User.findOne({ username: req.user.username}).then((user)=>{
+    const token = getToken({ _id: req.user._id, username: req.user.username })
+    const refreshToken = getRefreshToken({  _id: req.user._id, username: req.user.username })
+    await User.findOne({ username: req.user.username }).then((user)=>{
       user.refreshToken.push({ refreshToken })
       user.save((error, user) => {
         if (error) {
@@ -48,7 +50,7 @@ export const logInUser = async (req, res, next) => {
         } else {
           //sending the cookie
           res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
-          res.send({ success: true, token,  _id: req.user._id, username: req.user.username, name: req.user.name, email: req.user.email, college: req.user.college, profilePicture: req.user.profilePicture })
+          res.send({ token,  _id: req.user._id, username: req.user.username, name: req.user.name, email: req.user.email, college: req.user.college, profilePicture: req.user.profilePicture, preferences: req.user.preferences })
         }
       })
     })
@@ -59,30 +61,16 @@ export const logInUser = async (req, res, next) => {
   }
 }
 
-export const logInWithProvider = async (req, res) => {
-    try {
-        var user = await User.findOne({ email: req.body.email });
-        if(!user) {user = await User.findOne({ username: req.body.email })}
-        // if(!user){
-        //     const req.user = new User({
-        //         username: req.body.username,
-        //         email: req.body.email,
-        //         provider: req.params.provider,
-        //     });
-        //     user = await req.user.save();
-        // }
-        const { password, ...other } = user._doc;
-        res.status(200).json(other);
-    } catch (error) {
-        res.status(500).json(error)
-        console.log(error)
-    }
-}
-
 export const resetUserPassword = async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
-    user.changePassword(req.body.oldpassword, req.body.newpassword, function(error, user){ if(error){res.status(401).json(error)}else{res.status(200).json(user)} })
+    user.changePassword(req.body.oldpassword, req.body.newpassword, function(error, user){
+      if(error){
+        res.status(401).json(error)
+      }else{
+        res.status(200).json(user)
+      } 
+    })
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -90,7 +78,7 @@ export const resetUserPassword = async (req, res) => {
 
 export const socialsLoginSuccess = async (req, res)=>{
 	if(!Object.keys(req.authInfo).length){
-		const refreshToken = getRefreshToken({ _id: req.user._id, username: req.user.username, name: req.user.name, email: req.user.email, college: req.user.college, profilePicture: req.user.profilePicture })
+		const refreshToken = getRefreshToken({ _id: req.user._id, username: req.user.username })
 		await User.findByIdAndUpdate(req.user._id, {refreshToken: {refreshToken}})
 		res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
 		res.redirect(process.env.CLIENT_URL)
@@ -125,9 +113,9 @@ export const refreshToken = (req, res, next) => {
               res.status(401).json("Unauthorized")
               next()
             } else {
-              const token = getToken({ _id: userId, username: user.username, name: user.name, email: user.email, college: user.college, profilePicture: user.profilePicture })
+              const token = getToken({ _id: userId, username: user.username })
               // If the refresh token exists, then create new one and replace it.
-              const newRefreshToken = getRefreshToken({ _id: userId, username: user.username, name: user.name, email: user.email, college: user.college, profilePicture: user.profilePicture })
+              const newRefreshToken = getRefreshToken({ _id: userId, username: user.username })
               user.refreshToken[tokenIndex] = { refreshToken: newRefreshToken }
               user.save((error, user) => {
                 if (error) {
@@ -135,7 +123,7 @@ export const refreshToken = (req, res, next) => {
                   next()
                 } else {
                   res.cookie("refreshToken", newRefreshToken, COOKIE_OPTIONS)
-                  res.send({ success: true, token, _id: userId, username: user.username, name: user.name, email: user.email, college: user.college, profilePicture: user.profilePicture })
+                  res.send({ token, _id: userId, username: user.username, name: user.name, email: user.email, college: user.college, profilePicture: user.profilePicture, preferences: user.preferences })
                   next()
                 }
               })

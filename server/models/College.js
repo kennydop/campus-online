@@ -12,7 +12,7 @@ const CollegeSchema = new mongoose.Schema({
     type: String,
   },
   users: {
-    type: Array,
+    type: Number,
   }
 })
 

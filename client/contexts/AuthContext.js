@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect, createContext, useCallback } from "react"
 import axios from "axios"
 import { useRouter } from "next/router"
+
 const AuthContext = createContext()
 
 export function useAuth() {
@@ -14,6 +15,7 @@ export function AuthProvider({ children }) {
 	const [loading, setLoading] = useState(true)
   const [refreshPosts, setRefreshPosts] = useState()
 	const router = useRouter()
+
 
 	function logout() {
     router.replace("/login")
@@ -56,6 +58,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     verifyUser()
   }, [verifyUser])
+
 
 	const value = {
 		currentUser,

@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { createNewUser, logInUser, logOutUser, resetUserPassword, logInWithProvider, refreshToken, socialsLoginSuccess, socialsLoginFailed } from "../controllers/authControllers.js"
+import { createNewUser, logInUser, logOutUser, resetUserPassword, refreshToken, socialsLoginSuccess, socialsLoginFailed } from "../controllers/authControllers.js"
 import passport from "passport";
 import { verifyUser } from "../authStrategies/authenticate.js";
 

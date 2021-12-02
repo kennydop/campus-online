@@ -24,7 +24,7 @@ function ProfileToFollow({name, username ,pic, college, id, userId}) {
   }
 
   function followUser(){
-    setButtonText("................")
+    setButtonText(buttonText==="Follow"?"Unfollow":"Follow")
     axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${id}/follow`, {userId}).then((res)=>{
     if(res.data === "user has been followed"){
         setButtonText('Unfollow')
