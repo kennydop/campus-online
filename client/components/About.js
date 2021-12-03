@@ -7,7 +7,7 @@ function About({ admin, user }) {
 			{ (user.birthday || user.city || user.from || user.relationship || user.level || user.description) ?
       <>
       {user.description && 
-      <div className="text-gray-500 dark:text-gray-400 py-3 pl-4 border-b dark:border-bdark-50">
+      <div className="text-gray-500 dark:text-gray-400 py-3 pl-4 border-b dark:border-bdark-50 whitespace-pre-wrap">
         {user.description}
       </div>}
 			<div className='grid md:grid-cols-2 grid-cols-1 p-6'>

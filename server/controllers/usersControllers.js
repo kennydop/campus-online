@@ -10,6 +10,7 @@ export const updateUserInfo = async (req, res) => {
   var newPP = ''
   var info = {}
   try {
+    const user = await User.findById(req.params.id)
     if(req.body.college){
       College.findOneAndUpdate({name: req.body.name}, {$inc: {users: 1}})
     }
@@ -17,19 +18,43 @@ export const updateUserInfo = async (req, res) => {
       const uploadResponse = await cloudinary.uploader.upload(req.body.profilePicture, {
         upload_preset: 'co_profilepics', resource_type: "image"
       });
-      newPP = "https://res.cloudinary.com/kennydop/image/upload/w_100,q_auto/campus-online/profile-pictures/"+uploadResponse.public_id+"."+uploadResponse.format
+      if(user.profilePicture && user.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image")){
+        await cloudinary.uploader.destroy(user.profilePicture.split("w_200/")[1].split('.')[0], function(error, result) {
+          if(error){
+            console.log(error)
+          }else{
+            console.log(result) 
+          }
+        });
+      }
+
+      newPP = "https://res.cloudinary.com/kennydop/image/upload/ar_1:1,c_fill,g_auto:faces,w_200/"+uploadResponse.public_id+"."+uploadResponse.format
       const {profilePicture, ...other} = req.body
       info = {...other, profilePicture: newPP}
     }else if(req.body.name && !req.body.profilePicture){
-      const user = await User.findById(req.params.id)
       if(user.profilePicture.startsWith("https://ui-avatars.com/api/?name=")){
         newPP = `https://ui-avatars.com/api/?name=${encodeURIComponent((req.body.name))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`
         info = {...req.body, profilePicture: newPP}
       }
     }else{
-      info = req.body
+      if(Object.keys(req.body).length === 0){
+        if(user.profilePicture && user.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image")){
+          await cloudinary.uploader.destroy(user.profilePicture.split("w_200/")[1].split('.')[0], function(error, result) {
+            if(error){
+              console.log(error)
+            }else{
+              console.log(result) 
+            }
+          });
+        }
+        newPP = `https://ui-avatars.com/api/?name=${encodeURIComponent((user.name))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`
+        info = {profilePicture: newPP}
+      }else{
+        info = req.body
+      }
     }
-    const newUser = await User.findByIdAndUpdate(req.params.id, {$set: info});
+    await User.findByIdAndUpdate(req.params.id, {$set: info});
+    const newUser = await User.findById(req.params.id)
     res.status(200).json(newUser);
   } catch (error) {
     console.log(error)
@@ -60,23 +85,24 @@ export const deleteUser = async (req, res) => {
 
 // get a user
 export const getAUser = async (req, res) => {
-    try {
-        var user = await User.findOne({username: req.params.id});
-        if (!user){
-          user = await User.findById(req.params.id)
-        }
-        if(req.query.currentUser){
-          console.log(req.query.currentUser)
-          const following = await user.followers.includes(req.query.currentUser)
-          const {refreshToken, updatedAt, __v, ...other} = user._doc
-          const uts = {...other, isfollowing: following}
-          res.status(200).json(uts)
-        }else{
-          res.status(200).json(user);
-        }
-    } catch (error) {
-        res.status(500).json(error);
+  try {
+    var user = await User.findOne({username: req.params.id});
+    if (!user){
+      user = await User.findById(req.params.id)
     }
+    if(req.query.currentUser){
+      console.log(req.query.currentUser)
+      const following = await user.followers.includes(req.query.currentUser)
+      const {refreshToken, updatedAt, __v, ...other} = user._doc
+      const uts = {...other, isfollowing: following}
+      res.status(200).json(uts)
+    }else{
+      res.status(200).json(user);
+    }
+  } catch (error) {
+    res.status(500).json(error);
+    console.log(error)
+  }
 }
 
 // follow a user
@@ -163,26 +189,3 @@ export const searchUser = async (req, res) => {
         res.status(500).json(error);
     }
 }
-
-
-//unfollow a user
-
-// router.put("/:id/unfollow", async (req, res) => {
-//     if (req.body.userId !== req.params.id) {
-//       try {
-//         const user = await User.findById(req.params.id);
-//         const currentUser = await User.findById(req.body.userId);
-//         if (user.followers.includes(req.body.userId)) {
-//           await user.updateOne({ $pull: { followers: req.body.userId } });
-//           await currentUser.updateOne({ $pull: { followings: req.params.id } });
-//           res.status(200).json("user has been unfollowed");
-//         } else {
-//           res.status(403).json("you dont follow this user");
-//         }
-//       } catch (error) {
-//         res.status(500).json(error);
-//       }
-//     } else {
-//       res.status(403).json("you cant unfollow yourself");
-//     }
-//   });

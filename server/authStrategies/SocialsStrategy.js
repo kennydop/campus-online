@@ -63,7 +63,7 @@ passport.use(
       clientID: process.env.FACEBOOK_ID,
       clientSecret: process.env.FACEBOOK_SECRET,
       callbackURL: "/api/auth/facebook/callback",
-      profileFields: ['id', 'email', 'gender', 'birthday', 'location', 'name', 'picture.type(large)', 'hometown' ],
+      profileFields: ['id', 'email', 'gender', 'birthday', 'name', 'picture.type(large)' ],
     },
     function (accessToken, refreshToken, profile, done) {
       console.log(profile)
@@ -79,8 +79,6 @@ passport.use(
             email: profile._json.email ? profile._json.email : '',
             gender: profile._json.gender ? profile._json.gender : '',
             birthday: profile._json.birthday ? ((new Date((profile._json.birthday.split('/')[2] + '-' + profile._json.birthday.split('/')[0] + '-' + profile._json.birthday.split('/')[1]) + "T00:00:00")).toDateString()).replace(profile._json.birthday.split('/')[1], getOrdinalNum((profile._json.birthday.split('/')[1]).replace('0', ''))) : '',
-            from: profile._json.hometown ? profile._json.hometown.name : '',
-            city: profile._json.location ? profile._json.location.name : '',
           });
           newUser.save((error) => {
             if (error) {

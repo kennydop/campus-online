@@ -56,7 +56,8 @@ function AddCollege({colleges}) {
       }
       axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}`, { college }, { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
         setCurrentUser((oldValues) => {return {token: oldValues.token, ...res.data}})
-        currentUser.profilePicture ? router.replace('/feed') : router.replace('/addprofileimg')
+        // currentUser.profilePicture ? router.replace('/feed') : router.replace('/addprofileimg')
+        router.replace('/')
       }).catch((error)=>{
         setError(error.message)
         console.log(error.message)

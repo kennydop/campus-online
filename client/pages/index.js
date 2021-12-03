@@ -7,12 +7,12 @@ export default function Home() {
   const router = useRouter()
   
   if(currentUser){
-    if(currentUser.college && currentUser.profilePicture){
+    if(currentUser.college && currentUser.profilePicture && currentUser.token){
       router.push('/feed')
     }else{
-      if(currentUser.profilePicture){
+      if(!currentUser.college){
         router.replace('/addcollege');
-      }else{
+      }else if(!currentUser.profilePicture){
         router.replace('/addprofileimg');
       }
     }

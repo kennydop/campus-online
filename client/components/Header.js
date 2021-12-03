@@ -11,6 +11,8 @@ import Link from "next/link";
 import PostDialog from "./PostDialog";
 import { useOnClickOutside } from "./Hooks";
 import { useTheme } from 'next-themes'
+import UpdateProfilePicture from "./UpdateProfilePicture";
+import DeleteAccountDialog from "./DeleteAccountDialog";
 
 function Header() {
   const { tabActive, prevTab, prevPrevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
@@ -25,6 +27,7 @@ function Header() {
 
   useOnClickOutside(accRef, () =>setShowAccMenu(false))
   useOnClickOutside(minAccRef, () =>setShowMinAccMenu(false))
+  
 
   
   useEffect(()=>{
@@ -42,7 +45,7 @@ function Header() {
   },[])
 
   useEffect(()=>{
-    if(tabActive==='post' || tabActive==='notification' || enterSearchMode){
+    if(tabActive==='post' || tabActive==='updatePP' || tabActive==='notification' || tabActive==='delAcc' || enterSearchMode){
       document.body.classList.add('lg:mr-4')
       document.body.classList.add('overflow-hidden')
     }else{
@@ -88,18 +91,18 @@ function Header() {
             <img onClick={()=>{setShowMinAccMenu(true)}}
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer text-center ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
               src = {currentUser.profilePicture}/>
-              {showMinAccMenu && <div ref={accRef} className="absolute w-48 bg-white shadow-all top-11 rounded-lg overflow-hidden">
+              {showMinAccMenu && <div ref={minAccRef} className="absolute w-48 bg-white dark:bg-bdark-100 border dark:border-bdark-200 shadow-all top-11 rounded-lg overflow-hidden">
               <Link href={`/${currentUser.username}`}>
-                <div onClick={()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('profile')}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2">
+                <div onClick={()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('profile')}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                   <UserCircleIcon className="h-5 w-5"/>
                   <p>Profile</p>
                 </div>
               </Link>
-              <div onClick={()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings'); router.push("/settings")}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2">
+              <div onClick={()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings'); router.push("/settings")}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                 <CogIcon className="h-5 w-5"/>
                 <p>Settings</p>
               </div>
-              <div onClick={()=>logout()} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2 border-t border-gray-300 dark:border-bdark-200">
+              <div onClick={()=>logout()} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2 border-t border-gray-300 dark:border-bdark-200">
                 <p>Log Out</p>
               </div>
             </div>}
@@ -134,18 +137,18 @@ function Header() {
               <img title="account" onClick = {()=>setShowAccMenu(true)}
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
               src={currentUser.profilePicture}/>
-            {showAccMenu && <div ref={accRef} className="absolute w-40 bg-white shadow-all -right-5 top-8 rounded-lg overflow-hidden">
+            {showAccMenu && <div ref={accRef} className="absolute w-40 bg-white dark:bg-bdark-100 border dark:border-bdark-200 shadow-all -right-5 top-8 rounded-lg overflow-hidden">
               <Link href={`/${currentUser.username}`}>
-                <div onClick={()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('profile')}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2">
+                <div onClick={()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('profile')}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                   <UserCircleIcon className="h-5 w-5"/>
                   <p>Profile</p>
                 </div>
               </Link>
-              <div onClick={()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings'); router.push("/settings")}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2">
+              <div onClick={()=>{if(tabActive==='settings')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('settings'); router.push("/settings")}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                 <CogIcon className="h-5 w-5"/>
                 <p>Settings</p>
               </div>
-              <div onClick={()=>logout()} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-100 p-2 space-x-2 border-t border-gray-300 dark:border-bdark-200">
+              <div onClick={()=>logout()} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2 border-t border-gray-300 dark:border-bdark-200">
                 <p>Log Out</p>
               </div>
             </div>}
@@ -156,13 +159,15 @@ function Header() {
           <button className='h-8 w-24 rounded-full shadow-md border border-pink-500 text-pink-500 text-center bg-white dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:text-pink-500 dark:shadow-lg dark:hover:shadow-xl' onClick={()=>{router.replace('/signup')}}>Sign Up</button>
         </div>}
       </div>
-      {(tabActive==='notification' || tabActive==='post') && <div onClick={()=>{setTabActive(prevTab==='notification' ? prevPrevTab : prevTab); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
+      {(tabActive==='notification' || tabActive==='post' || tabActive==='updatePP' || tabActive==='delAcc') && <div onClick={()=>{setTabActive(prevTab==='notification' ? prevPrevTab : prevTab); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
       {currentUser && <div>
           <NotificationPane/>
       </div>}
       {tabActive==='post' && <div>
           <PostDialog profilePicture={currentUser.profilePicture} userId={currentUser._id} college={currentUser.college}/>
       </div>}
+      {tabActive==='updatePP' && <UpdateProfilePicture/>}
+      {tabActive==='delAcc' && <DeleteAccountDialog/>}
     </>
   )
 }

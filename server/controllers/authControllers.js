@@ -66,9 +66,9 @@ export const resetUserPassword = async (req, res) => {
     const user = await User.findById(req.params.id)
     user.changePassword(req.body.oldpassword, req.body.newpassword, function(error, user){
       if(error){
-        res.status(401).json(error)
+        res.status(200).json(error)
       }else{
-        res.status(200).json(user)
+        res.status(200).json("Password resetted succesfully")
       } 
     })
   } catch (error) {
@@ -123,7 +123,7 @@ export const refreshToken = (req, res, next) => {
                   next()
                 } else {
                   res.cookie("refreshToken", newRefreshToken, COOKIE_OPTIONS)
-                  res.send({ token, _id: userId, username: user.username, name: user.name, email: user.email, college: user.college, profilePicture: user.profilePicture, preferences: user.preferences })
+                  res.send({ token, _id: user._id, username: user.username, name: user.name, email: user.email, college: user.college, profilePicture: user.profilePicture, preferences: user.preferences })
                   next()
                 }
               })
