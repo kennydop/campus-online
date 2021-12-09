@@ -1,6 +1,5 @@
 import { AdjustmentsIcon, LockClosedIcon, UserCircleIcon } from "@heroicons/react/outline"
 import { SiteLayout } from "../Layouts/Layouts"
-import { useAuth } from '../contexts/AuthContext';
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useEffect, useState } from "react";
 import AccountSettings from "../components/AccountSettings";
@@ -18,7 +17,7 @@ function Settings({colleges}) {
     setPrevPrevTab(prevTab); 
     setPrevTab(tabActive); 
     setTabActive('settings');
-},[])
+  },[])
 
   return (
     <div className="flex justify-center mb-12 min-h-screen">

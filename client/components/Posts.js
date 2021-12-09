@@ -1,12 +1,12 @@
 import Post from './Post';
 import FlipMove from 'react-flip-move';
 import PostPlaceholder from './PostPlaceholder';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from "../contexts/AuthContext";
+import axios from 'axios'
+import { useState, useEffect } from 'react';
 
 function Posts() {
-  const [posts, setPosts] = useState()
+  const [ posts, setPosts ] = useState()
   const { currentUser, refreshPosts, setRefreshPosts } = useAuth()
 
   useEffect(()=>{

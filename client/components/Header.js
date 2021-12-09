@@ -13,6 +13,8 @@ import { useOnClickOutside } from "./Hooks";
 import { useTheme } from 'next-themes'
 import UpdateProfilePicture from "./UpdateProfilePicture";
 import DeleteAccountDialog from "./DeleteAccountDialog";
+import SearchContainer from "./SearchContainer";
+import axios from "axios";
 
 function Header() {
   const { tabActive, prevTab, prevPrevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
@@ -20,6 +22,7 @@ function Header() {
   const [enterSearchMode, setEnterSearchMode] = useState(false);
   const [showAccMenu, setShowAccMenu] = useState(false);
   const [showMinAccMenu, setShowMinAccMenu] = useState(false);
+  const [searchRes, setSearchRes] = useState();
   const router = useRouter();
   const accRef = useRef();
   const minAccRef = useRef();
@@ -31,7 +34,7 @@ function Header() {
 
   
   useEffect(()=>{
-    if(currentUser.preferences){
+    if(currentUser?.preferences){
       if(!currentUser.preferences.theme){
         setTheme(resolvedTheme)
       }else{
@@ -52,6 +55,7 @@ function Header() {
       document.body.classList.remove('overflow-hidden')
       document.body.classList.remove('lg:mr-4')
     }
+    enterSearchMode && document.querySelector("#minSearch").focus()
   },[tabActive, enterSearchMode])
     
   function handleHome(){
@@ -80,10 +84,27 @@ function Header() {
     setTabActive('global')
   }
 
+  async function search(e){
+    if(e.target.value.trim()===""){
+      setSearchRes([])
+      return
+    }
+    axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users?search="+e.target.value.trim()).then((res)=>{
+      setSearchRes(res.data)
+    })
+  }
+
+  function clearSearch(){
+    const i = document.activeElement === document.querySelector("#minSearch")
+    console.log(i)
+    if(enterSearchMode && i) return
+    setSearchRes([])
+    console.log("cleared")
+    setEnterSearchMode(false)
+  }
+
   return (
     <>
-      {enterSearchMode && <div onClick={()=>{setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-gray-900 opacity-40'/>}
-  
       <div className = "md:flex sticky inset-x-0 top-0 z-50 bg-white dark:bg-bdark-100 justify-center items-center p-2 md:p-2.5 md:px-15 px-2 shadow-md">
         {/*left*/}
         <div className = "flex items-center md:pb-0 px-2 md:px-0 mx-auto justify-between">
@@ -91,7 +112,7 @@ function Header() {
             <img onClick={()=>{setShowMinAccMenu(true)}}
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer text-center ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
               src = {currentUser.profilePicture}/>
-              {showMinAccMenu && <div ref={minAccRef} className="absolute w-48 bg-white dark:bg-bdark-100 border dark:border-bdark-200 shadow-all top-11 rounded-lg overflow-hidden">
+              {showMinAccMenu && <div ref={minAccRef} className="absolute w-48 bg-white dark:bg-bdark-100 border dark:border-bdark-200 shadow-all dark:shadow-all-lg top-11 rounded-lg overflow-hidden">
               <Link href={`/${currentUser.username}`}>
                 <div onClick={()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('profile')}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                   <UserCircleIcon className="h-5 w-5"/>
@@ -114,15 +135,21 @@ function Header() {
               </svg>
             </div>
             <div onClick={()=>{setEnterSearchMode(true)}} className={`flex md:hidden rounded-full bg-blue-grey-50 dark:bg-bdark-200 p-1.5 transition duration-300 ease ${enterSearchMode? 'absolute w-11/12 items-start':'items-center'}`}>
-              <SearchIcon className = "h-5 cursor-pointer text-gray-500 dark:text-gray-400"/>
-              <input className = {`md:hidden ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 ${enterSearchMode?'inline-flex':'hidden'}`} type = "text" placeholder="Search"/>
+              <form className="flex items-center" onSubmit={(e)=>{e.preventDefault(); setEnterSearchMode(false); router.push(`/trending?word=${e.target.elements.minSearch.value}`)}}>
+                <SearchIcon className = "h-5 cursor-pointer text-gray-500 dark:text-gray-400"/>
+                <input id="minSearch" onChange={search} className = {`md:hidden ml-2 bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 w-full h-full ${enterSearchMode?'inline-flex':'hidden'}`} type = "text" placeholder="Search"/>
+                <button hidden type="submit"></button>
+              </form>
             </div>
         </div>
         {/*centre*/}
         <div className = "hidden md:flex md:justify-center flex-grow">
-          <div className = "flex items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 px-1.5 py-1 focus:shadow-md">
-            <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
-            <input className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400" type = "text" placeholder="Search"/>
+          <div onClick={()=>{setEnterSearchMode(true)}} className = "flex items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 px-1.5 py-1 focus:shadow-md">
+            <form className="flex items-center" onSubmit={(e)=>{e.preventDefault(); setEnterSearchMode(false); router.push(`/trending?word=${e.target.elements.search.value}`)}}>
+              <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
+              <input id="search" onChange={search} className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400" type = "text" placeholder="Search"/>
+              <button hidden type="submit"></button>
+            </form>
           </div>
         </div>
         {/*right*/}
@@ -137,7 +164,7 @@ function Header() {
               <img title="account" onClick = {()=>setShowAccMenu(true)}
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer ${tabActive==='profile' ? 'border-2 border-pink-500': ''}`}
               src={currentUser.profilePicture}/>
-            {showAccMenu && <div ref={accRef} className="absolute w-40 bg-white dark:bg-bdark-100 border dark:border-bdark-200 shadow-all -right-5 top-8 rounded-lg overflow-hidden">
+            {showAccMenu && <div ref={accRef} className="absolute w-40 bg-white dark:bg-bdark-100 border dark:border-bdark-200 shadow-all dark:shadow-all-lg -right-5 top-8 rounded-lg overflow-hidden">
               <Link href={`/${currentUser.username}`}>
                 <div onClick={()=> {if(tabActive==='profile')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('profile')}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                   <UserCircleIcon className="h-5 w-5"/>
@@ -159,12 +186,14 @@ function Header() {
           <button className='h-8 w-24 rounded-full shadow-md border border-pink-500 text-pink-500 text-center bg-white dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:text-pink-500 dark:shadow-lg dark:hover:shadow-xl' onClick={()=>{router.replace('/signup')}}>Sign Up</button>
         </div>}
       </div>
+      {enterSearchMode && <SearchContainer hits={searchRes} clearSearch={clearSearch}/>}
+      {enterSearchMode && <div onClick={()=>{setEnterSearchMode(false); setSearchRes([])}} className='w-screen h-full block md:hidden fixed z-10 bg-gray-900 opacity-40'/>}
       {(tabActive==='notification' || tabActive==='post' || tabActive==='updatePP' || tabActive==='delAcc') && <div onClick={()=>{setTabActive(prevTab==='notification' ? prevPrevTab : prevTab); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
       {currentUser && <div>
           <NotificationPane/>
       </div>}
       {tabActive==='post' && <div>
-          <PostDialog profilePicture={currentUser.profilePicture} userId={currentUser._id} college={currentUser.college}/>
+        <PostDialog profilePicture={currentUser.profilePicture} userId={currentUser._id} college={currentUser.college}/>
       </div>}
       {tabActive==='updatePP' && <UpdateProfilePicture/>}
       {tabActive==='delAcc' && <DeleteAccountDialog/>}

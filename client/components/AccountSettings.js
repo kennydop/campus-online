@@ -12,6 +12,8 @@ function AccountSettings({colleges}) {
 	const [updateLoading, setUpdateLoading] = useState(false);
   const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
   
+  const getOrdinalNum = (n) => n + (n > 0 ? ['th', 'st', 'nd', 'rd'][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10] : '')
+
   useEffect(() => {
     colleges.forEach(col => {
       var collegeOption = document.createElement("option");
@@ -41,24 +43,39 @@ function AccountSettings({colleges}) {
     setTabActive('delAcc'); 
   }
 
+  function handleValueChange(e){
+    if(e.target.value === ""){
+      if(e.target.id === "relationship"){
+        _setUser(oldval=>{const {relationship,...other } = oldval;  return other})
+      }else if(e.target.id === "level"){
+        _setUser(oldval=>{const {level,...other } = oldval;  return other})
+      }else if(e.target.id === "gender"){
+        _setUser(oldval=>{const {gender,...other } = oldval;  return other})
+      }else if(e.target.id === "college"){
+        _setUser(oldval=>{const {college,...other } = oldval;  return other})
+      }
+    }else{
+      if(e.target.id === "relationship"){
+        _setUser(oldval=>{const {relationship,...other } = oldval;  return {relationship: e.target.value,...other }})
+      }else if(e.target.id === "level"){
+        _setUser(oldval=>{const {level,...other } = oldval;  return {level: e.target.value,...other }})
+      }else if(e.target.id === "gender"){
+        _setUser(oldval=>{const {gender,...other } = oldval;  return {gender: e.target.value,...other }})
+      }else if(e.target.id === "college"){
+        _setUser(oldval=>{const {college,...other } = oldval;  return {college: e.target.value,...other }})
+      }
+    }
+  }
+
   async function updateProfile(e){
     e.preventDefault();
     setError('');
     setUpdateLoading(true)
     const {name, username, email, birthday, gender, college, level, relationship, bio  } = e.target.elements
-    if(bio){
-      var str = bio.value.trim()
-      var wordCount = str.match(/(\w+)/g).length;
-      if(wordCount>60){
-        setError("Bio Too Long")
-        setUpdateLoading(false)
-        return
-      }
-    }
-    const update = ({name: name.value !== user.name && name.value, username: username.value !== user.username && username.value, email: email.value !== user.email && email.value, birthday: birthday.value !== user.birthday && birthday.value, gender: gender.value !== user.gender && gender.value, college: college.value !== user.college && college.value, level: level.value !== user.level && level.value, relationship: relationship.value !== user.relationship && relationship.value, description: bio.value !== user.description && bio.value })
+    const update = {name: name.value !== user.name && name.value, username: username.value !== user.username && username.value, email: email.value !== user.email && email.value, birthday: birthday.value !== user.birthday && birthday.value, gender: gender.value !== user.gender && gender.value, college: college.value !== user.college && college.value, level: level.value !== user.level && level.value, relationship: relationship.value !== user.relationship && relationship.value, description: bio.value !== user.description && bio.value }
     Object.entries(update).forEach(
       ([key, value]) => {
-        if(value === false || value === ""){
+        if(value === false || value.trim() === ""){
           delete update[key]
         }
       }
@@ -66,6 +83,24 @@ function AccountSettings({colleges}) {
     if(Object.keys(update).length === 0){
       setUpdateLoading(false)
       return
+    }
+    if(update.description){
+      var str = update.description.trim()
+      var wordCount = str.match(/(\w+)/g).length;
+      if(wordCount>60){
+        setError("Bio Too Long")
+        setUpdateLoading(false)
+        return
+      }
+    }
+    if(update.birthday){
+      if(update.birthday.split('-')[0] > '2010'){
+        setError("You seem too young")
+        setUpdateLoading(false)
+        return
+      }else{
+        update.birthday = new Date((update.birthday + "T00:00:00")).toDateString().replace(update.birthday.split('-')[2], getOrdinalNum((update.birthday.split('-')[1]).replace('0', '')))
+      }
     }
     axios.put(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/"+currentUser._id, update, { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
       if(res.data.message){
@@ -144,19 +179,21 @@ function AccountSettings({colleges}) {
             </div>
             <div className="flex flex-col m-3">
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Gender</p>
-              <select id="gender" autoComplete="gender" value={_user?.gender} onChange={e=>{_setUser(oldval=>{const {gender,...other } = oldval; return {gender: e.target.value,...other }})}} className="infofield-edit">
+              <select id="gender" autoComplete="gender" value={_user?.gender} onChange={handleValueChange} className="infofield-edit">
+                <option> </option>
                 <option>Male</option>
                 <option>Female</option>
               </select>
             </div>
             <div className="flex flex-col m-3">
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">College</p>
-              <select id = 'college' value={_user?.college} onChange={e=>{_setUser(oldval=>{const {college,...other } = oldval; return {college: e.target.value,...other }})}} className = "infofield-edit">
+              <select id = 'college' value={_user?.college} onChange={handleValueChange} className = "infofield-edit">
               </select>
             </div>
             <div className="flex flex-col m-3">
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Level</p>
-              <select id="level" autoComplete="grade" value={_user?.level} onChange={e=>{_setUser(oldval=>{const {level,...other } = oldval; return {level: e.target.value,...other }})}} className="infofield-edit">
+              <select id="level" autoComplete="grade" value={_user?.level} onChange={handleValueChange} className="infofield-edit">
+                <option> </option>
                 <option>Freshman</option>
                 <option>Sophomore</option>
                 <option>Junior</option>
@@ -165,7 +202,8 @@ function AccountSettings({colleges}) {
             </div>
             <div className="flex flex-col m-3">
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Relationship</p>
-              <select id = 'relationship' value={_user?.relationship} onChange={e=>{_setUser(oldval=>{const {relationship,...other } = oldval; return {relationship: e.target.value,...other }})}} className = "infofield-edit">
+              <select id = 'relationship' value={_user?.relationship} onChange={handleValueChange} className = "infofield-edit">
+                <option> </option>
                 <option>Single</option>
                 <option>In A Relationship</option>
                 <option>Married</option>
@@ -174,6 +212,7 @@ function AccountSettings({colleges}) {
             <div className="flex flex-col m-3">
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">TBD</p>
               <select className="infofield-edit">
+                <option> </option>
                 <option>TBD</option>
                 <option>TBD</option>
               </select>
@@ -185,7 +224,7 @@ function AccountSettings({colleges}) {
           </div>
           <div className="flex justify-between items-center m-3">
             <div onClick={openAccDelDialog} className="text-red-600 cursor-pointer">Delete Account</div>
-            <button disabled={updateLoading} className="infobutton-edit" type="submit">
+            <button disabled={updateLoading || JSON.stringify(user) === JSON.stringify(_user)} className="infobutton-edit" type="submit">
               {updateLoading ? <div className="loader mx-auto animate-spin"></div> : <>Confirm</>}
             </button>
           </div>

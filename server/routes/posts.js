@@ -1,11 +1,15 @@
 import {Router} from "express";
-import { createNewComment, createNewPost, deleteComment, deletePost, getAPost, getFeedPosts, getGlobalPosts, getUserPosts, handlePostLike, updatePost } from "../controllers/postsControllers.js";
+import { createNewComment, createNewPost, deleteComment, deletePost, getAPost, getFeedPosts, getGlobalPosts, getUserPosts, handlePostLike, trending, trendingPosts, updatePost } from "../controllers/postsControllers.js";
 import { verifyUser } from "../authStrategies/authenticate.js";
 
 const router = Router();
 
 //create a post
 router.post("/", createNewPost);
+
+//trending
+router.get("/trending", trending);
+router.get("/trendingposts", trendingPosts);
 
 //update a post
 router.put("/:id", updatePost);

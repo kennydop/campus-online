@@ -126,7 +126,6 @@ passport.use(
             providerToken: accessToken,
             name: profile.displayName,
             username: profile.username,
-            city: profile._json.location,
             provider: profile.provider,
             profilePicture: profile.photos[0].value,
             email: profile._json.email,

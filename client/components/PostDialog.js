@@ -16,6 +16,7 @@ function PostDialog() {
   const [error, setError] = useState()
   const [posting, setPosting] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [isAnonymous, setIsAnonymous] = useState(false)
 
   const setSelectedImgPreview = (e) => {
     setError('');
@@ -61,6 +62,7 @@ function PostDialog() {
         description: postRef.current.value,
         media: mediaToPost && mediaToPost,
         college: currentUser.college,
+        isAnonymous: isAnonymous,
       }).then(()=>{
         setPosting(false)
         setRefreshPosts(true)
@@ -132,9 +134,17 @@ function PostDialog() {
           <div>
             <TagIcon className="h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400"/>
           </div>
+          <div>
             <ChartBarIcon className="h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400"/>
+          </div>
         </div>
-        <button disabled={posting}className='h-7 w-16 rounded-full shadow-md text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl bg-pink-500 text-white dark:text-gray-200 disabled:bg-gray-300 dark:disabled:bg-gray-400' onClick={sendPost}>Post</button>
+        <div className="flex space-x-2 items-center justify-center">
+          <p className="text-gray-500 dark:text-gray-400">Anonymous</p>
+          <input type="checkbox" checked={isAnonymous} onChange={()=>setIsAnonymous(!isAnonymous)} />
+        </div>
+        <div>
+          <button disabled={posting}className='h-7 w-16 rounded-full shadow-md text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl bg-pink-500 text-white dark:text-gray-200 disabled:bg-gray-300 dark:disabled:bg-gray-400' onClick={sendPost}>Post</button>
+        </div>
       </div>
       </div>
     </div>

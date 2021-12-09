@@ -4,14 +4,13 @@
 import { PencilIcon } from "@heroicons/react/outline";
 import axios from "axios";
 import router from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { defaultCoverPicture } from "../images/defaults"
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useAuth } from "../contexts/AuthContext";
 
-function ProfileCard({ admin, user, userId, loggedIn }) {
+function ProfileCard({ admin, user, loggedIn, refreshUser }) {
   const [ followBtnText, setFollowBtnText ] = useState(user.isfollowing ?'Unfollow' : 'Follow')
-  const [img, setImg] = useState()
   const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
   const { currentUser } = useAuth()
 
@@ -24,19 +23,24 @@ function ProfileCard({ admin, user, userId, loggedIn }) {
 
   function followUser(){
     if(!loggedIn){
-      router.replace('/login')
+      router.replace('/login?returnUrl=/'+user._id)
       return
     }
     if(followBtnText==="...") return
     setFollowBtnText("...")
-    axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${user._id}/follow`, {userId}).then((res)=>{
-    if(res.data === "user has been followed"){
+    axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${user._id}/follow`, {userId: currentUser._id}).then((res)=>{
+      if(res.data === "user has been followed"){
       setFollowBtnText('Unfollow')
       }else if(res.data === "user has been unfollowed"){
         setFollowBtnText('Follow')
       }
+      refreshUser()
     })
   }
+
+  useEffect(()=>{
+    user.isfollowing ? setFollowBtnText("Unfollow") : setFollowBtnText("Follow")
+  }, [user])
 
   return (
     <div className='md:mx-auto w-full md:w-8/12 bg-white dark:bg-bdark-100 shadow-md rounded-b-lg md:my-6 mb-6 md:rounded-lg overflow-hidden'>
@@ -66,8 +70,8 @@ function ProfileCard({ admin, user, userId, loggedIn }) {
           </div>
           {!admin && 
           <div className='lg:absolute right-2 top-2 flex space-x-3 mt-2 lg:mt-0 mx-auto'>
-            <button className={`h-8 w-24 rounded-full shadow-md  text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl ${followBtnText==='Follow' ? 'bg-pink-500 text-white dark:text-gray-200' : 'bg-blue-grey-50 dark:bg-bdark-200 text-pink-500 dark:text-gray-200 border border-pink-500' }`}onClick={followUser}>{followBtnText}</button>
-            <button className='h-8 w-24 rounded-full shadow-md border border-pink-500 text-pink-500 text-center bg-white dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:text-pink-500 dark:shadow-lg dark:hover:shadow-xl'>Message</button>
+            <button className={`h-8 w-24 rounded-full shadow-md  text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl ${followBtnText==='Follow' ? 'bg-pink-500 text-white dark:text-gray-200' : 'bg-white dark:bg-bdark-200 text-pink-500 border border-pink-500' }`}onClick={followUser}>{followBtnText}</button>
+            <button className='h-8 w-24 rounded-full shadow-md border border-pink-500 text-pink-500 text-center bg-blue-grey-50 dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:text-gray-400 dark:shadow-lg dark:hover:shadow-xl'>Message</button>
           </div>}
           <div className='lg:absolute right-2 top-2 fit-content mt-2 lg:mt-0 mx-auto'>
             {(admin && loggedIn) && <div onClick={()=>router.replace('/settings')} className='flex py-1.5 px-3 rounded-full shadow-md text-white dark:text-gray-400 text-center bg-gray-500 dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl'>

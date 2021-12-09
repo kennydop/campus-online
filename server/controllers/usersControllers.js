@@ -12,7 +12,10 @@ export const updateUserInfo = async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
     if(req.body.college){
-      College.findOneAndUpdate({name: req.body.name}, {$inc: {users: 1}})
+      if(user.college){
+        await College.findOneAndUpdate({name: user.college}, {$inc: {users: -1}}, {new: true})
+      }
+      await College.findOneAndUpdate({name: req.body.college}, {$inc: {users: 1}}, {new: true})
     }
     if(req.body.profilePicture && !req.body.profilePicture.startsWith("https://ui-avatars.com/api/?name=")){
       const uploadResponse = await cloudinary.uploader.upload(req.body.profilePicture, {
@@ -148,9 +151,9 @@ export const getFollowSuggestions = async (req, res) => {
     try{
         const user = await User.findById(req.params.id);
         const matches = await User.find( {$and: [
-            {$or: [{from: { $regex : user.from ? user.from.split(',')[0] : '_', $options: "i"}}, {city: { $regex : user.city ? user.city.split(',')[0] : '_', $options: "i"}}, {from: { $regex : user.city ? user.city.split(',')[0] : '_', $options: "i"}}, {city: { $regex : user.from ? user.from.split(',')[0] : '_', $options: "i"}},{college: user.college}]},
-            {_id: {$ne: req.params.id}},
-            {followers: {$ne: req.params.id}}
+          {college: user.college},
+          {_id: {$ne: req.params.id}},
+          {followers: {$ne: req.params.id}}
         ]});
         if(matches.length <= 5){
           const usernames = []
@@ -158,7 +161,6 @@ export const getFollowSuggestions = async (req, res) => {
             usernames.push(match.username)
           })
           const _matches = await User.find( {$and: [{followers: {$ne: req.params.id}}, {_id: {$ne: req.params.id}}, {username: {$nin: usernames}}]});
-          matches.concat(_matches);
           res.status(200).json(matches.concat(_matches))
         }else{
           res.status(200).json(matches)
@@ -181,11 +183,11 @@ export const getNotLoggedInFollowSuggestions = async (req, res) => {
 
 //search user
 export const searchUser = async (req, res) => {
-    try{
-        const matches = await User.find({ username: { $regex : req.query.search, $options: "i"} });
-        res.status(200).json(matches);
-    }catch(error){
-        console.log(error);
-        res.status(500).json(error);
-    }
+  try{
+    const matches = await User.find({$or: [ { username: { $regex : req.query.search, $options: "i"} }, { name: { $regex : req.query.search, $options: "i"} }]})
+    res.status(200).json(matches);
+  }catch(error){
+    console.log(error);
+    res.status(500).json(error);
+  }
 }

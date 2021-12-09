@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import PeopleYouMightKnow from './PeopleYouMightKnow';
 import axios from 'axios';
 
-function MyPosts({ admin, user }) {
+function MyPosts({ admin, user, refreshUser }) {
   const [myPosts, setMyPosts] = useState(null);
 
   useEffect(()=>{
@@ -13,10 +13,11 @@ function MyPosts({ admin, user }) {
       setMyPosts(res.data)
     })
   }, [user])
+  
   return (
     <>
       <div className='my-5 border-b dark:border-bdark-100 text-gray-500 dark:text-gray-400 py-3 pl-4 md:mx-auto w-full md:w-8/12 cursor-default'>Posts</div>
-      <div className='flex mx-auto w-full justify-center space-x-3'>
+      <div className='flex mx-auto w-full justify-center space-x-8'>
         {myPosts?.length !== 0 ?
         <>
           <FlipMove>
@@ -24,6 +25,7 @@ function MyPosts({ admin, user }) {
             <Post
               key={post._id}
               _post={post}
+              refreshUser={refreshUser}
             />))}
           </FlipMove>
           <PeopleYouMightKnow/>

@@ -6,8 +6,9 @@ import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useEffect } from 'react';
 import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/router";
+import axios from "axios";
 
-function Feed() {
+function Feed({trending}) {
   const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
   const { currentUser } = useAuth()
   const router = useRouter()
@@ -26,7 +27,7 @@ function Feed() {
       {/* <Stories userId={currentUser._id}/> */}
       <div className='mt-2'></div>
         <div className='flex flex-col'>
-          <div className='mx-auto'>
+          <div className='mx-auto mt-3'>
             <AddPost/>
             <Posts/>
           </div>
@@ -42,4 +43,15 @@ Feed.getLayout = function getLayout(page) {
     </FeedLayout>
   )
 }
+
+export async function getServerSideProps() {
+  const trending = await (await axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/trending")).data
+  
+  return {
+    props: {
+      trending,
+    },
+  }
+}
+
 export default Feed

@@ -31,6 +31,10 @@ const PostSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    isAnonymous: {
+      type: Boolean,
+      default: false,
+    },
     description: {
       type: String,
       max: 500,

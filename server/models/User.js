@@ -74,6 +74,9 @@ const UserSchema = new mongoose.Schema({
     level: {
       type: String,
     },
+    posts: {
+      type: Number,
+    },
     preferences: {
       type: {},
     },

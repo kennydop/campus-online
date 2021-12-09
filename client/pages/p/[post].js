@@ -1,42 +1,41 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable react/display-name */
+import { SiteLayout } from "../../Layouts/Layouts"
 import Image from 'next/image'
 import {HeartIcon, ChatAltIcon, ShareIcon} from '@heroicons/react/outline'
 import { DotsVerticalIcon } from "@heroicons/react/outline"
-import { useAuth } from "../contexts/AuthContext";
-import { forwardRef } from 'react';
 import {HeartIcon as Filled} from '@heroicons/react/solid'
 import { useState, useEffect, useRef } from 'react';
-import { useTheme } from 'next-themes';
-import TimePast from './TimePast';
+import TimePast from '../../components/TimePast';
 import axios from 'axios';
 import Link from "next/link"
-import Comment from "./Comment"
-import {useOnClickOutside} from "./Hooks"
 import { useRouter } from 'next/router';
+import { useAuth } from "../../contexts/AuthContext"
+import {useOnClickOutside} from "../../components/Hooks"
+import { useTheme } from 'next-themes';
+import {NotFound} from "../404"
+import { useActiveTab } from "../../contexts/ActiveTabContext"
+import Comment from "../../components/Comment"
 
-const Post = forwardRef(({ _post, refreshUser }, ref) => {
-  const { currentUser, setRefreshPosts } = useAuth();
+function PostPage({_post}) {
   const [post, setPost] = useState(_post)
   const [author, setAuthor] = useState()
   const [hasLiked, setHasLiked] = useState(false)
-  const [openComments, setOpenComments] = useState(false)
   const [openOptions, setOpenOptions] = useState(false)
+  const [openComments, setOpenComments] = useState(false)
+  const router = useRouter();
+  const { currentUser } = useAuth();
   const comRef = useRef()
-  const scrollTarget = useRef()
-  const { theme } = useTheme()
   const moreRef = useRef();
-  const router = useRouter()
+  const { theme } = useTheme()
+	const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
 
   useOnClickOutside(moreRef, () =>setOpenOptions(false))
 
-  useEffect(() => {
-    if(currentUser){
-      setHasLiked(post.likes?.findIndex((like)=> (like === currentUser?._id)) !== -1) //has liked
-    }
-  }, [_post, post])
+  useEffect(()=>{
+    if(tabActive==='postpage')return; 
+    setPrevPrevTab(prevTab); 
+    setPrevTab(tabActive); 
+    setTabActive('postpage');
+},[])
 
   useEffect(() => {
     !post.isAnonymous && axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/"+post.authorId).then((res)=>{
@@ -44,15 +43,21 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
     })
   }, [])
 
+  useEffect(() => {
+    if(currentUser){
+      setHasLiked(post.likes?.findIndex((like)=> (like === currentUser._id)) !== -1) //has liked
+    }
+  }, [post])
+
 //like post
   async function likePost(){
     if(currentUser){
-      axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/like?userId=${currentUser?._id}`).then((res)=>{
+      axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/like?userId=${currentUser._id}`).then((res)=>{
         setPost(res.data)
         setHasLiked(true)
       })
     }else{
-      router.push('/login?returnUrl=/'+author._id)
+      router.push('/login?returnUrl=/p/'+post._id)
     }
   }
     
@@ -63,44 +68,46 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
     if(currentUser){
       if(comRef.current.value.trim() === '') return
       axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/comment`, {  
-        authorId: currentUser?._id,
+        authorId: currentUser._id,
         comment: comRef.current.value
       }).then((res)=>{
         setPost(res.data)
         comRef.current.value=""
       })
     }else{
-      router.push('/login?returnUrl=/'+author._id)
+      router.push('/login?returnUrl=/p/'+post._id)
     }
   }
 
   //delete a comment
   async function deleteComment(cid){
-    axios.delete(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/comment?comment=${cid}`, { headers: { Authorization: `Bearer ${currentUser?.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>setPost(res.data))
+    axios.delete(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/comment?comment=${cid}`, { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>setPost(res.data))
   }
 
   //delete posts
   async function deletePosts(){
     setOpenOptions(false)
-    axios.delete(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}`, { headers: { Authorization: `Bearer ${currentUser?.token}`}, withCredentials: true, credentials: 'include'}).then(
-      setRefreshPosts(true)
+    axios.delete(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}`, { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then(
+      router.push('/')
     )
   }
   
   //follow/unfollow
   function followUser(){
     setOpenOptions(false)
-    axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${author._id}/follow`, {userId: currentUser?._id}).then((res)=>{
-      if(res.data === "user has been unfollowed"){
-        setRefreshPosts(true)
-      }
-      refreshUser()
-    })
+    if(currentUser){
+      axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${author._id}/follow`, {userId: currentUser._id})
+    }else{
+      router.push('/login?returnUrl=/p/'+post._id)
+    }
   }
 
   return (
-    <div ref={ref} className='w-screen p-1.5 md:w-102'>
-      <div className='p-2 relative rounded-lg shadow-md bg-white dark:bg-bdark-100 flex flex-grow flex-col'>
+    post ?
+      <>
+    <div className="flex mx-auto w-full justify-center minus-header mt-4 mb-16">
+		<div className="'w-screen p-1.5 md:w-102">
+      <div className='p-2 relative rounded-lg bg-white dark:bg-bdark-100 flex flex-grow flex-col'>
         <div className='py-1 flex border-b border-gray-200 dark:border-bdark-200 justify-between items-center'>
           <div className="flex items-center truncate">
           {!post.isAnonymous && <Link href={`/${author?.username}`}><img className='h-9 w-9 mr-3 rounded-full object-cover cursor-pointer' src={author?.profilePicture}/></Link>}
@@ -116,7 +123,6 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
           <div onClick={()=>setOpenOptions(true)}><DotsVerticalIcon className="h-5 text-gray-500 dark:text-gray-400 cursor-pointer"/></div>
           <div ref={moreRef} className={`absolute right-3 top-6 z-50 bg-gray-50 dark:bg-bdark-50 rounded-lg shadow-all overflow-hidden ${openOptions ? "w-40 transition-all duration-300" : "w-0 h-0 hidden"}`}>
             {post.authorId !== currentUser?._id && <div onClick={followUser} className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">{author?.followers.indexOf(currentUser?._id) > -1 ? "Unfollow" : "Follow"}</div>}
-            <Link href={`/p/${post._id}`}><div className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">Go To Post</div></Link>
             {post.authorId === currentUser?._id && <div onClick={deletePosts} className="w-full text-center py-2 text-red-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200">Delete Post</div>}
           </div>
         </div>
@@ -177,7 +183,29 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
         </div>
       </div>
     </div>
+    </div>
+    <div className='pt-20'></div>
+    </>
+    :
+    <NotFound/>
   )
-})
+}
 
-export default Post
+PostPage.getLayout = function getLayout(page) {
+  return (
+    <SiteLayout>
+        {page}
+    </SiteLayout>
+  )
+}
+
+export async function getServerSideProps(context) {
+  const _post = await (await axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/" + context.query.post)).data
+  return {
+    props: {
+      _post,
+    },
+  }
+}
+
+export default PostPage

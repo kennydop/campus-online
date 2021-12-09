@@ -8,12 +8,12 @@ export function useAuth() {
 	return useContext(AuthContext)
 }
 
-const uprotectedRoutes = ['/login', '/signup', '/', '/[profile]', '/404']
+const uprotectedRoutes = ['/login', '/signup', '/', '/[profile]', '/p/[post]', '/404']
 
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState()
+	const [refreshPosts, setRefreshPosts] = useState()
 	const [loading, setLoading] = useState(true)
-  const [refreshPosts, setRefreshPosts] = useState()
 	const router = useRouter()
 
 

@@ -27,7 +27,12 @@ function Login() {
     try{
       axios.post(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/auth/login", {username: username.current.value, password: password.current.value}, {withCredentials: true, credentials: 'include'}).then((res)=>{
       setCurrentUser(res.data)
-      router.replace("/")
+      if(router.query.returnUrl){
+        router.replace(router.query.returnUrl)
+      }else{
+        router.replace("/")
+      }
+      
       }).catch((error)=>{
         setError("Incorrect Credentials")
         setLoginLoading(false)

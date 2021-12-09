@@ -11,6 +11,8 @@ export const createNewPost = async (req, res) => {
       const post = {...req.body, media: req.body.type === "image" ? uploadResponse.public_id+"."+uploadResponse.format : uploadResponse.public_id}
       const newPost = new Post(post);
       const savedPost = await newPost.save();
+      const v = await User.findByIdAndUpdate(req.body.authorId, {$inc: {posts: 1}}, {new: true})
+      console.log(v)
       res.status(200).json(savedPost);
     }else{
       const newPost = new Post(req.body);
@@ -39,6 +41,8 @@ export const updatePost = async (req, res) => {
 
 export const deletePost = async (req, res) => {
 	try {
+    const post = await Post.findById(req.params.id)
+    await User.findByIdAndUpdate(post.authorId, {$inc: {posts: -1}}, {new: true})
 		await Post.findByIdAndDelete(req.params.id).then(()=>
 			res.status(200).json("the post has been deleted")
     )
@@ -80,8 +84,8 @@ export const getFeedPosts = async (req, res) => {
 				return Post.find({ authorId: friendId });
 			})
 		);
-		// const localPosts = await Post.find({$and: [{college: currentUser.college}, {authorId: {$nin: [...currentUser.followings, currentUser._id]}}]})
-		const allPosts = [...userPosts]
+		const localPosts = await Post.find({$and: [{college: currentUser.college}, {authorId: {$nin: [...currentUser.followings, currentUser._id]}}]})
+		const allPosts = [...userPosts, ...localPosts]
     friendPosts.map((posts)=>{
       if (posts.length !== 0){
         posts.map((post)=>{
@@ -109,8 +113,7 @@ export const getGlobalPosts = async (req, res) => {
 
 export const getUserPosts =  async (req, res) => {
 	try {
-		const userPosts = await Post.find({ authorId: req.params.id });
-    userPosts.sort((a,b) => (new Date(a.updatedAt) < new Date(b.updatedAt)) ? 1 : ((new Date(b.updatedAt) < new Date(a.updatedAt)) ? -1 : 0))
+		const userPosts = await Post.find({ $and: [{authorId: req.params.id }, {isAnonymous: false}]}).sort({ createdAt: -1 })
 		res.status(200).json(userPosts)
 	} catch (error) {
 		res.status(500).json(error);
@@ -142,3 +145,64 @@ export const deleteComment = async (req, res) => {
 	}
 }
 
+
+export const trending = async (req, res) => {
+  try{
+    Post.find({}, {_id: 0, description: 1}).sort({ createdAt: -1 }).limit(1000).exec(function(error, posts) {
+    if(error){
+      console.log(error)
+      res.send(error)
+    }else{
+      var pool = ""
+      posts.forEach((post)=>{
+        const temp = post.description.split("\n")
+        temp.forEach((t)=>{
+          pool = pool + " " + t
+        })
+      })
+
+      let occur = nthMostCommon(pool, 5);
+      function nthMostCommon(str, amount) {
+        const stickyWords =[ "", "the", "there", "by", "at", "and", "so", "if", "than", "but", "about", "in", "on", "the", "was", "for", "that", "said", "a", "or", "of", "to", "there", "will", "be", "what", "get", "go", "think", "just", "every", "are", "it", "cos","is", "were", "had", "i", "very"];
+          str= str.toLowerCase();
+          var splitUp = str.split(/\s/);
+          const wordsArray = splitUp.filter(function(x){
+            return !stickyWords.includes(x) ;
+          });
+          var wordOccurrences = {}
+          for (var i = 0; i < wordsArray.length; i++) {
+              wordOccurrences['_'+wordsArray[i]] = ( wordOccurrences['_'+wordsArray[i]] || 0 ) + 1;
+          }
+          var result = Object.keys(wordOccurrences).reduce(function(acc, currentKey) {
+            /* you may want to include a binary search here */
+            for (var i = 0; i < amount; i++) {
+              if (!acc[i]) {
+                acc[i] = { word: currentKey.slice(1, currentKey.length), occurences: wordOccurrences[currentKey] };
+                break;
+              } else if (acc[i].occurences < wordOccurrences[currentKey]) {
+                  acc.splice(i, 0, { word: currentKey.slice(1, currentKey.length), occurences: wordOccurrences[currentKey] });
+                  if (acc.length > amount)
+                    acc.pop();
+                  break;
+              }
+            }
+            return acc;
+          }, []);
+          return result;
+      }
+      res.json(occur)
+    }
+  });
+  }catch(error){
+    res.status(404).json(error)
+  }
+}
+
+export const trendingPosts = async (req, res) => {
+  try{
+    const matches = await Post.find({description: { $regex : req.query.word, $options: "i"}}).sort({ createdAt: -1 }).limit(1000)
+    res.status(200).json(matches)
+  }catch(error){
+    res.status(404).json(error)
+  }
+}

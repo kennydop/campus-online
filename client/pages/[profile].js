@@ -57,12 +57,21 @@ function Profile() {
     }
   },[router.isReady, router.query.profile])
     
+  function refreshUser(){
+    axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${router.query.profile}`, { params:{ currentUser: currentUser._id} }).then((res)=>{
+      setUser(res.data)
+    }).catch((error)=>{
+      router.replace('/404')
+      console.log(error)
+    })
+  }
+
   return (
     user ?
     <>
-      <ProfileCard admin={admin} user={user} userId={!admin ? (loggedIn ? currentUser._id : null) : null} loggedIn={loggedIn}/>
+      <ProfileCard admin={admin} user={user} loggedIn={loggedIn} refreshUser={refreshUser}/>
       <About admin={admin} user={user}/>
-      <MyPosts admin={admin} user={user}/>
+      <MyPosts admin={admin} user={user} refreshUser={refreshUser}/>
       <div className='pt-20'></div>
     </>
       :

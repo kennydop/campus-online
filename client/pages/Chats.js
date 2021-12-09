@@ -148,10 +148,10 @@ function Chats(){
 	)
 }
 Chats.getLayout = function getLayout(page) {
-    return (
-        <SiteLayout>
-            {page}
-        </SiteLayout>
-    )
+  return (
+    <SiteLayout>
+        {page}
+    </SiteLayout>
+  )
 }
 export default Chats
