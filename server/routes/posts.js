@@ -17,14 +17,14 @@ router.put("/:id", updatePost);
 //delete a post
 router.delete("/:id", verifyUser, deletePost);
 
-//get a post
-router.get("/:id", getAPost);
+// get global posts
+router.get("/global", getGlobalPosts);
 
 //get feed posts
 router.get("/home/:id", getFeedPosts);
 
-// get global posts
-router.get("/global", getGlobalPosts);
+//get a post
+router.get("/:id", getAPost);
 
 // get user posts
 router.get("/user/:id", getUserPosts);

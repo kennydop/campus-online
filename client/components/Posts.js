@@ -5,15 +5,22 @@ import { useAuth } from "../contexts/AuthContext";
 import axios from 'axios'
 import { useState, useEffect } from 'react';
 
-function Posts() {
+function Posts({global}) {
   const [ posts, setPosts ] = useState()
   const { currentUser, refreshPosts, setRefreshPosts } = useAuth()
 
   useEffect(()=>{
-    axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/home/"+currentUser._id).then((res)=>{
-      setPosts(res.data)
-      setRefreshPosts(false)
-    })
+    if(global){
+      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/global").then((res)=>{
+        setPosts(res.data)
+        setRefreshPosts(false)
+      })
+    }else{
+      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/home/"+currentUser._id).then((res)=>{
+        setPosts(res.data)
+        setRefreshPosts(false)
+      })
+    }
   },[refreshPosts === true])
 
   return (

@@ -103,11 +103,13 @@ export const getFeedPosts = async (req, res) => {
 
 
 export const getGlobalPosts = async (req, res) => {
+  console.log("on:::::::::::::::::::::::::::::::::::::::::::::on")
 	try {
-		const allPosts = await Post.find();
-		res.json(allPosts)
+		const allPosts = await Post.find({}).sort({ createdAt: -1 });
+		res.status(200).json(allPosts)
 	} catch (error) {
 		res.status(500).json(error);
+    console.log(error)
 	}
 }
 
