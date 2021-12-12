@@ -106,9 +106,12 @@ function Signup() {
 						type="password"
 						title="password"
             required={true}
+            minLength="6"
 						placeholder="Create Password"
 						autoComplete="new-password"
-						className="infofield"/>
+						className="infofield"
+            title="password"
+            />
 					</div>
 					<p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Already have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=>{router.push('/login')}}>Login</a></p>
 					<button disabled={signUpLoading} className="infobutton prevent-default" type = "submit">

@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { createNewUser, logInUser, logOutUser, resetUserPassword, refreshToken, socialsLoginSuccess, socialsLoginFailed } from "../controllers/authControllers.js"
+import { createNewUser, logInUser, logOutUser, refreshToken, socialsLoginSuccess, socialsLoginFailed, forgotPassword, changeUserPassword, resetPassword, validatePasswordReset } from "../controllers/authControllers.js"
 import passport from "passport";
 import { verifyUser } from "../authStrategies/authenticate.js";
 
@@ -43,7 +43,12 @@ router.get("/login/success", socialsLoginSuccess);
 router.get("/login/failed", socialsLoginFailed);
 
 //RESET PASWORD
-router.put("/resetpassword/:id", verifyUser, resetUserPassword);
+router.put("/changepassword/:id", verifyUser, changeUserPassword);
+
+router.post("/forgotpassword", forgotPassword);
+router.post("/resetpassword/:id", resetPassword);
+router.get("/validate-password-reset/:id/:token", validatePasswordReset);
+
 
 //REFRESH TOKEN
 router.put("/refreshtoken", refreshToken)

@@ -32,7 +32,7 @@ function PeopleYouMightKnow() {
         <QuickFollowPlaceholder/>
       }
       
-      {suggestions >= 4 && <div onClick={()=> router.push('/suggestions')} className='text-center text-pink-500  cursor-pointer hover:font-bold fit-content mx-auto'>
+      {(suggestions && suggestions?.length > 4) && <div onClick={()=> router.push('/suggestions')} className='text-center text-pink-500  cursor-pointer hover:font-bold fit-content mx-auto'>
         <p>More</p>
       </div>}
     </div>

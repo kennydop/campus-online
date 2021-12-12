@@ -194,10 +194,10 @@ function AccountSettings({colleges}) {
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Level</p>
               <select id="level" autoComplete="grade" value={_user?.level} onChange={handleValueChange} className="infofield-edit">
                 <option> </option>
-                <option>Freshman</option>
-                <option>Sophomore</option>
-                <option>Junior</option>
-                <option>Senior</option>
+                <option>Level 100</option>
+                <option>Level 200</option>
+                <option>Level 300</option>
+                <option>Level 400</option>
               </select>
             </div>
             <div className="flex flex-col m-3">
@@ -210,7 +210,7 @@ function AccountSettings({colleges}) {
               </select>
             </div>
             <div className="flex flex-col m-3">
-              <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">TBD</p>
+              <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Programme of Study</p>
               <select className="infofield-edit">
                 <option> </option>
                 <option>TBD</option>

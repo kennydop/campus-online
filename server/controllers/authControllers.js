@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import { getToken, COOKIE_OPTIONS, getRefreshToken } from "../authStrategies/authenticate.js";
 import jwt from "jsonwebtoken";
+import sendEmail from "../utils/sendEmail.js"
 
 export const createNewUser = async (req, res) => {
     try {
@@ -61,7 +62,7 @@ export const logInUser = async (req, res, next) => {
   }
 }
 
-export const resetUserPassword = async (req, res) => {
+export const changeUserPassword = async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
     user.changePassword(req.body.oldpassword, req.body.newpassword, function(error, user){
@@ -96,7 +97,7 @@ export const socialsLoginFailed = async (req, res) => {
 export const refreshToken = (req, res, next) => {
   const { signedCookies = {} } = req
   const { refreshToken } = signedCookies
-
+  console.log(refreshToken)
   if (refreshToken) {
     try {
       const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
@@ -170,4 +171,77 @@ export const logOutUser = async (req, res, next) => {
     },
     error => next(error)
   )
+}
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const user = await User.findOne({$or: [{email: req.body.email}, {username: req.body.email}]})
+    if(!user){
+      res.send({error: true, msg: "No user found"})
+    }else{
+      if(user.provider === "email"){
+        delete user.refreshToken
+        const token = jwt.sign({_id: user._id, _exp: new Date()}, process.env.JWT_SECRET, {expiresIn: "10m"})
+        const html = `<div style="padding: 1.5rem">
+                        <img src="https://res.cloudinary.com/kennydop/image/upload/v1638432882/campus-online/defaults/campus-online-logo_ashdlp.png"/>
+                        <p>Hi ${user.name}, <br/>
+                        Sorry to hear you’re having trouble logging into Campus Online. You can click on the button below to reset your password.</p>
+                        <a style = 'text-align: center; display: block; padding: 10px 16px 14px 16px; margin: 0 2px 0 auto; min-width: 80px; background-color: #e74799; border-radius: 9999px; color: white' href=${process.env.BASE_URL}/api/auth/validate-password-reset/${user._id}/${token}>Reset Password</a>
+                        <p> If you didn't request a password reset, please ignore this</p>
+                      </div>`
+        await sendEmail(user.email, "Password reset", html);
+        res.send({email: true, msg: "Password reset link has been sent to your email. Link expires in 10 minutes. Can't find it? check your spam"});
+      }else{
+        res.send({error: true, msg: `This account is connected with ${user.provider}. Please try logging in with ${user.provider}`});
+      }
+    }
+  }catch(error){
+    console.log(error)
+    res.send(error)
+  }
+};
+
+export const validatePasswordReset = async (req, res) => {
+  try {
+    const info = jwt.decode(req.params.token)
+    if(Date.now() >= info.exp * 1000){
+      res.redirect(`${process.env.CLIENT_URL}/forgotpassword?error=1101`)
+    }else{
+      res.redirect(`${process.env.CLIENT_URL}/forgotpassword?u=${req.params.id}`)
+    }
+  }catch(error){
+    console.log(error)
+    res.send(error)
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try{
+    const user = await User.findById(req.params.id)
+    user.setPassword(req.body.password, (error, user)=>{
+      if(error){
+        res.send({msg: "There was an error resseting your password, please try again"})
+      }else if(user){
+        const token = getToken({ _id: user._id, username: user._doc.username})
+        const refreshToken = getRefreshToken({ _id: user._id, username: user._doc.username })
+        user.refreshToken.push({ refreshToken })
+        user.save((error, user) => {
+          if (error) {
+            res.redirect(process.env.CLIENT_URL+'/login?errorC=1102'+'&errorM=There was an error logging you in')
+          } else {
+            delete user._doc.refreshToken
+            delete user._doc.updatedAt,
+            delete user._doc.__v,
+            delete user._doc.provider, 
+            delete user._doc.salt,
+            delete user._doc.hash,
+            res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
+            res.send({ token, ...user._doc })
+          }
+        })
+      }
+    })
+  }catch{
+
+  }
 }

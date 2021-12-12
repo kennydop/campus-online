@@ -13,7 +13,7 @@ function PasswordSettings() {
     setUpdateLoading(true)
     const {oldpassword, newpassword} = e.target.elements
     const update = {oldpassword: oldpassword.value, newpassword: newpassword.value}
-    axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/auth/resetpassword/${currentUser._id}`, update, { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
+    axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/auth/changepassword/${currentUser._id}`, update, { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
       if(res.data.name === "IncorrectPasswordError"){
         setError("Incorrect Old Password")
       }
