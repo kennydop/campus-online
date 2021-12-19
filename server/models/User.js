@@ -8,6 +8,16 @@ const Session = new mongoose.Schema({
   },
 });
 
+const Token = new mongoose.Schema({
+  passwordResetToken: {
+    type: String,
+  },
+  active:{
+    type: Boolean,
+    default: true,
+  }
+});
+
 
 const UserSchema = new mongoose.Schema({
     username: {
@@ -74,6 +84,9 @@ const UserSchema = new mongoose.Schema({
     level: {
       type: String,
     },
+    lastSeen: {
+      type: String,
+    },
     posts: {
       type: Number,
     },
@@ -83,6 +96,9 @@ const UserSchema = new mongoose.Schema({
     refreshToken: {
       type: [Session],
     },
+    passwordResetToken: {
+      type: [Token],
+    },
   },
   { timestamps: true }
 );
@@ -90,6 +106,7 @@ const UserSchema = new mongoose.Schema({
 UserSchema.set("toJSON", {
   transform: function (doc, ret, options) {
     delete ret.refreshToken
+    delete ret.passwordResetToken
     delete ret.updatedAt
     delete ret.__v
     delete ret.provider

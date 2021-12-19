@@ -25,7 +25,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
   const [openComments, setOpenComments] = useState(false)
   const [openOptions, setOpenOptions] = useState(false)
   const comRef = useRef()
-  const scrollTarget = useRef()
+  const scrollRef = useRef()
   const { theme } = useTheme()
   const moreRef = useRef();
   const router = useRouter()
@@ -98,6 +98,10 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
     })
   }
 
+  useEffect(()=>{
+    scrollRef.current?.scrollIntoView({behaviour: "smooth"})
+  },[post.comments, openComments])
+
   return (
     <div ref={ref} className='w-screen p-1.5 md:w-102'>
       <div className='p-2 relative rounded-lg shadow-md bg-white dark:bg-bdark-100 flex flex-grow flex-col'>
@@ -120,7 +124,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
             {post.authorId === currentUser?._id && <div onClick={deletePosts} className="w-full text-center py-2 text-red-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200">Delete Post</div>}
           </div>
         </div>
-        <div className='py-2 text-gray-600 dark:text-gray-400 whitespace-pre-wrap cursor-default'>{post.description}</div>
+        <div className='py-2 text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words cursor-default'>{post.description}</div>
         <div>
           {(post.type==='image'&& post.media) &&
             <div className='unset-img relative'>
@@ -151,6 +155,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
                   <Comment key={comment._id} comment={comment} admin={comment.authorId === currentUser?._id} delCom={deleteComment}/>
                 )
               }
+              <div ref={scrollRef}></div>
             </div>}
             <div className='flex items-center justify-center w-full py-4 bg-white dark:bg-bdark-100'>
               <form className='w-11/12'>

@@ -103,7 +103,6 @@ export const getFeedPosts = async (req, res) => {
 
 
 export const getGlobalPosts = async (req, res) => {
-  console.log("on:::::::::::::::::::::::::::::::::::::::::::::on")
 	try {
 		const allPosts = await Post.find({}).sort({ createdAt: -1 });
 		res.status(200).json(allPosts)
@@ -156,16 +155,15 @@ export const trending = async (req, res) => {
       res.send(error)
     }else{
       var pool = ""
+      const regex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
       posts.forEach((post)=>{
-        const temp = post.description.split("\n")
-        temp.forEach((t)=>{
-          pool = pool + " " + t
-        })
+        const str=post.description
+        const temp = str.replace(regex, ' ').replace(/(\r\n|\n|\r)/gm, " ")
+        pool = pool + " " + temp.trim()
       })
-
       let occur = nthMostCommon(pool, 5);
       function nthMostCommon(str, amount) {
-        const stickyWords =[ "", "the", "there", "by", "at", "and", "so", "if", "than", "but", "about", "in", "on", "the", "was", "for", "that", "said", "a", "or", "of", "to", "there", "will", "be", "what", "get", "go", "think", "just", "every", "are", "it", "cos","is", "were", "had", "i", "very"];
+        const stickyWords =[ "", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "the", "there", "by", "at", "and", "so", "if", "than", "but", "about", "in", "on", "the", "was", "for", "that", "said", "a", "or", "of", "to", "there", "will", "be", "what", "get", "go", "think", "just", "every", "are", "it", "cos","is", "were", "had", "i", "very"];
           str= str.toLowerCase();
           var splitUp = str.split(/\s/);
           const wordsArray = splitUp.filter(function(x){
@@ -197,6 +195,7 @@ export const trending = async (req, res) => {
   });
   }catch(error){
     res.status(404).json(error)
+  console.log(error)
   }
 }
 

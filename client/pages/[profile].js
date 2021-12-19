@@ -87,4 +87,5 @@ Profile.getLayout = function getLayout(page) {
     </ProfileLayout>
   )
 }
+
 export default Profile

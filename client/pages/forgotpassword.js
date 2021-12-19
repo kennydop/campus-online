@@ -14,7 +14,11 @@ function ForgotPassword() {
     if(router?.query.error==="1101"){
       setMsg({error: true, msg: "Link expired"})
     }
+    else if(router?.query.error==="1103"){
+      setMsg({error: true, msg: "Invalid Link"})
+    }
   },[router.isReady])
+
   async function sendEmailAddress(e){
     e.preventDefault()
     setMsg(" ")

@@ -96,10 +96,8 @@ function Header() {
 
   function clearSearch(){
     const i = document.activeElement === document.querySelector("#minSearch")
-    console.log(i)
     if(enterSearchMode && i) return
     setSearchRes([])
-    console.log("cleared")
     setEnterSearchMode(false)
   }
 

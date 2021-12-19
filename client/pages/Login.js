@@ -88,8 +88,8 @@ function Login() {
               title="password"
             />
           </div>
-          <a href="/forgotpassword" className="self-center mb-1 text-sm text-gray-500 dark:text-gray-400 hover:font-bold">Forgot password?</a>
-          <p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Don&apos;t have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=> router.push("/signup")}>Create one</a></p>
+          <a href="/forgotpassword" className="self-center mb-1 text-sm text-gray-500 dark:text-gray-400 hover:font-bold transition-all duration-150">Forgot password?</a>
+          <p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Don&apos;t have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer transition-all duration-150" onClick={()=> router.push("/signup")}>Create one</a></p>
           <button disabled = {loginLoading} className="infobutton" type = "submit">
             {loginLoading ? <div className="loader mx-auto animate-spin"></div> : <>Login</>}
           </button>

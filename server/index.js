@@ -3,15 +3,19 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import helmet from "helmet"
 import morgan from "morgan";
+import { createServer } from "http";
+import { Server } from "socket.io"
 import userRoute from "./routes/users.js";
 import authRoute from "./routes/auth.js";
 import postRoute from "./routes/posts.js";
 import storyRoute from "./routes/stories.js";
+import chatRoute from "./routes/chats.js";
 import cors from "cors";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import cookieSession from "cookie-session";
 import College from "./models/College.js";
+import User from "./models/User.js";
 
 import("./authStrategies/JWTStrategry.js");
 import("./authStrategies/authenticate.js");
@@ -24,7 +28,7 @@ if (process.env.NODE_ENV !== "production") {
 
 const app = express();
 const corsOptions ={
-  origin: true, 
+  origin: process.env.CLIENT_URL, 
   credentials:true,            //access-control-allow-credentials:true
   optionSuccessStatus:200
 }
@@ -50,11 +54,71 @@ app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/stories", storyRoute);
+app.use("/api/chats", chatRoute);
 app.get("/api/colleges", async (req, res)=>{
   const colleges = await College.find({})
   res.status(200).json(colleges)
 })
 
-app.listen(5000, () => {
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CLIENT_URL, 
+    credentials:true,
+  }
+});
+
+let users = [];
+
+const addUser = async(userId, socketId) => {
+  console.log("++++++++++++++++++++++++++", {userId: userId, socketId: socketId})
+  if(!users.some((user) => user.userId === userId)){
+    users.push({ userId, socketId });
+    await User.findByIdAndUpdate(userId, {lastSeen: "online"})
+    console.log(":::::::::::::::::::::::::::", users)
+  }
+};
+
+const removeUser = async(socketId) => {
+  const _user = await users.find((user)=>user.socketId === socketId)
+  console.log("-----------------------",_user)
+  _user && await User.findByIdAndUpdate(_user?.userId, {lastSeen: new Date().toISOString()})
+  users = users.filter((user) => user.socketId !== socketId);
+  console.log(":::::::::::::::::::::::::",users)
+};
+
+const getUser = (userId) => {
+  return users.find((user) => user.userId === userId);
+};
+
+io.on("connection", async (socket) => {
+  //when ceonnect
+  console.log("a user connected.");
+  //take userId and socketId from user
+  socket.on("addUser", (userId) => {
+    addUser(userId, socket.id);
+    // io.emit("getUsers", users);
+  });
+
+  //send and get message
+  socket.on("sendMessage", ({ from, to, message }) => {
+    const user = getUser(to);
+    io.to(user?.socketId).emit("getMessage", {
+      from,
+      message,
+      // _new,
+      read: false, 
+      createdAt: Date.now()
+    });
+  });
+
+  //when disconnect
+  socket.on("disconnect", () => {
+    console.log("a user disconnected!");
+    removeUser(socket.id);
+    // io.emit("getUsers", users);
+  });
+});
+server.listen(5000, () => {
   console.log("Backend server is running!");
 });

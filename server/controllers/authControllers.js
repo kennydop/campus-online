@@ -97,7 +97,6 @@ export const socialsLoginFailed = async (req, res) => {
 export const refreshToken = (req, res, next) => {
   const { signedCookies = {} } = req
   const { refreshToken } = signedCookies
-  console.log(refreshToken)
   if (refreshToken) {
     try {
       const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
@@ -181,16 +180,23 @@ export const forgotPassword = async (req, res) => {
     }else{
       if(user.provider === "email"){
         delete user.refreshToken
-        const token = jwt.sign({_id: user._id, _exp: new Date()}, process.env.JWT_SECRET, {expiresIn: "10m"})
-        const html = `<div style="padding: 1.5rem">
-                        <img src="https://res.cloudinary.com/kennydop/image/upload/v1638432882/campus-online/defaults/campus-online-logo_ashdlp.png"/>
-                        <p>Hi ${user.name}, <br/>
-                        Sorry to hear you’re having trouble logging into Campus Online. You can click on the button below to reset your password.</p>
-                        <a style = 'text-align: center; display: block; padding: 10px 16px 14px 16px; margin: 0 2px 0 auto; min-width: 80px; background-color: #e74799; border-radius: 9999px; color: white' href=${process.env.BASE_URL}/api/auth/validate-password-reset/${user._id}/${token}>Reset Password</a>
-                        <p> If you didn't request a password reset, please ignore this</p>
-                      </div>`
-        await sendEmail(user.email, "Password reset", html);
-        res.send({email: true, msg: "Password reset link has been sent to your email. Link expires in 10 minutes. Can't find it? check your spam"});
+        const passwordResetToken = jwt.sign({_id: user._id, _exp: new Date()}, process.env.JWT_SECRET, {expiresIn: "10m"})
+        user.passwordResetToken.push({ passwordResetToken })
+        user.save((error, user) => {
+          if (error) {
+            res.status(500).json(error)
+          } else {
+            const html = `<div style="padding: 1.5rem">
+            <img src="https://res.cloudinary.com/kennydop/image/upload/v1638432882/campus-online/defaults/campus-online-logo_ashdlp.png"/>
+            <p>Hi ${user.name}, <br/>
+            Sorry to hear you’re having trouble logging into Campus Online. You can click on the button below to reset your password.</p>
+            <a style = 'text-align: center; display: block; padding: 10px 16px 14px 16px; margin: 0 2px 0 auto; min-width: 80px; background-color: #e74799; border-radius: 9999px; color: white' href=${process.env.BASE_URL}/api/auth/validate-password-reset/${user._id}/${passwordResetToken}>Reset Password</a>
+            <p> If you didn't request a password reset, please ignore this</p>
+            </div>`
+            sendEmail(user.email, "Password reset", html);
+            res.send({email: true, msg: "Password reset link has been sent to your email. Link expires in 10 minutes. Can't find it? check your spam"});
+          }
+        })
       }else{
         res.send({error: true, msg: `This account is connected with ${user.provider}. Please try logging in with ${user.provider}`});
       }
@@ -205,12 +211,44 @@ export const validatePasswordReset = async (req, res) => {
   try {
     const info = jwt.decode(req.params.token)
     if(Date.now() >= info.exp * 1000){
+      console.log("expired")
       res.redirect(`${process.env.CLIENT_URL}/forgotpassword?error=1101`)
     }else{
-      res.redirect(`${process.env.CLIENT_URL}/forgotpassword?u=${req.params.id}`)
+      try {
+        const payload = jwt.verify(req.params.token, process.env.JWT_SECRET)
+        const userId = payload._id
+        User.findOne({ _id: userId }).then(
+          user => {
+            if (user) {
+              const tokenIndex = user.passwordResetToken.findIndex(item => item.passwordResetToken === req.params.token)
+              console.log(tokenIndex)
+              if (tokenIndex === -1) {
+                res.redirect(`${process.env.CLIENT_URL}/forgotpassword?error=1103`)
+              } else {
+                if(user.passwordResetToken[tokenIndex].active === false){
+                  res.redirect(`${process.env.CLIENT_URL}/forgotpassword?error=1101`)
+                }else{
+                  user.passwordResetToken[tokenIndex].active = false;
+                  user.save((error, user) => {
+                    if (error) {
+                      console.log(error)
+                      res.status(500).json(error)
+                    } else {
+                      res.redirect(`${process.env.CLIENT_URL}/forgotpassword?u=${req.params.id}`)
+                    }
+                  })
+                }
+              }
+            }
+          })
+      }catch (error) {
+        console.log(error)
+        res.redirect(`${process.env.CLIENT_URL}/forgotpassword?error=1103`)
+      }
     }
   }catch(error){
     console.log(error)
+    res.redirect(`${process.env.CLIENT_URL}/forgotpassword?error=1103`)
     res.send(error)
   }
 };

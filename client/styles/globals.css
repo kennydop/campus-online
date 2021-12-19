@@ -62,11 +62,6 @@
   transform: translateX(-50%);
 }
 
-.text-2xs{
-  font-size: 0.5rem;
-  line-height: 0.75rem;
-}
-
 input:checked ~ .dot {
   transform: translateX(100%);
   background-color: rgba(236, 72, 153);
@@ -145,6 +140,11 @@ select{
   resize: none;
 }
 
+.min-w-xs{
+  min-width: 3rem;
+  text-align: center;
+}
+
 
 @variants dark{
   .shadow-all{
@@ -202,5 +202,17 @@ select{
     border-top-left-radius: 0.5rem;
     border-bottom-left-radius: 0.5rem;
     border-top-right-radius: 0px;
+  }
+  .text-xs {
+    font-size: 0.65rem;
+    line-height: 0.85rem;
+  }
+  .text-2xs{
+  font-size: 0.5rem;
+  line-height: 0.75rem;
+  }
+  .text-1\/5xs{
+  font-size: 0.5rem;
+  line-height: 0.75rem;
   }
 }

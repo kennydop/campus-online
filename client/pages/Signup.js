@@ -113,7 +113,7 @@ function Signup() {
             title="password"
             />
 					</div>
-					<p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Already have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=>{router.push('/login')}}>Login</a></p>
+					<p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Already have an account? <a className = "text-pink-500 hover:font-bold transition-all duration-150 cursor-pointer" onClick={()=>{router.push('/login')}}>Login</a></p>
 					<button disabled={signUpLoading} className="infobutton prevent-default" type = "submit">
 						{signUpLoading ? <div className="loader mx-auto animate-spin"></div> : <>Sign Up</>}
 					</button>
