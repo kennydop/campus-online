@@ -13,9 +13,12 @@ function Comment({ comment, admin, delCom}) {
   const ref = useRef();
 
   useEffect(()=>{
-    axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/"+comment.authorId).then((res)=>{
-      setAuthor(res.data)
-    })
+    async function getAuthor(){
+      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/"+comment.authorId).then((res)=>{
+        setAuthor(res.data)
+      })
+    }
+    getAuthor()
   },[])
 
   useOnClickOutside(ref, () =>setDel(false))

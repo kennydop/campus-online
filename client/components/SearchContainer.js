@@ -10,9 +10,12 @@ function SearchContainer({hits, clearSearch}) {
   const { currentUser } = useAuth()
 
   useEffect(()=>{
-    axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/trending").then((res)=>{
-      setTrending(res.data)
-    })
+    async function getTrending(){
+      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/trending").then((res)=>{
+        setTrending(res.data)
+      })
+    }
+    getTrending()
   },[])
 
   useOnClickOutside(ref, ()=>{clearSearch()})

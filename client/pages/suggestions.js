@@ -19,17 +19,20 @@ function Suggestions() {
   },[])
 
   useEffect(()=>{
-    axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}/suggestions`).then((res)=>{
-      setSuggestions(res.data)
-    })
+    async function getSuggestions(){
+      axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}/suggestions`).then((res)=>{
+        setSuggestions(res.data)
+      })
+    }
+    getSuggestions()
   },[])
 
   return (
     <>
-    <div className="grid grid-cols-2 md:grid-cols-5 mx-auto w-full justify-center mt-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mx-auto w-full md:w-9/12 xl:w-10/12 xl:grid-cols-5 justify-center mt-4">
       {(suggestions && suggestions?.length !== 0) &&
         suggestions?.map(suggestion => (
-        <ProfileToFollow sp key={suggestion._id} id={suggestion._id} username={suggestion.username} name={suggestion.name} pic={suggestion.profilePicture} college={suggestion.college}/>
+        <ProfileToFollow page key={suggestion._id} id={suggestion._id} username={suggestion.username} name={suggestion.name} pic={suggestion.profilePicture} college={suggestion.college}/>
         ))
       }
     </div>

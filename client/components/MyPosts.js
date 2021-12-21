@@ -9,9 +9,12 @@ function MyPosts({ admin, user, refreshUser }) {
   const [myPosts, setMyPosts] = useState(null);
 
   useEffect(()=>{
-    axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/user/${user._id}`).then((res)=>{
-      setMyPosts(res.data)
-    })
+    async function getMyPosts(){
+      axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/user/${user._id}`).then((res)=>{
+        setMyPosts(res.data)
+      })
+    }
+    getMyPosts()
   }, [user])
   
   return (

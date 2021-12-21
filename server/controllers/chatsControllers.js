@@ -13,20 +13,23 @@ export async function sendMessage(req, res){
         }
       })
     }else{
-      const chat = new Chat({
-        members: [req.body.from, req.body.to],
-        messages: {
-          from: req.body.from,
-          message: req.body.message
-        }
-      })
-      chat.save((error, chat)=>{
-        if(error){
-          console.log(error)
-        }else{
-          res.status(200).json(chat)
-        }
-      })
+      const exists = await Chat.findOne({members: {$all: [req.body.from, req.body.to]}})
+      if(!exists){
+        const chat = new Chat({
+          members: [req.body.from, req.body.to],
+          messages: {
+            from: req.body.from,
+            message: req.body.message
+          }
+        })
+        chat.save((error, chat)=>{
+          if(error){
+            console.log(error)
+          }else{
+            res.status(200).json(chat)
+          }
+        })
+      }
     }
   }catch(error){
     console.log(error)
@@ -37,6 +40,7 @@ export async function sendMessage(req, res){
 export async function getMessages(req, res){
   try{
     const chat = await Chat.findById(req.params.id);
+    console.log(chat)
     res.status(200).json(chat.messages)
   }catch(error){
     console.log(error)
@@ -47,6 +51,7 @@ export async function getMessages(req, res){
 export async function getChats(req, res){
   try{
     const chats = await Chat.find({members: {$in: [req.params.id]}}).sort({updatedAt: -1});
+    console.log(":::::::::::CHATS::::::::::::::::::::::CHATS:::::::::::::::::::::", chats)
     res.status(200).json(chats)
   }catch(error){
     console.log(error)

@@ -11,15 +11,21 @@ function Posts({global}) {
 
   useEffect(()=>{
     if(global){
-      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/global").then((res)=>{
-        setPosts(res.data)
-        setRefreshPosts(false)
-      })
+      async function getGlobalPosts(){
+        axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/global").then((res)=>{
+          setPosts(res.data)
+          setRefreshPosts(false)
+        })
+      }
+      getGlobalPosts()
     }else{
-      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/home/"+currentUser._id).then((res)=>{
-        setPosts(res.data)
-        setRefreshPosts(false)
-      })
+      async function getFeedPosts(){
+        axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/home/"+currentUser._id).then((res)=>{
+          setPosts(res.data)
+          setRefreshPosts(false)
+        })
+      }
+      getFeedPosts()
     }
   },[refreshPosts === true])
 

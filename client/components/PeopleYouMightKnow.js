@@ -11,13 +11,19 @@ function PeopleYouMightKnow() {
   const router = useRouter()
   useEffect(()=>{
     if(currentUser){
-      axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}/suggestions`).then((res)=>{
-        setSuggestions(res.data)
-      })
+      async function getSuggestionsForLoggedInUser(){
+        axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}/suggestions`).then((res)=>{
+          setSuggestions(res.data)
+        })
+      }
+      getSuggestionsForLoggedInUser()
     }else{
-      axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/suggestions/nl`).then((res)=>{
-        setSuggestions(res.data)
-      })
+      async function getSuggestionsForNotLoggedInUser(){
+        axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/suggestions/nl`).then((res)=>{
+          setSuggestions(res.data)
+        })
+      }
+      getSuggestionsForNotLoggedInUser()
     }
   },[])
   

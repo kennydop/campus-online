@@ -78,7 +78,7 @@ function PostDialog() {
       textarea.style.height = ""; /* Reset the height*/
       textarea.style.height = textarea.scrollHeight + "px";
     }
-  })
+  },[document.getElementById("_p")])
 
   return (
     <div id="qw" className="flex flex-col w-screen apfl md:apfc md:w-100 centered bg-white dark:bg-bdark-100 md:rounded-lg shadow-md z-50 overflow-y-auto">

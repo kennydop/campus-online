@@ -8,26 +8,52 @@ import { useEffect, useState } from 'react';
 import { useRouter } from "next/router";
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
+import NotFound from './404';
 
 function Profile() {
   const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
   const router = useRouter()
   const { currentUser } = useAuth()
   const [ admin, setAdmin] = useState()
+  const [ notFound, setNotFound] = useState(false)
   const [ user, setUser] = useState()
   const [ loggedIn, setLoggedIn] = useState()
 
   useEffect(()=>{
+    setNotFound(false)
+    async function getMyProfile(){
+      axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${router.query.profile}`).then((res)=>{
+        setUser(res.data)
+        setAdmin(true);
+      }).catch((error)=>{
+        setNotFound(true)
+        console.log(error)
+      })
+    }
+    async function getUserProfile_LoggedIn(){
+      axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${router.query.profile}`, { params:{ currentUser: currentUser._id} }).then((res)=>{
+        setUser(res.data)
+      }).catch((error)=>{
+        setNotFound(true)
+        console.log(error)
+      })
+    }
+
+    async function getUserProfile_NotLoggedIn(){
+      if(router.isReady){
+        axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${router.query.profile}`).then((res)=>{
+        setUser(res.data)
+        }).catch((error)=>{
+          setNotFound(true)
+          console.log(error)
+        })
+      }
+    }
+
     if(currentUser){
       setLoggedIn(true)
       if(currentUser.username === router.query.profile){
-        axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${router.query.profile}`).then((res)=>{
-          setUser(res.data)
-          setAdmin(true);
-        }).catch((error)=>{
-          router.replace('/404')
-          console.log(error)
-        })
+        getMyProfile()
         if(tabActive==='profile')return; 
         setPrevPrevTab(prevTab); 
         setPrevTab(tabActive); 
@@ -37,23 +63,12 @@ function Profile() {
         setPrevTab(tabActive); 
         setTabActive('');
         setAdmin(false)
-        axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${router.query.profile}`, { params:{ currentUser: currentUser._id} }).then((res)=>{
-          setUser(res.data)
-        }).catch((error)=>{
-          router.replace('/404')
-          console.log(error)
-        })
+        getUserProfile_LoggedIn()
       }
     }else{
       setAdmin(false)
       setLoggedIn(false)
-      if(router.isReady){
-        axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${router.query.profile}`).then((res)=>{
-        setUser(res.data)
-      }).catch((error)=>{
-        router.replace('/404')
-        console.log(error)
-      })}
+      getUserProfile_NotLoggedIn()
     }
   },[router.isReady, router.query.profile])
     
@@ -67,17 +82,20 @@ function Profile() {
   }
 
   return (
-    user ?
-    <>
-      <ProfileCard admin={admin} user={user} loggedIn={loggedIn} refreshUser={refreshUser}/>
-      <About admin={admin} user={user}/>
-      <MyPosts admin={admin} user={user} refreshUser={refreshUser}/>
-      <div className='pt-20'></div>
-    </>
+    notFound ?
+      <NotFound/>
       :
-    <div className="mt-8">
-      <div className="loader-bg mx-auto animate-spin"></div>
-    </div>
+      user ?
+      <>
+        <ProfileCard admin={admin} user={user} loggedIn={loggedIn} refreshUser={refreshUser}/>
+        <About admin={admin} user={user}/>
+        <MyPosts admin={admin} user={user} refreshUser={refreshUser}/>
+        <div className='pt-20'></div>
+      </>
+        :
+      <div className="mt-8">
+        <div className="loader-bg mx-auto animate-spin"></div>
+      </div>
   )
 }
 Profile.getLayout = function getLayout(page) {

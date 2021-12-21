@@ -23,10 +23,13 @@ function AccountSettings({colleges}) {
   }, [])
 
   useEffect(() => {
-    axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/"+currentUser._id).then((res)=>{
-      setUser(res.data)
-      _setUser(res.data)
-    })
+    async function getUser(){
+      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/"+currentUser._id).then((res)=>{
+        setUser(res.data)
+        _setUser(res.data)
+      })
+    }
+    getUser()
   }, [tabActive])
 
   function openPPDialog(){

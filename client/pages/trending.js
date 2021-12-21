@@ -13,17 +13,22 @@ function Trending() {
   const [ posts, setPosts ] = useState()
   const { refreshPosts, setRefreshPosts } = useAuth()
 	const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+
   useEffect(()=>{
       if(tabActive==='trending')return; 
       setPrevPrevTab(prevTab); 
       setPrevTab(tabActive); 
       setTabActive('trending');
   },[])
+
   useEffect(()=>{
-    axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/trendingposts?word="+router.query.word).then((res)=>{
-      setPosts(res.data)
-      setRefreshPosts(false)
-    })
+    async function getPosts(){
+      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/trendingposts?word="+router.query.word).then((res)=>{
+        setPosts(res.data)
+        setRefreshPosts(false)
+      })
+    }
+    getPosts()
   },[refreshPosts === true, router.query.word])
   
   return (

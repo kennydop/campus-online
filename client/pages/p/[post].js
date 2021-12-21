@@ -38,9 +38,12 @@ function PostPage({_post}) {
 },[])
 
   useEffect(() => {
-    !post.isAnonymous && axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/"+post.authorId).then((res)=>{
-      setAuthor(res.data)
-    })
+    async function getAuthor(){
+      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/"+post.authorId).then((res)=>{
+        setAuthor(res.data)
+      })
+    }
+    !post.isAnonymous && getAuthor()
   }, [])
 
   useEffect(() => {

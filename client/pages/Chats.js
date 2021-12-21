@@ -11,6 +11,7 @@ import Message from '../components/Message';
 import Link from 'next/link';
 import { io } from "socket.io-client";
 import TimePast from '../components/TimePast';
+import FlipMove from 'react-flip-move';
 
 function Chats(){
 	const {currentUser} = useAuth();
@@ -53,34 +54,51 @@ function Chats(){
     if(newMessage){
       const sameUser = activeChat?.members.includes(newMessage.from)
       sameUser && setMessages((oldValues) => {return [...oldValues, {from: newMessage.from, message: newMessage.message, read: newMessage.read, createdAt: newMessage.createdAt}]});
-      console.log(chats)
-      var targetId = chats.findIndex(c=>c.members ? c.members.find(m=>m===newMessage.from) : 0)
+      var targetId = chats.findIndex(c=>c.members && c.members.find(m=>m===newMessage.from))
       var newChats = chats
       if(targetId !== -1){
-        newChats[targetId].messages = [...newChats[targetId].messages, {from: newMessage.from, message: newMessage.message, read: newMessage.read, createdAt: newMessage.createdAt}]
+        const target = newChats[targetId]
+        target.messages = [...target?.messages, {from: newMessage.from, message: newMessage.message, read: newMessage.read, createdAt: newMessage.createdAt}]
+        //remove targetted chat and push to top
+        newChats.splice(targetId, 1)
+        newChats.unshift(target)
         newChats = [...newChats, {updated: Date.now()}]
         setChats(newChats)
       }else{
-        axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/chats/" + currentUser._id).then((res)=>{
-          setChats([...res.data, {updated: Date.now()}]);
-        })
+        try{
+          async function getChats(){
+            await axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/chats/" + currentUser._id).then((res)=>{
+              setChats([...res.data, {updated: Date.now()}])
+            })
+          }
+          getChats()
+        }catch(error){
+          console.log(error)
+        }
       }
     }
   }, [newMessage])
 
   useEffect(()=>{
-    scrollRef.current?.scrollIntoView({behavior: "smooth"})
+    // scrollRef.current?.scrollIntoView({behavior: "smooth"})
+    scrollRef.current?.scrollIntoView()
   },[messages, openChat===true])
   
-
-
   useEffect(()=>{
       if(tabActive==='chat')return; 
       setPrevPrevTab(prevTab); 
       setPrevTab(tabActive); 
       setTabActive('chat');
   },[])
-	
+  
+  useEffect(()=>{
+    var textarea = document.getElementById("_p");
+    textarea.oninput = function() {
+      textarea.style.height = ""; /* Reset the height*/
+      textarea.style.height = textarea.scrollHeight + "px";
+    }
+  },[document.getElementById("_p")])
+
 	const sendMessage = async (e) => {
 		e.preventDefault()
     const to = activeChat.members.find((m) => m !== currentUser._id)
@@ -95,23 +113,25 @@ function Chats(){
       if(res.data.members){
         setActiveChat(res.data)
         setMessages(res.data.messages)
-        setChats([...chats, res.data])
+        setChats([res.data, ...chats])
       }else{
         setMessages([...messages, res.data])
         var targetId = chats.findIndex(c=>c?._id === activeChat._id)
         var newChats = chats
-        newChats[targetId].messages = [...messages, res.data]
+        const target = newChats[targetId]
+        target.messages = [...messages, res.data]
+        newChats.splice(targetId, 1)
+        newChats.unshift(target)
         newChats = [...newChats, {updated: Date.now()}]
         setChats(newChats)
       }
+    }).then(()=>{
+      socket.current.emit("sendMessage", {
+        from: currentUser._id,
+        to: to,
+        message: msg,
+      })
     })
-
-    socket.current.emit("sendMessage", {
-      from: currentUser._id,
-      to: to,
-      message: msg,
-      // _new: activeChat._id ? false : true
-    });
 
     e.target.elements._p.value = ""
     var textarea = document.getElementById("_p");
@@ -129,14 +149,24 @@ function Chats(){
         setReciever(res.data);
       })
     }
-    
     if(id){
-      setActiveChat({members: [currentUser._id, id]})
-      setOpenChat(true)
+      const target = chats.findIndex(c=>c.members && c.members.find(m=>m===id))
+      console.log("opening chat target = ", target)
+      if(target !== -1){
+        setActiveChat(chats[target])
+        setMessages(chats[target].messages)
+        setOpenChat(true)
+        readMsgs(target)
+      }else{
+        setActiveChat({members: [currentUser._id, id]})
+        setMessages([])
+        setOpenChat(true)
+      }
     }else if(chat){
       setActiveChat(chat)
       setMessages(chat.messages)
       setOpenChat(true)
+      readMsgs(chats.findIndex(c=>c._id && c._id === chat._id))
     }
 	}
 
@@ -151,17 +181,24 @@ function Chats(){
   }
 
   function clearSearch(){
-    // const i = document.activeElement === document.querySelector("#minSearch")
+    document.querySelector("#chatSearch").textContent = ""
     setSearchRes([])
   }
-
-  useEffect(()=>{
-    var textarea = document.getElementById("_p");
-    textarea.oninput = function() {
-      textarea.style.height = ""; /* Reset the height*/
-      textarea.style.height = textarea.scrollHeight + "px";
-    }
-  })
+  
+  function readMsgs(id){
+    // socket.current.emit("readMsgs", chats[id]._id);
+    var target = chats[id]
+    console.log(target)
+    var newChat = chats
+    target.messages.forEach(m => {
+      if(m.read === false){
+        m.read=true
+      }
+    })
+    newChat[id] = target
+    setChats(newChat)
+    console.log(newChat)
+  }
 
 	return(	
 		<div className='flex bg-blue-grey-50 dark:bg-bdark-200 minus-header justify-center items-center'>
@@ -170,7 +207,7 @@ function Chats(){
 					<div className="top-0 z-50 py-3 bg-white dark:bg-bdark-100 border-b border-pink-500 mt-4 md:mt-0">
             <div className='flex items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 px-1.5 py-1 mx-5'>
               <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
-              <input onChange={search} className = "ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 w-full" type = "text" placeholder="Search"/>
+              <input id="chatSearch" onChange={search} className = "ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 w-full" type = "text" placeholder="Search"/>
             </div>
             <div className='z-50 w-full'>
               <SearchChat hits={searchRes} clearSearch={clearSearch} setCurrentChat={setCurrentChat}/>
@@ -178,12 +215,14 @@ function Chats(){
           </div>
           <>
           {chats?.length !== 0 ?
-            chats.map(chat=>
+            <FlipMove>
+            {chats.map(chat=>
             !chat.updated &&
-              <div onClick={()=>setCurrentChat(chat, null, null)}>
-                <Chat key={chat._id} sender={chat.members.find(m=> m !== currentUser._id)} message={chat.messages[chat.messages.length - 1]} unread={chat.messages.filter(m=>m.from !== currentUser._id && m.read===false)}/>
+              <div key={chat._id} onClick={()=>setCurrentChat(chat, null, null)}>
+                <Chat sender={chat.members.find(m=> m !== currentUser._id)} message={chat.messages[chat.messages.length - 1]} unread={chat.messages.filter(m=>m.from !== currentUser._id && m.read===false)}/>
               </div>
-            )
+            )}
+            </FlipMove>
             :
             <div className='text-gray-500 dark:text-gray-400 w-full h-full flex flex-col justify-center items-center'>
               Chats appear here
@@ -208,9 +247,11 @@ function Chats(){
             :
             <div className='flex flex-col p-2'>
               {
-                messages.map(message=>
-                  <Message from={message.from} msg={message.message} ts={message.ts} read={message.read} sent={message.createdAt}/>
-                )
+                <FlipMove style={{ display: 'flex', flexDirection: 'column'}}>
+                  {messages?.map(message=>
+                    <Message key={message.createdAt} from={message.from} msg={message.message} ts={message.ts} read={message.read} sent={message.createdAt}/>
+                  )}
+                </FlipMove>
               }
               <div ref={scrollRef}></div>
             </div>
