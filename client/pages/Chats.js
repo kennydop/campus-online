@@ -23,9 +23,11 @@ function Chats(){
   const [activeChat, setActiveChat] = useState();
   const [reciever, setReciever] = useState({});
   const [newMessage, setNewMessage] = useState();
+  const [readReciepts, setReadReciepts] = useState(false);
   const scrollRef = useRef()
   const socket = useRef();
 
+//get initial Chats
   useEffect(() => {
     const getChats = async () => {
       try {
@@ -39,17 +41,23 @@ function Chats(){
     getChats();
   }, []);
   
+  //get socket infos
   useEffect(() => {
     socket.current = io("http://localhost:5000", {withCredentials: true})
     socket.current.on("getMessage", async (data) => {
       setNewMessage(data)
     });
+    socket.current.on("msgsRead", async (id) => {
+      setReadReciepts({id, updated: Date.now()})
+    });
   }, []);
 
+  //add user (online)
   useEffect(()=>{
     socket.current.emit("addUser", currentUser._id);
   }, [socket.current, currentUser])
   
+  //recieved msgs
   useEffect(()=>{
     if(newMessage){
       const sameUser = activeChat?.members.includes(newMessage.from)
@@ -64,6 +72,7 @@ function Chats(){
         newChats.unshift(target)
         newChats = [...newChats, {updated: Date.now()}]
         setChats(newChats)
+				sameUser && readMsgs(targetId, "to")
       }else{
         try{
           async function getChats(){
@@ -79,18 +88,29 @@ function Chats(){
     }
   }, [newMessage])
 
+  //messages read
+  useEffect(()=>{
+    if(readReciepts){
+      console.log(readReciepts)
+      readMsgs(chats.findIndex(c=>c._id && c._id === readReciepts.id), "from")
+    }
+  },[readReciepts])
+
+  //scroll to bottom
   useEffect(()=>{
     // scrollRef.current?.scrollIntoView({behavior: "smooth"})
     scrollRef.current?.scrollIntoView()
   },[messages, openChat===true])
   
+  //active tabs
   useEffect(()=>{
-      if(tabActive==='chat')return; 
-      setPrevPrevTab(prevTab); 
-      setPrevTab(tabActive); 
-      setTabActive('chat');
+    if(tabActive==='chat')return; 
+    setPrevPrevTab(prevTab); 
+    setPrevTab(tabActive); 
+    setTabActive('chat');
   },[])
   
+  //expand text area
   useEffect(()=>{
     var textarea = document.getElementById("_p");
     textarea.oninput = function() {
@@ -151,12 +171,11 @@ function Chats(){
     }
     if(id){
       const target = chats.findIndex(c=>c.members && c.members.find(m=>m===id))
-      console.log("opening chat target = ", target)
       if(target !== -1){
         setActiveChat(chats[target])
         setMessages(chats[target].messages)
         setOpenChat(true)
-        readMsgs(target)
+        readMsgs(target, "to")
       }else{
         setActiveChat({members: [currentUser._id, id]})
         setMessages([])
@@ -166,7 +185,7 @@ function Chats(){
       setActiveChat(chat)
       setMessages(chat.messages)
       setOpenChat(true)
-      readMsgs(chats.findIndex(c=>c._id && c._id === chat._id))
+      readMsgs(chats.findIndex(c=>c._id && c._id === chat._id), "to")
     }
 	}
 
@@ -185,19 +204,28 @@ function Chats(){
     setSearchRes([])
   }
   
-  function readMsgs(id){
-    // socket.current.emit("readMsgs", chats[id]._id);
-    var target = chats[id]
-    console.log(target)
+  function readMsgs(index, who){
+    console.log("reading object at " + index)
+    who === "to" && socket.current.emit("readMsgs", {chatId: chats[index]._id, from: chats[index].members.find((m) => m !== currentUser._id)});
+    var target = chats[index]
     var newChat = chats
-    target.messages.forEach(m => {
-      if(m.read === false){
-        m.read=true
-      }
-    })
-    newChat[id] = target
+    if(who === "to"){
+      target.messages.forEach(m => {
+        if(m.from !== currentUser._id && m.read === false){
+          m.read=true
+        }
+      })
+    }else if(who === "from"){
+      target.messages.forEach(m => {
+        if(m.from === currentUser._id && m.read === false){
+          m.read=true
+        }
+      })
+    }
+    
+    newChat[index] = target
+    setMessages([...target.messages, {updated: Date.now()}])
     setChats(newChat)
-    console.log(newChat)
   }
 
 	return(	
@@ -231,7 +259,7 @@ function Chats(){
           </>
 					<div className='mt-14 md:mt-0'></div>
 				</div>
-				<div className={`md:w-3/5 flex flex-col justify-between h-full border-l border-pink-500 overflow-y-auto relative transition-all ease-linear duration-200 ${openChat?'w-screen':'w-0'}`}>
+				<div className={`md:w-3/5 flex flex-col h-full border-l border-pink-500 overflow-y-auto relative transition-all ease-linear duration-200 ${openChat?'w-screen':'w-0'}`}>
           <div className={`sticky top-0 z-50 py-2 bg-white dark:bg-bdark-100 border-b border-pink-500 flex items-center justify-between ${openChat?'block':'hidden'}`}>
             <div className='block md:hidden z-50' onClick={()=>setOpenChat(false)}><ArrowLeftIcon className='cursor-pointer h-5 ml-3 text-center mx-auto text-gray-500 dark:text-gray-400'/></div>
             <div className='flex flex-col items-center justify-center mx-auto text-gray-500 -ml-5 flex-1'>
@@ -245,10 +273,11 @@ function Chats(){
               Messages appear here
             </div>
             :
-            <div className='flex flex-col p-2'>
+            <div className='flex flex-col p-2 flex-1'>
               {
                 <FlipMove style={{ display: 'flex', flexDirection: 'column'}}>
                   {messages?.map(message=>
+                  !message.updated &&
                     <Message key={message.createdAt} from={message.from} msg={message.message} ts={message.ts} read={message.read} sent={message.createdAt}/>
                   )}
                 </FlipMove>

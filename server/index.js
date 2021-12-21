@@ -16,6 +16,7 @@ import cookieParser from "cookie-parser";
 import cookieSession from "cookie-session";
 import College from "./models/College.js";
 import User from "./models/User.js";
+import Chat from "./models/Chat.js";
 
 import("./authStrategies/JWTStrategry.js");
 import("./authStrategies/authenticate.js");
@@ -97,7 +98,6 @@ io.on("connection", async (socket) => {
   //take userId and socketId from user
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
-    // io.emit("getUsers", users);
   });
 
   //send and get message
@@ -106,7 +106,6 @@ io.on("connection", async (socket) => {
     io.to(user?.socketId).emit("getMessage", {
       from,
       message,
-      // _new,
       read: false, 
       createdAt: Date.now()
     });
@@ -116,9 +115,23 @@ io.on("connection", async (socket) => {
   socket.on("disconnect", () => {
     console.log("a user disconnected!");
     removeUser(socket.id);
-    // io.emit("getUsers", users);
   });
+  
+  //read messages
+  socket.on("readMsgs", async ({chatId, from}) => {
+    const user = getUser(from);
+    io.to(user?.socketId).emit("msgsRead", chatId)
+    var chat = await Chat.findById(chatId)
+    chat.messages.forEach(m => {
+      if(m.from === from && m.read === false){
+        m.read=true
+      }
+    })
+    chat.save()
+  });
+
 });
+
 server.listen(5000, () => {
   console.log("Backend server is running!");
 });
