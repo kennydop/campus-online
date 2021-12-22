@@ -145,6 +145,9 @@ select{
   text-align: center;
 }
 
+.w-inherit{
+  width: inherit;
+}
 
 @variants dark{
   .shadow-all{

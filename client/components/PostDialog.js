@@ -1,4 +1,4 @@
-import { PhotographIcon, XIcon, TagIcon, ChartBarIcon } from "@heroicons/react/outline"
+import { PhotographIcon, XIcon, TagIcon, ChartBarIcon, ArrowLeftIcon, PlusIcon } from "@heroicons/react/outline"
 import { useActiveTab } from "../contexts/ActiveTabContext"
 import { useState, useEffect, useRef } from "react"
 import axios from "axios";
@@ -6,17 +6,40 @@ import { useAuth } from "../contexts/AuthContext";
 
 function PostDialog() {
   const { currentUser, setRefreshPosts } = useAuth()
-  const { prevTab, prevPrevTab, setTabActive } = useActiveTab()
+  const { prevTab, prevPrevTab, setPrevTab, setTabActive, tabActive } = useActiveTab()
   const postRef = useRef(null);
   const mediaRef = useRef(null);
-  const vidRef = useRef(null);
   const close = useRef(null);
   const [mediaToPost, setMediaToPost] = useState()
+  const [productImg, setProductImg] = useState()
   const [type, setType] = useState("text")
   const [error, setError] = useState()
   const [posting, setPosting] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isAnonymous, setIsAnonymous] = useState(false)
+
+  useEffect(()=>{
+    if(tabActive === "post media"){
+      mediaRef.current.click()
+      setTabActive("post")
+    }else if(tabActive === "post poll"){
+      document.getElementById("_poll").click()
+      setTabActive("post")
+    }else if(tabActive === "post product"){
+      document.getElementById("_product").click()
+      setTabActive("post")
+    }
+  },[])
+
+  useEffect(()=>{
+    var textarea = document.getElementById("_p");
+    if(textarea){
+      textarea.oninput = function() {
+        textarea.style.height = ""; /* Reset the height*/
+        textarea.style.height = textarea.scrollHeight + "px";
+      }
+    }
+  },[document.getElementById("_p")])
 
   const setSelectedImgPreview = (e) => {
     setError('');
@@ -24,17 +47,19 @@ function PostDialog() {
       setError("File is too big")
       return
     }
-    if(e.target.files[0].type.substr(0, 5) === "video" || e.target.files[0].type.substr(0, 5) === "image"){
+    if((e.target.id === "post_media" && e.target.files[0].type.substr(0, 5) === "video") || (e.target.files[0].type.substr(0, 5) === "image")){
       const reader = new FileReader();
       setLoading(true)
+      // console.log(reader.readAsDataURL(e.target.files[0]))
       reader.readAsDataURL(e.target.files[0]); 
-      if(e.target.files[0].type.substr(0, 5) === "video"){
+      if(e.target.id === "post_media" && e.target.files[0].type.substr(0, 5) === "video"){
         setType("video")
-      }else if(e.target.files[0].type.substr(0, 5) === "image"){
+      }else if(e.target.id === "post_media" && e.target.files[0].type.substr(0, 5) === "image"){
         setType("image")
       }
-      reader.onloadend = (e) => {
-        setMediaToPost(e.target.result)
+      reader.onloadend = (r) => {
+        e.target.id === "post_media" && setMediaToPost(r.target.result)
+        e.target.id === "pdt_img" && setProductImg(r.target.result)
         setLoading(false)
       }
     }else {
@@ -45,6 +70,7 @@ function PostDialog() {
       setPosting(false)
     }
   }
+
 
   const sendPost =(e)=>{
     setError("")
@@ -72,16 +98,9 @@ function PostDialog() {
         close.current.click()
       })
   }
-  useEffect(()=>{
-    var textarea = document.getElementById("_p");
-    textarea.oninput = function() {
-      textarea.style.height = ""; /* Reset the height*/
-      textarea.style.height = textarea.scrollHeight + "px";
-    }
-  },[document.getElementById("_p")])
 
   return (
-    <div id="qw" className="flex flex-col w-screen apfl md:apfc md:w-100 centered bg-white dark:bg-bdark-100 md:rounded-lg shadow-md z-50 overflow-y-auto">
+    <div id="qw" className="flex flex-col w-screen apfl md:apfc md:w-100 centered bg-white dark:bg-bdark-100 md:rounded-lg shadow-md z-50 overflow-y-auto overflow-x-hidden">
       <div className="relative">
       {posting && 
       <div className="absolute flex items-center justify-center top-0 bottom-0 left-0 right-0 z-50">
@@ -94,7 +113,7 @@ function PostDialog() {
           <XIcon className="h-6 w-6 cursor-pointer"/>
         </div>
       </div>
-      <div className="p-3">
+      {(type==='video'||type==='image'||type==='text') && <div className="p-3">
         <div className="flex">
           <img className='rounded-full object-cover h-11 w-11' src={currentUser.profilePicture}/>
           <textarea id='_p' ref={postRef} name="post message" className="ml-3 no-ta-resize outline-none w-full bg-transparent text-gray-500 dark:text-gray-400 placeholder-gray-400 dark:placeholder-gray-500" placeholder="What's up?"/>
@@ -115,7 +134,7 @@ function PostDialog() {
             {type === "video" &&
             <div className='relative my-6 self-center border-t dark:border-bdark-200'>
               <p className="my-3 text-gray-500 dark:text-gray-400">Video</p>
-              <video id="_vid" ref={vidRef} className = 'w-full object-contain rounded-lg' controlsList='nodownload' controls>
+              <video id="_vid" className = 'w-full object-contain rounded-lg' controlsList='nodownload' controls>
                 <source src={mediaToPost}/> 
               </video>
               <XIcon onClick={()=>{setMediaToPost(null); setType("text")}} className='absolute h-6 w-6 right-0 top-3 text-red-500 transition duration-75 transform ease-in hover:scale-110 cursor-pointer'/>
@@ -124,17 +143,46 @@ function PostDialog() {
           )}
         </div>
         }
-      </div>
+      </div>}
+      {(type==='product') && <div className="p-3">
+        <div className="w-full h-11 text-gray-500 dark:text-gray-400 flex items-center justify-between">
+          <div onClick={()=>setType("text")}><ArrowLeftIcon className="h-6 w-6 cursor-pointer"/></div>
+          <p>Create A Product</p>
+        </div>
+        {error && <p className='my-2 errorMsg'>{error}</p>}
+        {!productImg ?
+          <div onClick={()=>document.getElementById("pdt_img").click()} className="cursor-pointer w-full mb-3 rounded-lg h-44 bg-gray-100 flex items-center justify-center">
+            <div className="text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center">
+              <PlusIcon className="h-8 w-8"/>
+              <p>Add Product Image</p>
+              <input id="pdt_img" hidden type="file" accept="image/*" onChange={setSelectedImgPreview}/>
+            </div>
+          </div>
+          :
+          !loading ?
+          <div className="w-full mb-3 rounded-lg">
+            <img className = 'w-full object-contain rounded-lg' src={productImg} alt='product to post'/>
+          </div>
+          :
+          <div className="loader-bg animate-spin mx-auto my-6"></div>
+        }
+      </div>}
+      {(type==='poll') && <div className="p-3">
+        <div className="w-full h-11 text-gray-500 dark:text-gray-400 flex items-center justify-between">
+          <div onClick={()=>setType("text")}><ArrowLeftIcon className="h-6 w-6 cursor-pointer"/></div>
+          <p>Create A Poll</p>
+        </div>
+      </div>}
       <div className="flex p-3 justify-between pt-5 border-t dark:border-bdark-200 items-center">
         <div className="flex space-x-3">
           <div onClick={()=>mediaRef.current.click()}>
             <PhotographIcon className="h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400"/>
-            <input ref={mediaRef} onChange={setSelectedImgPreview} type='file'  hidden />
+            <input id="post_media" ref={mediaRef} onChange={setSelectedImgPreview} type='file'  hidden />
           </div>
-          <div>
+          <div id="_product" onClick={()=>setType("product")}>
             <TagIcon className="h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400"/>
           </div>
-          <div>
+          <div id="_poll" onClick={()=>setType("poll")}>
             <ChartBarIcon className="h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400"/>
           </div>
         </div>
@@ -143,7 +191,7 @@ function PostDialog() {
           <input type="checkbox" checked={isAnonymous} onChange={()=>setIsAnonymous(!isAnonymous)} />
         </div>
         <div>
-          <button disabled={posting}className='h-7 w-16 rounded-full shadow-md text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl bg-pink-500 text-white dark:text-gray-200 disabled:bg-gray-300 dark:disabled:bg-gray-400' onClick={sendPost}>Post</button>
+          <button disabled={posting} className='h-7 w-16 rounded-full shadow-md text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl bg-pink-500 text-white dark:text-gray-200 disabled:bg-gray-300 dark:disabled:bg-gray-400' onClick={sendPost}>Post</button>
         </div>
       </div>
       </div>

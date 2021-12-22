@@ -9,11 +9,11 @@ function AddPost() {
   const { currentUser } = useAuth();
   const { tabActive, prevTab, prevPrevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
 
-  function openPostDialog(){
+  function openPostDialog(where){
     if(tabActive==='post')return; 
     setPrevPrevTab(prevTab); 
     setPrevTab(tabActive); 
-    setTabActive('post'); 
+    setTabActive(where); 
   }
 
     
@@ -22,20 +22,20 @@ function AddPost() {
       <div className='p-2 rounded-lg shadow-md text-gray-500 font-medium bg-white dark:bg-bdark-100 flex flex-grow flex-col'>
         <div className='flex space-x-4 items-center mb-3 ml-2'>
             <Link href={`/${currentUser.username}`}><img className='cursor-pointer rounded-full object-cover h-11 w-11' src={currentUser.profilePicture}/></Link>
-              <div className='flex flex-1 text-gray-400 dark:text-gray-500 h-10 p-2 cursor-text bg-blue-grey-50 dark:bg-bdark-200 rounded-full' onClick={openPostDialog}>
+              <div className='flex flex-1 text-gray-400 dark:text-gray-500 h-10 p-2 cursor-text bg-blue-grey-50 dark:bg-bdark-200 rounded-full' onClick={()=>openPostDialog("post")}>
                 What's up, {currentUser.username}?
               </div>
         </div>
         <div className='flex justify-evenly pt-2 border-t dark:border-bdark-200'>
-          <div onClick={openPostDialog} className='flex items-center space-x-1 hover:bg-gray-100 dark:hover:bg-bdark-50 flex-grow justify-center p-2 cursor-pointer rounded-lg'>
+          <div onClick={()=>openPostDialog("post media")} className='flex items-center space-x-1 hover:bg-gray-100 dark:hover:bg-bdark-50 flex-grow justify-center p-2 cursor-pointer rounded-lg'>
             <PhotographIcon className='text-blue-500 h-6'/>
             <p className='text-xs text-gray-500 dark:text-gray-400'>Media</p>
           </div>
-          <div onClick={openPostDialog} className='flex items-center space-x-1 hover:bg-gray-100 dark:hover:bg-bdark-50 flex-grow justify-center p-2 cursor-pointer rounded-lg'>
+          <div onClick={()=>openPostDialog("post product")} className='flex items-center space-x-1 hover:bg-gray-100 dark:hover:bg-bdark-50 flex-grow justify-center p-2 cursor-pointer rounded-lg'>
             <TagIcon className='text-red-500 h-6'/>
             <p className='text-xs text-gray-500 dark:text-gray-400'>Product</p>
           </div>
-          <div onClick={openPostDialog} className='flex items-center space-x-1 hover:bg-gray-100 dark:hover:bg-bdark-50 flex-grow justify-center p-2 cursor-pointer rounded-lg'>
+          <div onClick={()=>openPostDialog("post poll")} className='flex items-center space-x-1 hover:bg-gray-100 dark:hover:bg-bdark-50 flex-grow justify-center p-2 cursor-pointer rounded-lg'>
             <ChartBarIcon className='text-green-500 h-6'/>
             <p className='text-xs text-gray-500 dark:text-gray-400'>Poll</p>
           </div>

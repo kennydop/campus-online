@@ -31,10 +31,10 @@ function PostPage({_post}) {
   useOnClickOutside(moreRef, () =>setOpenOptions(false))
 
   useEffect(()=>{
-    if(tabActive==='postpage')return; 
+    if(tabActive==='pagepost')return; 
     setPrevPrevTab(prevTab); 
     setPrevTab(tabActive); 
-    setTabActive('postpage');
+    setTabActive('pagepost');
 },[])
 
   useEffect(() => {
@@ -108,7 +108,7 @@ function PostPage({_post}) {
   return (
     post ?
       <>
-    <div className="flex mx-auto w-full justify-center minus-header mt-4 mb-16">
+    <div className="flex mx-auto w-full justify-center minus-header mt-4">
 		<div className="'w-screen p-1.5 md:w-102">
       <div className='p-2 relative rounded-lg bg-white dark:bg-bdark-100 flex flex-grow flex-col'>
         <div className='py-1 flex border-b border-gray-200 dark:border-bdark-200 justify-between items-center'>

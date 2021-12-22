@@ -24,6 +24,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
   const [hasLiked, setHasLiked] = useState(false)
   const [openComments, setOpenComments] = useState(false)
   const [openOptions, setOpenOptions] = useState(false)
+  const [pdesc, setPDesc] = useState(_post.description.slice(0, 100))
   const comRef = useRef()
   const scrollRef = useRef()
   const { theme } = useTheme()
@@ -102,8 +103,8 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
   }
 
   useEffect(()=>{
-    scrollRef.current?.scrollIntoView({behaviour: "smooth"})
-  },[post.comments, openComments])
+    scrollRef.current?.scrollIntoView()
+  },[post.comments, openComments===true])
 
   return (
     <div ref={ref} className='w-screen p-1.5 md:w-102'>
@@ -127,7 +128,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
             {post.authorId === currentUser?._id && <div onClick={deletePosts} className="w-full text-center py-2 text-red-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200">Delete Post</div>}
           </div>
         </div>
-        <div className='py-2 text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words cursor-default'>{post.description}</div>
+        <div className='py-2 text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words cursor-default'>{pdesc} {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm" onClick={()=>{setPDesc(pdesc.length > 100 ? post?.description.slice(0, 100) : post?.description)}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}</div>
         <div>
           {(post.type==='image'&& post.media) &&
             <div className='unset-img relative'>

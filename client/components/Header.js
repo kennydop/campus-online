@@ -48,7 +48,7 @@ function Header() {
   },[])
 
   useEffect(()=>{
-    if(tabActive==='post' || tabActive==='updatePP' || tabActive==='notification' || tabActive==='delAcc' || enterSearchMode){
+    if(tabActive.slice(0,4) === "post" || tabActive==='updatePP' || tabActive==='notification' || tabActive==='delAcc' || enterSearchMode){
       document.body.classList.add('lg:mr-4')
       document.body.classList.add('overflow-hidden')
     }else{
@@ -186,11 +186,11 @@ function Header() {
       </div>
       {enterSearchMode && <SearchContainer hits={searchRes} clearSearch={clearSearch}/>}
       {enterSearchMode && <div onClick={()=>{setEnterSearchMode(false); setSearchRes([])}} className='w-screen h-full block md:hidden fixed z-10 bg-gray-900 opacity-40'/>}
-      {(tabActive==='notification' || tabActive==='post' || tabActive==='updatePP' || tabActive==='delAcc') && <div onClick={()=>{setTabActive(prevTab==='notification' ? prevPrevTab : prevTab); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
+      {(tabActive==='notification' || tabActive.slice(0,4) === "post" || tabActive==='updatePP' || tabActive==='delAcc') && <div onClick={()=>{setTabActive(prevTab==='notification' ? prevPrevTab : prevTab); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
       {currentUser && <div>
           <NotificationPane/>
       </div>}
-      {tabActive==='post' && <div>
+      {tabActive.slice(0,4) === "post" && <div>
         <PostDialog profilePicture={currentUser.profilePicture} userId={currentUser._id} college={currentUser.college}/>
       </div>}
       {tabActive==='updatePP' && <UpdateProfilePicture/>}

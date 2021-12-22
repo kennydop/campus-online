@@ -237,7 +237,7 @@ function Chats(){
               <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
               <input id="chatSearch" onChange={search} className = "ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 w-full" type = "text" placeholder="Search"/>
             </div>
-            <div className='z-50 w-full'>
+            <div className="sticky z-50">
               <SearchChat hits={searchRes} clearSearch={clearSearch} setCurrentChat={setCurrentChat}/>
             </div>
           </div>
