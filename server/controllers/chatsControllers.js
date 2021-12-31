@@ -58,16 +58,16 @@ export async function getChats(req, res){
   }
 }
 
-// export async function getUnreadChats(req, res){
-//   try{
-//     const unread = await Chat.find({$and:[{members: {$in: [req.params.id]}}, {"messages.message[messages.length-1].read": false}]});
-//     console.log("::::::::::::::::::::::::UNREAD:::::::::::::::::::::::::::::::::\n", unread)
-//     res.status(200).json(unread.length)
-//   }catch(error){
-//     console.log(error)
-//     res.send(error)
-//   }
-// }
+export async function getChat(req, res){
+  try{
+    console.log(":::::::::::::", req.query.user, req.query.reciever)
+    const chats = await Chat.findOne({members: {$in: [req.query.user, req.query.reciever ]}});
+    res.status(200).json(chats)
+  }catch(error){
+    console.log(error)
+    res.send(error)
+  }
+}
 
 export async function getUnreadChats(req, res){
   try{

@@ -12,6 +12,8 @@ import Link from 'next/link';
 import { io } from "socket.io-client";
 import TimePast from '../components/TimePast';
 import FlipMove from 'react-flip-move';
+import { useRouter } from 'next/router';
+import NotFound from './404';
 
 function Chats(){
 	const {currentUser} = useAuth();
@@ -24,8 +26,13 @@ function Chats(){
   const [reciever, setReciever] = useState({});
   const [newMessage, setNewMessage] = useState();
   const [readReciepts, setReadReciepts] = useState(false);
-  const scrollRef = useRef()
+  const [notFound, setNotFound] = useState(false);
+  const [directChat, setDirectChat] = useState();
+  const [directChatId, setDirectChatId] = useState();
+  const [directChatRec, setDirectChatRec] = useState();
+  const scrollRef = useRef();
   const socket = useRef();
+  const router = useRouter();
 
 //get initial Chats
   useEffect(() => {
@@ -41,6 +48,34 @@ function Chats(){
     getChats();
   }, []);
   
+  //direct chat with
+  useEffect(()=>{
+    async function getUserAndChats(){
+      await axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${router.query.id}`).then((res)=>{
+        setDirectChatRec({username: res.data.username, lastSeen: res.data.lastSeen})
+      }).catch(e=>
+        setNotFound(true)
+      )
+      await axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/chats?user=${currentUser._id}&reciever=${router.query.id}`).then((res)=>{
+        setDirectChat(res.data)
+      }).catch(e=>
+        setNotFound(true)
+      )
+    }
+
+    if(router.isReady){
+      if(router.query.id){
+        setDirectChatId(router.query.id)
+        getUserAndChats()
+      }
+    }
+  },[])
+  useEffect(()=>{
+    if(directChat && directChatId && directChatRec){
+      setCurrentChat(directChat, directChatId, directChatRec)
+    }
+  },[directChat, directChatId, directChatRec])
+
   //get socket infos
   useEffect(() => {
     socket.current = io("http://localhost:5000", {withCredentials: true})
@@ -91,14 +126,12 @@ function Chats(){
   //messages read
   useEffect(()=>{
     if(readReciepts){
-      console.log(readReciepts)
       readMsgs(chats.findIndex(c=>c._id && c._id === readReciepts.id), "from")
     }
   },[readReciepts])
 
   //scroll to bottom
   useEffect(()=>{
-    // scrollRef.current?.scrollIntoView({behavior: "smooth"})
     scrollRef.current?.scrollIntoView()
   },[messages, openChat===true])
   
@@ -110,9 +143,11 @@ function Chats(){
   //expand text area
   useEffect(()=>{
     var textarea = document.getElementById("_p");
-    textarea.oninput = function() {
-      textarea.style.height = ""; /* Reset the height*/
-      textarea.style.height = textarea.scrollHeight + "px";
+    if(textarea){
+      textarea.oninput = function() {
+        textarea.style.height = ""; /* Reset the height*/
+        textarea.style.height = textarea.scrollHeight + "px";
+      }
     }
   },[document.getElementById("_p")])
 
@@ -162,12 +197,13 @@ function Chats(){
     if(reciever){
       setReciever(reciever)
     }else{
-      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/" + chat.members.find(m=>m!==currentUser._id)).then((res)=>{
+      const u = id ? id : chat.members.find(m=>m!==currentUser._id)
+      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/" + u).then((res)=>{
         setReciever(res.data);
       })
     }
     if(id){
-      const target = chats.findIndex(c=>c.members && c.members.find(m=>m===id))
+      const target = chats?.findIndex(c=>c.members && c.members.find(m=>m===id))
       if(target !== -1){
         setActiveChat(chats[target])
         setMessages(chats[target].messages)
@@ -202,7 +238,6 @@ function Chats(){
   }
   
   function readMsgs(index, who){
-    console.log("reading object at " + index)
     who === "to" && socket.current.emit("readMsgs", {chatId: chats[index]._id, from: chats[index].members.find((m) => m !== currentUser._id)});
     var target = chats[index]
     var newChat = chats
@@ -225,7 +260,8 @@ function Chats(){
     setChats(newChat)
   }
 
-	return(	
+	return(
+    !notFound ?
 		<div className='flex bg-blue-grey-50 dark:bg-bdark-200 minus-header justify-center items-center'>
 			<div className='flex h-full w-full lg:h-5/6 lg:w-3/5 rounded-none md:rounded-lg overflow-hidden lg:border border-pink-500'>
 				<div className={`md:w-2/5 md:left-0 h-full overflow-y-auto bg-white dark:bg-bdark-100 shadow-md transition-all ease-linear duration-200 ${openChat?'w-0':'w-screen'}`}>
@@ -266,7 +302,7 @@ function Chats(){
           </div>
           {openChat ?
             messages?.length === 0 ?
-            <div className='text-gray-500 dark:text-gray-400 w-full flex flex-col justify-center items-center'>
+            <div className='text-gray-500 dark:text-gray-400 w-full flex flex-1 flex-col justify-center items-center'>
               Messages appear here
             </div>
             :
@@ -296,6 +332,8 @@ function Chats(){
 			  </div>
 		</div>
 	</div>
+  :
+  <NotFound/>
 	)
 }
 Chats.getLayout = function getLayout(page) {

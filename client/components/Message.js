@@ -8,11 +8,7 @@ const Message = forwardRef(({from, msg, sent, read}, ref) => {
   const [seeAdditionalInfo, setSeeAdditionalInfo] = useState()
   // const [message, setMessage] = useState({from, msg, sent, read})
   const { currentUser } = useAuth()
-
-  useEffect(()=>{
-    console.log(msg+" re rendered")
-  },[from, msg, sent, read])
-
+  
   return (
     from===currentUser._id?
       <div ref={ref} className='self-end fit-content flex flex-col cursor-default'>

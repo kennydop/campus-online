@@ -25,6 +25,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
   const [openComments, setOpenComments] = useState(false)
   const [openOptions, setOpenOptions] = useState(false)
   const [voted, setVoted] = useState(false)
+  const [votingClosed, setVotingClosed] = useState(false)
   const [pdesc, setPDesc] = useState(_post.description.slice(0, 100))
   const comRef = useRef()
   const scrollRef = useRef()
@@ -39,6 +40,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
       setHasLiked(post.likes?.findIndex((like)=> (like === currentUser?._id)) !== -1) //has liked
       if(post.type === "poll"){
         setVoted(post.poll.votes?.findIndex((v)=> (v === currentUser?._id)) !== -1)
+        setVotingClosed(new Date(post.poll.expireAt) <= new Date())
       }
     }
   }, [_post, post])
@@ -54,15 +56,17 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
 
 //voted?
 useEffect(() => {
-  if(voted){
+  if(post.type === "poll" && (voted || votingClosed)){
     const choices = document.getElementById(post._id).getElementsByClassName("poll-btn")
-    const chosen = post.poll.choices.find(c => c.votes.includes(currentUser._id))
-    const selected = document.getElementById(chosen._id)
-    selected.classList.replace("border-gray-400", "border-pink-500")
-    selected.classList.replace("dark:border-gray-200", "dark:border-pink-500")
-    selected.classList.replace("text-gray-500", "text-pink-500")
-    selected.classList.replace("dark:text-gray-400", "dark:text-pink-500")
-  
+    if(voted){
+      const chosen = post.poll.choices.find(c => c.votes.includes(currentUser._id))
+      const selected = document.getElementById(chosen._id)
+      selected.classList.replace("border-gray-400", "border-pink-500")
+      selected.classList.replace("dark:border-gray-200", "dark:border-pink-500")
+      selected.classList.replace("text-gray-500", "text-pink-500")
+      selected.classList.replace("dark:text-gray-400", "dark:text-pink-500")
+    }
+      
     for (let i = 0; i < choices.length; i++) {
       const e = choices[i];
       const index = post.poll.choices.findIndex(c=>c._id === e.id.valueOf())
@@ -70,7 +74,7 @@ useEffect(() => {
       e.children.item(0).style.width = `${fillAmount}%`
     }
   }
-},[voted === true])
+},[voted, votingClosed])
 //like post
   async function likePost(){
     if(currentUser){
@@ -176,14 +180,14 @@ useEffect(() => {
               {post.type==="product" && <div className="absolute bg-gradient-to-t from-black to-transparent w-full bottom-0 text-white dark:text-gray-400 cursor-default px-3 pt-9">
                 <div className="w-full flex justify-between">
                   <p className="font-semibold text-xl w-9/12 truncate">{post.product.productCondition + " " + post.product.productName}</p>
-                  <p className="font-semibold text-xl truncate">GH₵{post.product.productPrice}</p>
+                  <p title={`GH₵${post.product.productPrice}`} className="font-semibold text-xl truncate">GH₵{post.product.productPrice}</p>
                 </div>  
                 <div className='w-full'>
                   {
                     <div className='py-2 whitespace-pre-wrap break-words max-h-40 overflow-y-auto hide-scrollbar'>{pdesc} {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm" onClick={()=>{setPDesc(pdesc.length > 100 ? post?.description.slice(0, 100) : post?.description)}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}</div>
                   }
                 </div>
-                <button className="clicky h-11 w-full rounded-full bg-pink-500 mb-3">Messaage Seller</button>
+                {author?._id !== currentUser._id && <button onClick={()=> router.push(`/chats?id=${author._id}`)} className="clicky h-11 w-full rounded-full bg-pink-500 mb-3">Messaage Seller</button>}
               </div>}
             </div>
             }
@@ -193,10 +197,10 @@ useEffect(() => {
             {<div>
               {
                 post.poll.choices.map(c=>
-                  <button disabled={voted} id={c._id} onClick={()=> pollVote(c._id)} className={`poll-btn clicky border-gray-400 dark:border-gray-200 text-gray-500 dark:text-gray-400 ${!voted && 'hover:bg-blue-grey-50 dark:hover:bg-bdark-50'}`}>
+                  <button disabled={voted || votingClosed} id={c._id} onClick={()=> pollVote(c._id)} className={`poll-btn clicky border-gray-400 dark:border-gray-200 text-gray-500 dark:text-gray-400 ${(!voted && !votingClosed) && 'hover:bg-blue-grey-50 dark:hover:bg-bdark-50'}`}>
                     <div className="progress transition duration-150 ease-linear"></div>
                     <p className="z-10">{c.choice}</p>
-                    {voted && <p className="absolute right-0 z-10 mr-4">{parseInt(c.votes.length/post.poll.votes.length * 100)}%</p>}
+                    {(voted || votingClosed) && <p className="absolute right-0 z-10 mr-4">{post.poll.votes.length === 0 ? "0" : parseInt(c.votes.length/post.poll.votes.length * 100)}%</p>}
                   </button>
                 )
               }

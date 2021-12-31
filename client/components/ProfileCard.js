@@ -63,8 +63,8 @@ function ProfileCard({ admin, user, loggedIn, refreshUser }) {
           </div>
           {!admin && 
           <div className='lg:absolute right-2 top-2 flex space-x-3 mt-2 lg:mt-0 mx-auto'>
-            <button className={`h-8 w-24 rounded-full shadow-md  text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl ${followBtnText==='Follow' ? 'bg-pink-500 text-white dark:text-gray-200' : 'bg-white dark:bg-bdark-200 text-pink-500 border border-pink-500' }`}onClick={followUser}>{followBtnText}</button>
-            <button className='h-8 w-24 rounded-full shadow-md border border-pink-500 text-pink-500 text-center bg-blue-grey-50 dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:text-gray-400 dark:shadow-lg dark:hover:shadow-xl'>Message</button>
+            <button className={`clicky h-8 w-24 rounded-full shadow-md  text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl ${followBtnText==='Follow' ? 'bg-pink-500 text-white dark:text-gray-200' : 'bg-white dark:bg-bdark-200 text-pink-500 border border-pink-500' }`}onClick={followUser}>{followBtnText}</button>
+            <button onClick={()=>router.push(`/chats?id=${user._id}`)} className='clicky h-8 w-24 rounded-full shadow-md border border-pink-500 text-pink-500 text-center bg-blue-grey-50 dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:text-gray-400 dark:shadow-lg dark:hover:shadow-xl'>Message</button>
           </div>}
           <div className='lg:absolute right-2 top-2 fit-content mt-2 lg:mt-0 mx-auto'>
             {(admin && loggedIn) && <div onClick={()=>router.push('/settings')} className='flex py-1.5 px-3 rounded-full shadow-md text-white dark:text-gray-400 text-center bg-gray-500 dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl'>
