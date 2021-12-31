@@ -17,7 +17,7 @@ function Chats(){
 	const {currentUser} = useAuth();
 	const [ messages, setMessages ] = useState([]);
 	const [ chats, setChats ] = useState([]);
-	const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+	const { setTabActive } = useActiveTab()
   const [searchRes, setSearchRes] = useState(null);
   const [openChat, setOpenChat] = useState();
   const [activeChat, setActiveChat] = useState();
@@ -104,9 +104,6 @@ function Chats(){
   
   //active tabs
   useEffect(()=>{
-    if(tabActive==='chat')return; 
-    setPrevPrevTab(prevTab); 
-    setPrevTab(tabActive); 
     setTabActive('chat');
   },[])
   

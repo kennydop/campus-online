@@ -10,6 +10,7 @@ import authRoute from "./routes/auth.js";
 import postRoute from "./routes/posts.js";
 import storyRoute from "./routes/stories.js";
 import chatRoute from "./routes/chats.js";
+import notificationRoute from "./routes/notifications.js";
 import cors from "cors";
 import passport from "passport";
 import cookieParser from "cookie-parser";
@@ -56,6 +57,7 @@ app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/stories", storyRoute);
 app.use("/api/chats", chatRoute);
+app.use("/api/notifications", notificationRoute);
 app.get("/api/colleges", async (req, res)=>{
   const colleges = await College.find({})
   res.status(200).json(colleges)

@@ -24,6 +24,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
   const [hasLiked, setHasLiked] = useState(false)
   const [openComments, setOpenComments] = useState(false)
   const [openOptions, setOpenOptions] = useState(false)
+  const [voted, setVoted] = useState(false)
   const [pdesc, setPDesc] = useState(_post.description.slice(0, 100))
   const comRef = useRef()
   const scrollRef = useRef()
@@ -36,6 +37,9 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
   useEffect(() => {
     if(currentUser){
       setHasLiked(post.likes?.findIndex((like)=> (like === currentUser?._id)) !== -1) //has liked
+      if(post.type === "poll"){
+        setVoted(post.poll.votes?.findIndex((v)=> (v === currentUser?._id)) !== -1)
+      }
     }
   }, [_post, post])
 
@@ -48,13 +52,32 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
     !post.isAnonymous && getAuthor()
   }, [])
 
+//voted?
+useEffect(() => {
+  if(voted){
+    const choices = document.getElementById(post._id).getElementsByClassName("poll-btn")
+    const chosen = post.poll.choices.find(c => c.votes.includes(currentUser._id))
+    const selected = document.getElementById(chosen._id)
+    selected.classList.replace("border-gray-400", "border-pink-500")
+    selected.classList.replace("dark:border-gray-200", "dark:border-pink-500")
+    selected.classList.replace("text-gray-500", "text-pink-500")
+    selected.classList.replace("dark:text-gray-400", "dark:text-pink-500")
+  
+    for (let i = 0; i < choices.length; i++) {
+      const e = choices[i];
+      const index = post.poll.choices.findIndex(c=>c._id === e.id.valueOf())
+      const fillAmount = post.poll.choices[index].votes.length/post.poll.votes.length * 100
+      e.children.item(0).style.width = `${fillAmount}%`
+    }
+  }
+},[voted === true])
 //like post
   async function likePost(){
     if(currentUser){
+      setHasLiked(!hasLiked)
       axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/like?userId=${currentUser?._id}`).then((res)=>{
         setPost(res.data)
-        setHasLiked(true)
-      })
+      }).catch(()=> setHasLiked(false))
     }else{
       router.push('/login?returnUrl=/'+author._id)
     }
@@ -102,12 +125,21 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
     })
   }
 
+  //poll voting
+  function pollVote(id){
+    if(voted) return;
+    axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/vote`,{id, user: currentUser._id}).then((res)=>{
+      setPost(res.data)
+      setVoted(true)
+    })
+  }
+
   useEffect(()=>{
     scrollRef.current?.scrollIntoView()
   },[post.comments, openComments===true])
 
   return (
-    <div ref={ref} className='w-screen p-1.5 md:w-102'>
+    <div id={post._id} ref={ref} className='w-screen p-1.5 md:w-102'>
       <div className='p-2 relative rounded-lg shadow-md bg-white dark:bg-bdark-100 flex flex-grow flex-col'>
         <div className='py-1 flex border-b border-gray-200 dark:border-bdark-200 justify-between items-center'>
           <div className="flex items-center truncate">
@@ -128,19 +160,49 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
             {post.authorId === currentUser?._id && <div onClick={deletePosts} className="w-full text-center py-2 text-red-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200">Delete Post</div>}
           </div>
         </div>
-        <div className='py-2 text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words cursor-default'>{pdesc} {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm" onClick={()=>{setPDesc(pdesc.length > 100 ? post?.description.slice(0, 100) : post?.description)}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}</div>
+        {(post.type==="text"||post.type==="image" || post.type==="video") && <div className='py-2 text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words cursor-default'>{pdesc} {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm" onClick={()=>{setPDesc(pdesc.length > 100 ? post?.description.slice(0, 100) : post?.description)}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}</div>}
         <div>
-          {(post.type==='image'&& post.media) &&
-            <div className='unset-img relative'>
-              <Image
-              src = {post.media}
-              className ='custom-img'
-              layout ='fill'
-              placeholder = 'blur'
-              blurDataURL = {theme==='dark'? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABmCAYAAAA53+RiAAAABHNCSVQICAgIfAhkiAAAAXRJREFUeF7t1VEJADAMxNBVTv0L3GAq8vGqICQcnd29x+UMjDC5Jh9ImGYXYaJdhBGmaiDK5ccIEzUQxbIYYaIGolgWI0zUQBTLYoSJGohiWYwwUQNRLIsRJmogimUxwkQNRLEsRpiogSiWxQgTNRDFshhhogaiWBYjTNRAFMtihIkaiGJZjDBRA1EsixEmaiCKZTHCRA1EsSxGmKiBKJbFCBM1EMWyGGGiBqJYFiNM1EAUy2KEiRqIYlmMMFEDUSyLESZqIIplMcJEDUSxLEaYqIEolsUIEzUQxbIYYaIGolgWI0zUQBTLYoSJGohiWYwwUQNRLIsRJmogimUxwkQNRLEsRpiogSiWxQgTNRDFshhhogaiWBYjTNRAFMtihIkaiGJZjDBRA1EsixEmaiCKZTHCRA1EsSxGmKiBKJbFCBM1EMWyGGGiBqJYFiNM1EAUy2KEiRqIYlmMMFEDUSyLESZqIIplMcJEDUSxLEaYqIEo1gNTr5cDklMVSwAAAABJRU5ErkJggg==' : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABmCAYAAAA53+RiAAAABHNCSVQICAgIfAhkiAAAAXZJREFUeF7t1cEJACAQxEDtv1URrEDBKuaRqyAkLDfXPnd0nIFZGK7JByqM2aUwaJfCFEY1gHL1YwqDGkCxWkxhUAMoVospDGoAxWoxhUENoFgtpjCoARSrxRQGNYBitZjCoAZQrBZTGNQAitViCoMaQLFaTGFQAyhWiykMagDFajGFQQ2gWC2mMKgBFKvFFAY1gGK1mMKgBlCsFlMY1ACK1WIKgxpAsVpMYVADKFaLKQxqAMVqMYVBDaBYLaYwqAEUq8UUBjWAYrWYwqAGUKwWUxjUAIrVYgqDGkCxWkxhUAMoVospDGoAxWoxhUENoFgtpjCoARSrxRQGNYBitZjCoAZQrBZTGNQAitViCoMaQLFaTGFQAyhWiykMagDFajGFQQ2gWC2mMKgBFKvFFAY1gGK1mMKgBlCsFlMY1ACK1WIKgxpAsVpMYVADKFaLKQxqAMVqMYVBDaBYLaYwqAEUq8UUBjWAYrWYwqAGUKwWUxjUAIr1AIxPgvK2EjJAAAAAAElFTkSuQmCC'}
-              />
-            </div>}
+          {((post.type==='image'|| post.type==='poll' || post.type==='product') && post.media) &&
+            <div className="relative">
+              <div className='unset-img'>
+                <Image
+                src = {post.media}
+                className ='custom-img'
+                layout ='fill'
+                placeholder = 'blur'
+                blurDataURL = {theme==='dark'? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABmCAYAAAA53+RiAAAABHNCSVQICAgIfAhkiAAAAXRJREFUeF7t1VEJADAMxNBVTv0L3GAq8vGqICQcnd29x+UMjDC5Jh9ImGYXYaJdhBGmaiDK5ccIEzUQxbIYYaIGolgWI0zUQBTLYoSJGohiWYwwUQNRLIsRJmogimUxwkQNRLEsRpiogSiWxQgTNRDFshhhogaiWBYjTNRAFMtihIkaiGJZjDBRA1EsixEmaiCKZTHCRA1EsSxGmKiBKJbFCBM1EMWyGGGiBqJYFiNM1EAUy2KEiRqIYlmMMFEDUSyLESZqIIplMcJEDUSxLEaYqIEolsUIEzUQxbIYYaIGolgWI0zUQBTLYoSJGohiWYwwUQNRLIsRJmogimUxwkQNRLEsRpiogSiWxQgTNRDFshhhogaiWBYjTNRAFMtihIkaiGJZjDBRA1EsixEmaiCKZTHCRA1EsSxGmKiBKJbFCBM1EMWyGGGiBqJYFiNM1EAUy2KEiRqIYlmMMFEDUSyLESZqIIplMcJEDUSxLEaYqIEo1gNTr5cDklMVSwAAAABJRU5ErkJggg==' : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABmCAYAAAA53+RiAAAABHNCSVQICAgIfAhkiAAAAXZJREFUeF7t1cEJACAQxEDtv1URrEDBKuaRqyAkLDfXPnd0nIFZGK7JByqM2aUwaJfCFEY1gHL1YwqDGkCxWkxhUAMoVospDGoAxWoxhUENoFgtpjCoARSrxRQGNYBitZjCoAZQrBZTGNQAitViCoMaQLFaTGFQAyhWiykMagDFajGFQQ2gWC2mMKgBFKvFFAY1gGK1mMKgBlCsFlMY1ACK1WIKgxpAsVpMYVADKFaLKQxqAMVqMYVBDaBYLaYwqAEUq8UUBjWAYrWYwqAGUKwWUxjUAIrVYgqDGkCxWkxhUAMoVospDGoAxWoxhUENoFgtpjCoARSrxRQGNYBitZjCoAZQrBZTGNQAitViCoMaQLFaTGFQAyhWiykMagDFajGFQQ2gWC2mMKgBFKvFFAY1gGK1mMKgBlCsFlMY1ACK1WIKgxpAsVpMYVADKFaLKQxqAMVqMYVBDaBYLaYwqAEUq8UUBjWAYrWYwqAGUKwWUxjUAIr1AIxPgvK2EjJAAAAAAElFTkSuQmCC'}
+                />
+              </div>
+              {post.type==="product" && <div className="absolute bg-gradient-to-t from-black to-transparent w-full bottom-0 text-white dark:text-gray-400 cursor-default px-3 pt-9">
+                <div className="w-full flex justify-between">
+                  <p className="font-semibold text-xl w-9/12 truncate">{post.product.productCondition + " " + post.product.productName}</p>
+                  <p className="font-semibold text-xl truncate">GH₵{post.product.productPrice}</p>
+                </div>  
+                <div className='w-full'>
+                  {
+                    <div className='py-2 whitespace-pre-wrap break-words max-h-40 overflow-y-auto hide-scrollbar'>{pdesc} {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm" onClick={()=>{setPDesc(pdesc.length > 100 ? post?.description.slice(0, 100) : post?.description)}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}</div>
+                  }
+                </div>
+                <button className="clicky h-11 w-full rounded-full bg-pink-500 mb-3">Messaage Seller</button>
+              </div>}
+            </div>
+            }
           {(post.type === 'image' && !post.media) && <div className='w-full h-96 bg-gray-200 dark:bg-bdark-50 animate-pulse'></div>}
+          {post.type==="poll" && <div>
+            <div className='py-2 text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words cursor-default'>{pdesc} {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm" onClick={()=>{setPDesc(pdesc.length > 100 ? post?.description.slice(0, 100) : post?.description)}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}</div>
+            {<div>
+              {
+                post.poll.choices.map(c=>
+                  <button disabled={voted} id={c._id} onClick={()=> pollVote(c._id)} className={`poll-btn clicky border-gray-400 dark:border-gray-200 text-gray-500 dark:text-gray-400 ${!voted && 'hover:bg-blue-grey-50 dark:hover:bg-bdark-50'}`}>
+                    <div className="progress transition duration-150 ease-linear"></div>
+                    <p className="z-10">{c.choice}</p>
+                    {voted && <p className="absolute right-0 z-10 mr-4">{parseInt(c.votes.length/post.poll.votes.length * 100)}%</p>}
+                  </button>
+                )
+              }
+              <div className="text-gray-400 dark:text-gray-500 text-1/5xs mt-3">{post.poll.votes.length === 1 ? '1 vote' : `${post.poll.votes.length} votes`}</div>
+            </div>}
+          </div>}
           {(post.type==='video' && post.media) &&
             <div>
               <video controls controlsList="nodownload" className="w-full" poster={`https://res.cloudinary.com/kennydop/video/upload/${post.media}.jpg`}>
@@ -153,7 +215,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
         </div>
         {
           <div className={`transition duration-300 ${openComments ? 'max-h-80 bg-white dark:bg-bdark-100 mt-2' : 'h-0 max-h-0 hidden'}`}>
-            {post.comments.length !== 0 && <div className='overflow-y-auto max-h-60 hide-scrollbar border-t border-b border-gray-200 dark:border-bdark-200 py-2'>
+            {post.comments?.length !== 0 && <div className='overflow-y-auto max-h-60 hide-scrollbar border-t border-b border-gray-200 dark:border-bdark-200 py-2'>
               {
                 post.comments?.map((comment)=>
                   <Comment key={comment._id} comment={comment} admin={comment.authorId === currentUser?._id} delCom={deleteComment}/>
@@ -172,12 +234,12 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
         <div className='flex justify-around border-t border-gray-200 dark:border-bdark-200 pt-2'>
           <div onClick={likePost} className='flex flex-grow justify-center items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
             {hasLiked?<Filled className='text-pink-500 h-6 w-6 mr-2' /> : <HeartIcon className='text-gray-500 dark:text-gray-400 h-6 w-6 mr-2' />}
-            {post.likes.length > 0 && <p className='text-gray-500 dark:text-gray-400 cursor-pointer'>{post.likes.length}</p>}
+            {post.likes?.length > 0 && <p className='text-gray-500 dark:text-gray-400 cursor-pointer'>{post.likes.length}</p>}
           </div>
           <div className='h-12 border-r border-gray-200 dark:border-bdark-200'></div>
           <div onClick={()=>setOpenComments(!openComments)} className='flex flex-grow justify-center items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
             <ChatAltIcon className='text-gray-500 dark:text-gray-400 h-6 w-6 mr-2' />
-            {post.comments.length > 0 && <p className='text-gray-500 dark:text-gray-400 cursor-pointer'>{post.comments.length}</p>}
+            {post.comments?.length > 0 && <p className='text-gray-500 dark:text-gray-400 cursor-pointer'>{post.comments.length}</p>}
           </div>
           <div className='h-12 border-r border-gray-200 dark:border-bdark-200'></div>
           <div className='flex flex-grow justify-center items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>

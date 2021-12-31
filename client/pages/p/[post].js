@@ -26,20 +26,17 @@ function PostPage({_post}) {
   const comRef = useRef()
   const moreRef = useRef();
   const { theme } = useTheme()
-	const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+	const { setTabActive } = useActiveTab()
 
   useOnClickOutside(moreRef, () =>setOpenOptions(false))
 
   useEffect(()=>{
-    if(tabActive==='pagepost')return; 
-    setPrevPrevTab(prevTab); 
-    setPrevTab(tabActive); 
     setTabActive('pagepost');
-},[])
+  },[])
 
   useEffect(() => {
     async function getAuthor(){
-      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/"+post.authorId).then((res)=>{
+      _post && axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/"+post.authorId).then((res)=>{
         setAuthor(res.data)
       })
     }
@@ -48,7 +45,7 @@ function PostPage({_post}) {
 
   useEffect(() => {
     if(currentUser){
-      setHasLiked(post.likes?.findIndex((like)=> (like === currentUser._id)) !== -1) //has liked
+      _post && setHasLiked(post.likes?.findIndex((like)=> (like === currentUser._id)) !== -1) //has liked
     }
   }, [post])
 

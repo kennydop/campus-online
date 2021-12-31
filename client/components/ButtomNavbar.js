@@ -3,22 +3,21 @@ import { HomeIcon, BellIcon, ChatAlt2Icon, CogIcon, GlobeAltIcon, PlusCircleIcon
 import { useRouter } from 'next/router';
 import { useAuth } from "../contexts/AuthContext";
 import { useActiveTab } from "../contexts/ActiveTabContext";
+import { useUtils } from "../contexts/UtilsContext";
 
 function ButtomNavbar() {
   const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
   const router = useRouter();
   const { currentUser } = useAuth();
+  const { unreadChats } = useUtils();
+  const { unreadNotifications } = useUtils();
 
   function handleHome(){
     if(typeof window === 'object' && router.pathname === '/feed'){
-        window.scrollTo({top: 0, behavior: 'smooth'})
+      window.scrollTo({top: 0, behavior: 'smooth'})
     }else{
-    router.push('/feed');
+      router.push('/feed');
     }
-    if(tabActive==='home')
-        return;
-    setPrevPrevTab(prevTab); 
-    setPrevTab(tabActive);
     setTabActive('home')
   }
 
@@ -28,21 +27,17 @@ function ButtomNavbar() {
     }else{
     router.push('/global');
     }
-    if(tabActive==='global')
-        return;
-    setPrevPrevTab(prevTab); 
-    setPrevTab(tabActive);
     setTabActive('global')
   }
-  
+
 return (
   <div className = "flex items-center justify-center fixed space-evenly inset-x-0 z-50 bottom-0 py-3 md:hidden bg-white dark:bg-bdark-100 shadow-mdt">
     {currentUser ? <>
-    <div className='mx-auto' onClick = {()=>{handleHome()}}><HeaderIcon active = {tabActive === 'home'?true:undefined} Icon = {HomeIcon}/></div>
-    <div className='mx-auto' onClick = {()=>{handleGlobal()}}><HeaderIcon active = {tabActive === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
-    <div className='mx-auto' onClick = {()=>{if(tabActive==='post')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('post')}}><HeaderIcon active = {tabActive === 'post'?true:undefined} Icon = {PlusCircleIcon}/></div>
-    <div className='mx-auto' onClick = {()=>{if(tabActive==='chat')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); router.push('/chats'); setTabActive('chat')}}><HeaderIcon active = {tabActive === 'chat'?true:undefined} Icon = {ChatAlt2Icon}/></div>
-    <div className='mx-auto' onClick = {()=>{if(tabActive==='notification')return; setPrevPrevTab(prevTab); setPrevTab(tabActive); setTabActive('notification')}}><HeaderIcon active = {tabActive === 'notification'?true:undefined} Icon = {BellIcon}/></div>
+    <div className='mx-auto' onClick = {handleHome}><HeaderIcon active = {tabActive[tabActive.length -1] === 'home'?true:undefined} Icon = {HomeIcon}/></div>
+    <div className='mx-auto' onClick = {handleGlobal}><HeaderIcon active = {tabActive[tabActive.length -1] === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
+    <div className='mx-auto' onClick = {()=>{setTabActive('post')}}><HeaderIcon active = {tabActive[tabActive.length -1].slice(0, 4) === 'post'?true:undefined} Icon = {PlusCircleIcon}/></div>
+    <div className='mx-auto' onClick = {()=>{setTabActive('chat'); router.push('/chats')}}><HeaderIcon active = {tabActive[tabActive.length -1] === 'chat'?true:undefined} Icon = {ChatAlt2Icon} unread={unreadChats !== 0 && unreadChats}/></div>
+    <div className='mx-auto' onClick = {()=>{setTabActive('notification')}}><HeaderIcon active = {tabActive[tabActive.length -1] === 'notification'?true:undefined} Icon = {BellIcon} unread={unreadNotifications !== 0 && unreadNotifications}/></div>
     </>:
     <div className="items-center justify-center text-center cursor-pointer text-pink-500 font-semibold" onClick={()=>{router.replace('/login')}}>
       Login

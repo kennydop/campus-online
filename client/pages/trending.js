@@ -12,13 +12,10 @@ function Trending() {
   const router = useRouter()
   const [ posts, setPosts ] = useState()
   const { refreshPosts, setRefreshPosts } = useAuth()
-	const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+	const { setTabActive } = useActiveTab()
 
   useEffect(()=>{
-      if(tabActive==='trending')return; 
-      setPrevPrevTab(prevTab); 
-      setPrevTab(tabActive); 
-      setTabActive('trending');
+    setTabActive('trending');
   },[])
 
   useEffect(()=>{

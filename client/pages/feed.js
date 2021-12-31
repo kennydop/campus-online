@@ -9,16 +9,13 @@ import { useRouter } from "next/router";
 import axios from "axios";
 
 function Feed({trending}) {
-  const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+  const { setTabActive } = useActiveTab()
   const { currentUser } = useAuth()
   const router = useRouter()
   useEffect(()=>{
     if(!currentUser.token){
       router.replace('/')
     }
-    if(tabActive==='home')return; 
-    setPrevPrevTab(prevTab); 
-    setPrevTab(tabActive); 
     setTabActive('home');
   },[])
     

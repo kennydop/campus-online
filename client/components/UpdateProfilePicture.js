@@ -12,7 +12,7 @@ function UpdateProfilePicture() {
   const [error, setError] = useState('');
   var selected = null;
   const [url, setUrl] = useState();
-  const { prevTab, setTabActive } = useActiveTab()
+  const { setTabActive } = useActiveTab()
 
 
   const handleImageChange = (e) => {
@@ -46,11 +46,11 @@ function UpdateProfilePicture() {
       img, 
       { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
         setCurrentUser((oldValues) => {return {token: oldValues.token, ...res.data}})
-        setTabActive(prevTab); 
-        }).catch((error)=>{
-          setError(error.message)
-          setLoading(false)
-        })
+        setTabActive("go back"); 
+      }).catch((error)=>{
+        setError(error.message)
+        setLoading(false)
+      })
   }
 
   return (

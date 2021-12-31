@@ -11,15 +11,8 @@ import { useAuth } from "../contexts/AuthContext";
 
 function ProfileCard({ admin, user, loggedIn, refreshUser }) {
   const [ followBtnText, setFollowBtnText ] = useState(user.isfollowing ?'Unfollow' : 'Follow')
-  const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+  const { setTabActive } = useActiveTab()
   const { currentUser } = useAuth()
-
-  function openPPDialog(){
-    if(tabActive==='updatePP')return; 
-    setPrevPrevTab(prevTab); 
-    setPrevTab(tabActive); 
-    setTabActive('updatePP'); 
-  }
 
   function followUser(){
     if(!loggedIn){
@@ -65,7 +58,7 @@ function ProfileCard({ admin, user, loggedIn, refreshUser }) {
             <div className='relative'>
               <img className = "h-28 w-28 lg:h-36 lg:w-36 object-cover rounded-full border-4 border-white dark:border-bdark-100" 
                 src = {admin ? (currentUser.profilePicture.startsWith("https://pbs.twimg.com/profile_images") ? currentUser.profilePicture.replace("normal", "400x400") : (currentUser.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image/upload/") ? currentUser.profilePicture.replace("w_100", "w_400") : currentUser.profilePicture)) : (user.profilePicture.startsWith("https://pbs.twimg.com/profile_images") ? user.profilePicture.replace("normal", "400x400") : (user.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image/upload/") ? user.profilePicture.replace("w_200", "w_400") : user.profilePicture))}/>
-              {admin && <div onClick={openPPDialog} className='absolute right-4 bottom-2 py-2 px-2 bg-gray-500 dark:bg-bdark-200 bg-opacity-90 rounded-full cursor-pointer transition hover:scale-105'><PencilIcon className='h-3 text-white dark:text-gray-400'/></div>}
+              {admin && <div onClick={()=>setTabActive('updatePP')} className='absolute right-4 bottom-2 py-2 px-2 bg-gray-500 dark:bg-bdark-200 bg-opacity-90 rounded-full cursor-pointer transition hover:scale-105'><PencilIcon className='h-3 text-white dark:text-gray-400'/></div>}
             </div>
           </div>
           {!admin && 
@@ -74,7 +67,7 @@ function ProfileCard({ admin, user, loggedIn, refreshUser }) {
             <button className='h-8 w-24 rounded-full shadow-md border border-pink-500 text-pink-500 text-center bg-blue-grey-50 dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:text-gray-400 dark:shadow-lg dark:hover:shadow-xl'>Message</button>
           </div>}
           <div className='lg:absolute right-2 top-2 fit-content mt-2 lg:mt-0 mx-auto'>
-            {(admin && loggedIn) && <div onClick={()=>router.replace('/settings')} className='flex py-1.5 px-3 rounded-full shadow-md text-white dark:text-gray-400 text-center bg-gray-500 dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl'>
+            {(admin && loggedIn) && <div onClick={()=>router.push('/settings')} className='flex py-1.5 px-3 rounded-full shadow-md text-white dark:text-gray-400 text-center bg-gray-500 dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl'>
               <PencilIcon className='h-5 text-white dark:text-gray-400 text-center'/>Edit Profile
             </div>}
           </div>

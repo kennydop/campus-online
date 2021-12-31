@@ -11,7 +11,7 @@ import axios from 'axios';
 import NotFound from './404';
 
 function Profile() {
-  const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+  const { setTabActive } = useActiveTab()
   const router = useRouter()
   const { currentUser } = useAuth()
   const [ admin, setAdmin] = useState()
@@ -54,13 +54,8 @@ function Profile() {
       setLoggedIn(true)
       if(currentUser.username === router.query.profile){
         getMyProfile()
-        if(tabActive==='profile')return; 
-        setPrevPrevTab(prevTab); 
-        setPrevTab(tabActive); 
         setTabActive('profile');
       }else{
-        setPrevPrevTab(prevTab); 
-        setPrevTab(tabActive); 
         setTabActive('');
         setAdmin(false)
         getUserProfile_LoggedIn()
@@ -76,7 +71,7 @@ function Profile() {
     axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${router.query.profile}`, { params:{ currentUser: currentUser._id} }).then((res)=>{
       setUser(res.data)
     }).catch((error)=>{
-      router.replace('/404')
+      setNotFound(true)
       console.log(error)
     })
   }

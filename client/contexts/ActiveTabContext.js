@@ -1,33 +1,34 @@
 import { useContext, useState, createContext, useEffect } from "react"
 
-const TabActive = createContext("home")
+const TabActive = createContext(["home"])
 
 export function useActiveTab(){
   return useContext(TabActive)
 }
 
 export function ActiveTab({children}){
-  const ssat = typeof window !== 'undefined' && sessionStorage.getItem('activeTab')
-  const sspt = typeof window !== 'undefined' && sessionStorage.getItem('prevTab')
-  const ssppt = typeof window !== 'undefined' && sessionStorage.getItem('prevPrevTab')
-  const [tabActive, setTabActive] = useState(ssat !== null ? ssat : 'home')
-  const [prevTab, setPrevTab] = useState(sspt !== null  ? sspt : 'home')
-  const [prevPrevTab, setPrevPrevTab] = useState(ssppt !== null  ? ssppt : 'home')
+  const [tabActive, _setTabActive] = useState(['home'])
 
-
-  useEffect(() => {
-    sessionStorage.setItem('activeTab', tabActive === null || tabActive === 'undefined' ?'home':tabActive)
-    sessionStorage.setItem('prevTab',  tabActive === null || tabActive === 'undefined' ?'home':prevTab)
-    sessionStorage.setItem('prevPrevTab',  tabActive === null || tabActive === 'undefined' ?'home':prevPrevTab)
-  })
+  function setTabActive(to, replace){
+    if(to === "go back"){
+      const newTabs = tabActive; 
+      newTabs.pop();
+      _setTabActive([...newTabs])
+    }else if(replace){
+      if(tabActive[tabActive.length-1]===to)return;
+      var tabs = tabActive;
+      tabs[tabs.length-1]=to
+      _setTabActive([...tabs])
+    }else{
+      if(tabActive[tabActive.length-1]===to)return; 
+      const newTabs = tabActive; 
+      _setTabActive([...newTabs, to])
+    }
+  }
 
   const value = {
     tabActive,
-    prevTab,
-    prevPrevTab,
     setTabActive,
-    setPrevTab,
-    setPrevPrevTab,
   }
 
   return(
