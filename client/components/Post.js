@@ -17,6 +17,13 @@ import Comment from "./Comment"
 import {useOnClickOutside} from "./Hooks"
 import { useRouter } from 'next/router';
 
+const urlify = (text) => {
+  const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+  return text.replace(urlRegex, (url) => {
+    return `<a href="${url}" class="link" target="_blank">${url}</a>`;
+  })
+}
+
 const Post = forwardRef(({ _post, refreshUser }, ref) => {
   const { currentUser, setRefreshPosts } = useAuth();
   const [post, setPost] = useState(_post)
@@ -26,7 +33,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
   const [openOptions, setOpenOptions] = useState(false)
   const [voted, setVoted] = useState(false)
   const [votingClosed, setVotingClosed] = useState(false)
-  const [pdesc, setPDesc] = useState(_post.description.slice(0, 100))
+  const [pdesc, setPDesc] = useState(urlify(_post.description).slice(0, 100))
   const comRef = useRef()
   const scrollRef = useRef()
   const { theme } = useTheme()
@@ -164,7 +171,10 @@ useEffect(() => {
             {post.authorId === currentUser?._id && <div onClick={deletePosts} className="w-full text-center py-2 text-red-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200">Delete Post</div>}
           </div>
         </div>
-        {(post.type==="text"||post.type==="image" || post.type==="video") && <div className='py-2 text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words cursor-default'>{pdesc} {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm" onClick={()=>{setPDesc(pdesc.length > 100 ? post?.description.slice(0, 100) : post?.description)}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}</div>}
+        {(post.type==="text"||post.type==="image" || post.type==="video") && <div className="py-2">
+          <div className='text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words cursor-default' dangerouslySetInnerHTML={{__html: pdesc}}/>
+          {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm text-right" onClick={()=>{setPDesc(pdesc.length > 100 ? urlify(post?.description).slice(0, 100) : urlify(post?.description))}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}
+        </div>}
         <div>
           {((post.type==='image'|| post.type==='poll' || post.type==='product') && post.media) &&
             <div className="relative">
@@ -180,12 +190,11 @@ useEffect(() => {
               {post.type==="product" && <div className="absolute bg-gradient-to-t from-black to-transparent w-full bottom-0 text-white dark:text-gray-400 cursor-default px-3 pt-9">
                 <div className="w-full flex justify-between">
                   <p className="font-semibold text-xl w-9/12 truncate">{post.product.productCondition + " " + post.product.productName}</p>
-                  <p title={`GH₵${post.product.productPrice}`} className="font-semibold text-xl truncate">GH₵{post.product.productPrice}</p>
+                  <p title={post.product.productPrice === "0.00" ? "Free" : `GH₵${post.product.productPrice}`} className="font-semibold text-xl truncate">{post.product.productPrice === "0.00" ? "Free" : `GH₵${post.product.productPrice}`}</p>
                 </div>  
-                <div className='w-full'>
-                  {
-                    <div className='py-2 whitespace-pre-wrap break-words max-h-40 overflow-y-auto hide-scrollbar'>{pdesc} {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm" onClick={()=>{setPDesc(pdesc.length > 100 ? post?.description.slice(0, 100) : post?.description)}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}</div>
-                  }
+                <div className='w-full py-2'>
+                    <div className='text-white dark:text-gray-200 whitespace-pre-wrap break-words max-h-40 overflow-y-auto hide-scrollbar' dangerouslySetInnerHTML={{__html: pdesc}}/>
+                    {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm text-right" onClick={()=>{setPDesc(pdesc.length > 100 ? urlify(post?.description).slice(0, 100) : urlify(post?.description))}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}
                 </div>
                 {author?._id !== currentUser._id && <button onClick={()=> router.push(`/chats?id=${author._id}`)} className="clicky h-11 w-full rounded-full bg-pink-500 mb-3">Messaage Seller</button>}
               </div>}
@@ -193,7 +202,10 @@ useEffect(() => {
             }
           {(post.type === 'image' && !post.media) && <div className='w-full h-96 bg-gray-200 dark:bg-bdark-50 animate-pulse'></div>}
           {post.type==="poll" && <div>
-            <div className='py-2 text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words cursor-default'>{pdesc} {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm" onClick={()=>{setPDesc(pdesc.length > 100 ? post?.description.slice(0, 100) : post?.description)}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}</div>
+            <div className="py-2">
+              <div className='text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words cursor-default' dangerouslySetInnerHTML={{__html: pdesc}}/>
+              {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm text-right" onClick={()=>{setPDesc(pdesc.length > 100 ? urlify(post?.description).slice(0, 100) : urlify(post?.description))}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}
+            </div>
             {<div>
               {
                 post.poll.choices.map(c=>
