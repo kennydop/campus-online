@@ -40,7 +40,7 @@ function ProfileCard({ admin, user, loggedIn, refreshUser }) {
       <div className='relative w-full h-52 md:h-60 overflow-hidden'>
         <img src={ user?.coverPicture ? user.coverPicture : defaultCoverPicture}
         className='w-full h-full object-cover'/>
-        {admin && <div className='absolute right-0 bottom-0 py-1 px-3 bg-gray-500 dark:bg-bdark-200 bg-opacity-70 cursor-pointer'><PencilIcon className='h-4 text-white dark:text-gray-400'/></div>}
+        {admin && <div onClick={()=>setTabActive('updateCI')} className='absolute right-0 bottom-0 py-1 px-3 bg-gray-500 dark:bg-bdark-200 bg-opacity-70 cursor-pointer'><PencilIcon className='h-4 text-white dark:text-gray-400'/></div>}
       </div>
         <div className='relative w-full dark:bg-bdark-100 flex flex-col pb-2'>
           <div className='flex flex-col'>

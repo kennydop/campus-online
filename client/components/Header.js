@@ -12,6 +12,7 @@ import PostDialog from "./PostDialog";
 import { useOnClickOutside } from "./Hooks";
 import { useTheme } from 'next-themes'
 import UpdateProfilePicture from "./UpdateProfilePicture";
+import UpdateCoverPicture from "./UpdateCoverPicture"
 import DeleteAccountDialog from "./DeleteAccountDialog";
 import SearchContainer from "./SearchContainer";
 import axios from "axios";
@@ -49,7 +50,7 @@ function Header() {
   },[])
 
   useEffect(()=>{
-    if(tabActive[tabActive.length - 1].slice(0,4) === "post" || tabActive[tabActive.length - 1]==='updatePP' || tabActive[tabActive.length - 1]==='notification' || tabActive[tabActive.length - 1]==='delAcc' || enterSearchMode){
+    if(tabActive[tabActive.length - 1].slice(0,4) === "post" || tabActive[tabActive.length - 1]==='updatePP'  || tabActive[tabActive.length - 1]==='updateCI' || tabActive[tabActive.length - 1]==='notification' || tabActive[tabActive.length - 1]==='delAcc' || enterSearchMode){
       document.body.classList.add('lg:mr-4')
       document.body.classList.add('overflow-hidden')
     }else{
@@ -180,7 +181,7 @@ function Header() {
       </div>
       {enterSearchMode && <SearchContainer hits={searchRes} clearSearch={clearSearch}/>}
       {enterSearchMode && <div onClick={()=>{setEnterSearchMode(false); setSearchRes([])}} className='w-screen h-full block md:hidden fixed z-10 bg-gray-900 opacity-40'/>}
-      {(tabActive[tabActive.length - 1].slice(0,4) === "post" || tabActive[tabActive.length - 1]==='updatePP' || tabActive[tabActive.length - 1]==='notification' || tabActive[tabActive.length - 1]==='delAcc') && <div onClick={()=>{setTabActive(tabActive[tabActive.length-2]==='notification' ? tabActive[tabActive.length-3] : "go back"); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
+      {(tabActive[tabActive.length - 1].slice(0,4) === "post" || tabActive[tabActive.length - 1]==='updatePP' || tabActive[tabActive.length - 1]==='updateCI' || tabActive[tabActive.length - 1]==='notification' || tabActive[tabActive.length - 1]==='delAcc') && <div onClick={()=>{setTabActive(tabActive[tabActive.length-2]==='notification' ? tabActive[tabActive.length-3] : "go back"); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
       {currentUser && <div>
           <NotificationPane/>
       </div>}
@@ -188,6 +189,7 @@ function Header() {
         <PostDialog/>
       </div>}
       {tabActive[tabActive.length - 1]==='updatePP' && <UpdateProfilePicture/>}
+      {tabActive[tabActive.length - 1]==='updateCI' && <UpdateCoverPicture/>}
       {tabActive[tabActive.length - 1]==='delAcc' && <DeleteAccountDialog/>}
     </>
   )
