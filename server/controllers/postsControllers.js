@@ -48,6 +48,13 @@ export const deletePost = async (req, res) => {
 	try {
     const post = await Post.findById(req.params.id)
     await User.findByIdAndUpdate(post.authorId, {$inc: {posts: -1}}, {new: true})
+    if(post.media){
+      if(post.type !== "video"){
+        await cloudinary.uploader.destroy(post.media.split("upload/")[1].split('.')[0]);
+      }else{
+        await cloudinary.uploader.destroy(post.media.split("upload/")[1]);
+      }
+    }
 		await Post.findByIdAndDelete(req.params.id).then(()=>
 			res.status(200).json("the post has been deleted")
     )

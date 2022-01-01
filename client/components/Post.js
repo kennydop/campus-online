@@ -16,6 +16,8 @@ import Link from "next/link"
 import Comment from "./Comment"
 import {useOnClickOutside} from "./Hooks"
 import { useRouter } from 'next/router';
+import { useActiveTab } from '../contexts/ActiveTabContext';
+import Share from './Share';
 
 const urlify = (text) => {
   const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
@@ -26,11 +28,13 @@ const urlify = (text) => {
 
 const Post = forwardRef(({ _post, refreshUser }, ref) => {
   const { currentUser, setRefreshPosts } = useAuth();
+  const { setTabActive, tabActive } = useActiveTab();
   const [post, setPost] = useState(_post)
   const [author, setAuthor] = useState()
   const [hasLiked, setHasLiked] = useState(false)
   const [openComments, setOpenComments] = useState(false)
   const [openOptions, setOpenOptions] = useState(false)
+  const [share, setShare] = useState(false)
   const [voted, setVoted] = useState(false)
   const [votingClosed, setVotingClosed] = useState(false)
   const [pdesc, setPDesc] = useState(urlify(_post.description).slice(0, 100))
@@ -165,7 +169,7 @@ useEffect(() => {
             </div>
           </div>
           <div onClick={()=>setOpenOptions(true)}><DotsVerticalIcon className="h-5 text-gray-500 dark:text-gray-400 cursor-pointer"/></div>
-          <div ref={moreRef} className={`absolute right-3 top-6 z-50 bg-gray-50 dark:bg-bdark-50 rounded-lg shadow-all overflow-hidden ${openOptions ? "w-40 transition-all duration-300" : "w-0 h-0 hidden"}`}>
+          <div ref={moreRef} className={`absolute right-3 top-6 z-10 bg-gray-50 dark:bg-bdark-50 rounded-lg shadow-all overflow-hidden ${openOptions ? "w-40 transition-all duration-300" : "w-0 h-0 hidden"}`}>
             {(post.authorId !== currentUser?._id && !post.isAnonymous) && <div onClick={followUser} className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">{author?.followers.indexOf(currentUser?._id) > -1 ? "Unfollow" : "Follow"}</div>}
             <Link href={`/p/${post._id}`}><div className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">Go To Post</div></Link>
             {post.authorId === currentUser?._id && <div onClick={deletePosts} className="w-full text-center py-2 text-red-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200">Delete Post</div>}
@@ -187,7 +191,7 @@ useEffect(() => {
                 blurDataURL = {theme==='dark'? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABmCAYAAAA53+RiAAAABHNCSVQICAgIfAhkiAAAAXRJREFUeF7t1VEJADAMxNBVTv0L3GAq8vGqICQcnd29x+UMjDC5Jh9ImGYXYaJdhBGmaiDK5ccIEzUQxbIYYaIGolgWI0zUQBTLYoSJGohiWYwwUQNRLIsRJmogimUxwkQNRLEsRpiogSiWxQgTNRDFshhhogaiWBYjTNRAFMtihIkaiGJZjDBRA1EsixEmaiCKZTHCRA1EsSxGmKiBKJbFCBM1EMWyGGGiBqJYFiNM1EAUy2KEiRqIYlmMMFEDUSyLESZqIIplMcJEDUSxLEaYqIEolsUIEzUQxbIYYaIGolgWI0zUQBTLYoSJGohiWYwwUQNRLIsRJmogimUxwkQNRLEsRpiogSiWxQgTNRDFshhhogaiWBYjTNRAFMtihIkaiGJZjDBRA1EsixEmaiCKZTHCRA1EsSxGmKiBKJbFCBM1EMWyGGGiBqJYFiNM1EAUy2KEiRqIYlmMMFEDUSyLESZqIIplMcJEDUSxLEaYqIEo1gNTr5cDklMVSwAAAABJRU5ErkJggg==' : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABmCAYAAAA53+RiAAAABHNCSVQICAgIfAhkiAAAAXZJREFUeF7t1cEJACAQxEDtv1URrEDBKuaRqyAkLDfXPnd0nIFZGK7JByqM2aUwaJfCFEY1gHL1YwqDGkCxWkxhUAMoVospDGoAxWoxhUENoFgtpjCoARSrxRQGNYBitZjCoAZQrBZTGNQAitViCoMaQLFaTGFQAyhWiykMagDFajGFQQ2gWC2mMKgBFKvFFAY1gGK1mMKgBlCsFlMY1ACK1WIKgxpAsVpMYVADKFaLKQxqAMVqMYVBDaBYLaYwqAEUq8UUBjWAYrWYwqAGUKwWUxjUAIrVYgqDGkCxWkxhUAMoVospDGoAxWoxhUENoFgtpjCoARSrxRQGNYBitZjCoAZQrBZTGNQAitViCoMaQLFaTGFQAyhWiykMagDFajGFQQ2gWC2mMKgBFKvFFAY1gGK1mMKgBlCsFlMY1ACK1WIKgxpAsVpMYVADKFaLKQxqAMVqMYVBDaBYLaYwqAEUq8UUBjWAYrWYwqAGUKwWUxjUAIr1AIxPgvK2EjJAAAAAAElFTkSuQmCC'}
                 />
               </div>
-              {post.type==="product" && <div className="absolute bg-gradient-to-t from-black to-transparent w-full bottom-0 text-white dark:text-gray-400 cursor-default px-3 pt-9">
+              {post.type==="product" && <div className="absolute bg-gradient-to-t from-black to-transparent w-full bottom-0 text-white dark:text-gray-200 cursor-default px-3 pt-9">
                 <div className="w-full flex justify-between">
                   <p className="font-semibold text-xl w-9/12 truncate">{post.product.productCondition + " " + post.product.productName}</p>
                   <p title={post.product.productPrice === "0.00" ? "Free" : `GH₵${post.product.productPrice}`} className="font-semibold text-xl truncate">{post.product.productPrice === "0.00" ? "Free" : `GH₵${post.product.productPrice}`}</p>
@@ -210,7 +214,7 @@ useEffect(() => {
               {
                 post.poll.choices.map(c=>
                   <button disabled={voted || votingClosed} id={c._id} onClick={()=> pollVote(c._id)} className={`poll-btn clicky border-gray-400 dark:border-gray-200 text-gray-500 dark:text-gray-400 ${(!voted && !votingClosed) && 'hover:bg-blue-grey-50 dark:hover:bg-bdark-50'}`}>
-                    <div className="progress transition duration-150 ease-linear"></div>
+                    <div className="progress transition duration-150 ease-linear bg-blue-grey-50 dark:bg-bdark-200"></div>
                     <p className="z-10">{c.choice}</p>
                     {(voted || votingClosed) && <p className="absolute right-0 z-10 mr-4">{post.poll.votes.length === 0 ? "0" : parseInt(c.votes.length/post.poll.votes.length * 100)}%</p>}
                   </button>
@@ -258,11 +262,12 @@ useEffect(() => {
             {post.comments?.length > 0 && <p className='text-gray-500 dark:text-gray-400 cursor-pointer'>{post.comments.length}</p>}
           </div>
           <div className='h-12 border-r border-gray-200 dark:border-bdark-200'></div>
-          <div className='flex flex-grow justify-center items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
+          <div onClick={()=> {setTabActive('share'); setShare(true)}} className='flex flex-grow justify-center items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
             <ShareIcon className='text-gray-500 dark:text-gray-400 h-6 w-6 mr-2' />
           </div>
         </div>
       </div>
+      {(share && tabActive[tabActive.length - 1] === 'share') && <Share setShare={setShare} username={author? author.username : "an anonymous user"} link={`${process.env.NEXT_PUBLIC_CLIENT_URL}/p/${post._id}`}/>}
     </div>
   )
 })

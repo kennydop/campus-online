@@ -86,11 +86,6 @@ function Chats(){
       setReadReciepts({id, updated: Date.now()})
     });
   }, []);
-
-  //add user (online)
-  useEffect(()=>{
-    socket.current.emit("addUser", currentUser._id);
-  }, [socket.current, currentUser])
   
   //recieved msgs
   useEffect(()=>{

@@ -17,6 +17,7 @@ import DeleteAccountDialog from "./DeleteAccountDialog";
 import SearchContainer from "./SearchContainer";
 import axios from "axios";
 import { useUtils } from "../contexts/UtilsContext";
+import Share from "./Share"
 
 function Header() {
   const { tabActive, setTabActive } = useActiveTab()
@@ -29,8 +30,8 @@ function Header() {
   const accRef = useRef();
   const minAccRef = useRef();
   const {theme, resolvedTheme, setTheme} = useTheme()
-  const { unreadChats } = useUtils();
-  const { unreadNotifications } = useUtils();
+  const { unreadChats, setUnreadChats } = useUtils();
+  const { unreadNotifications, setUnreadNotifications } = useUtils();
 
   useOnClickOutside(accRef, () =>setShowAccMenu(false))
   useOnClickOutside(minAccRef, () =>setShowMinAccMenu(false))
@@ -50,7 +51,7 @@ function Header() {
   },[])
 
   useEffect(()=>{
-    if(tabActive[tabActive.length - 1].slice(0,4) === "post" || tabActive[tabActive.length - 1]==='updatePP'  || tabActive[tabActive.length - 1]==='updateCI' || tabActive[tabActive.length - 1]==='notification' || tabActive[tabActive.length - 1]==='delAcc' || enterSearchMode){
+    if(tabActive[tabActive.length - 1].slice(0,4) === "post" || tabActive[tabActive.length - 1]==='updatePP'  || tabActive[tabActive.length - 1]==='updateCI' || tabActive[tabActive.length - 1]==='notification' || tabActive[tabActive.length - 1]==='delAcc' || tabActive[tabActive.length - 1]==='share' || enterSearchMode){
       document.body.classList.add('lg:mr-4')
       document.body.classList.add('overflow-hidden')
     }else{
@@ -137,7 +138,7 @@ function Header() {
         {/*centre*/}
         <div className = "hidden md:flex md:justify-center flex-grow">
           <div onClick={()=>{setEnterSearchMode(true)}} className = "flex items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 px-1.5 py-1 focus:shadow-md">
-            <form className="flex items-center" onSubmit={(e)=>{e.preventDefault(); setEnterSearchMode(false); router.push(`/trending?word=${e.target.elements.search.value}`)}}>
+            <form className="flex items-center" onSubmit={(e)=>{e.preventDefault(); setEnterSearchMode(false); router.push(`/trending?word=${e.target.elements.jsearch.value}`)}}>
               <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
               <input id="jsearch" onChange={search} className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400" type = "text" placeholder="Search"/>
               <button hidden type="submit"></button>
@@ -149,9 +150,9 @@ function Header() {
         <div className = "hidden md:flex md:items-center md:justify-end md:mr-8 lg:mr-16">
           <div title="home" onClick = {handleHome}><HeaderIcon active = {tabActive[tabActive.length-1] === 'home'?true:undefined} Icon = {HomeIcon}/></div>
           <div title="global" onClick = {handleGlobal}><HeaderIcon active = {tabActive[tabActive.length-1] === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
-          <div title="chat" onClick = {()=>{setTabActive('chat'); router.push('/chats')}}><HeaderIcon active = {tabActive[tabActive.length-1] === 'chat'?true:undefined} Icon = {ChatAlt2Icon} unread={unreadChats !== 0 && unreadChats }/></div>
+          <div title="chat" onClick = {()=>{setTabActive('chat'); router.push('/chats'); setUnreadChats(0)}}><HeaderIcon active = {tabActive[tabActive.length-1] === 'chat'?true:undefined} Icon = {ChatAlt2Icon} unread={unreadChats !== 0 && unreadChats }/></div>
           <div title="make a post" onClick = {()=>{setTabActive('post')}}><HeaderIcon active = {tabActive[tabActive.length-1].slice(0, 4) === 'post'?true:undefined} Icon = {PlusCircleIcon}/></div>
-          <div title="notifications" onClick = {()=>{setTabActive('notification')}}><HeaderIcon active = {tabActive[tabActive.length-1] === 'notification'?true:undefined} Icon = {BellIcon} unread={unreadNotifications !== 0 && unreadNotifications }/></div>
+          <div title="notifications" onClick = {()=>{setTabActive('notification'); setUnreadNotifications(0)}}><HeaderIcon active = {tabActive[tabActive.length-1] === 'notification'?true:undefined} Icon = {BellIcon} unread={unreadNotifications !== 0 && unreadNotifications }/></div>
           <div className = "hidden md:block text-center pl-3 relative">
               <img title="account" onClick = {()=>setShowAccMenu(true)}
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer ${tabActive[tabActive.length - 1]==='profile' ? 'border-2 border-pink-500': ''}`}
@@ -181,7 +182,7 @@ function Header() {
       </div>
       {enterSearchMode && <SearchContainer hits={searchRes} clearSearch={clearSearch}/>}
       {enterSearchMode && <div onClick={()=>{setEnterSearchMode(false); setSearchRes([])}} className='w-screen h-full block md:hidden fixed z-10 bg-gray-900 opacity-40'/>}
-      {(tabActive[tabActive.length - 1].slice(0,4) === "post" || tabActive[tabActive.length - 1]==='updatePP' || tabActive[tabActive.length - 1]==='updateCI' || tabActive[tabActive.length - 1]==='notification' || tabActive[tabActive.length - 1]==='delAcc') && <div onClick={()=>{setTabActive(tabActive[tabActive.length-2]==='notification' ? tabActive[tabActive.length-3] : "go back"); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
+      {(tabActive[tabActive.length - 1].slice(0,4) === "post" || tabActive[tabActive.length - 1]==='updatePP' || tabActive[tabActive.length - 1]==='updateCI' || tabActive[tabActive.length - 1]==='notification' || tabActive[tabActive.length - 1]==='delAcc' || tabActive[tabActive.length - 1]==='share') && <div onClick={()=>{setTabActive(tabActive[tabActive.length-2]==='notification' ? tabActive[tabActive.length-3] : "go back"); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
       {currentUser && <div>
           <NotificationPane/>
       </div>}

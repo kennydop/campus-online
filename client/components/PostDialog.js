@@ -275,7 +275,7 @@ function PostDialog() {
           </div>
           <div className="flex mb-8">
             <div>
-              <div className="rounded-l-full absolute h-11 px-2.5 bg-white border border-blue-grey-50 dark:bg-gray-400 flex items-center justify-center text-gray-400 dark:text-gray-500">
+              <div className="rounded-l-full absolute h-11 px-2.5 bg-white dark:bg-bdark-100 border border-blue-grey-50 dark:border-bdark-200 flex items-center justify-center text-gray-400 dark:text-gray-500">
                 GH₵
               </div>
               <input
