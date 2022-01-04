@@ -4,18 +4,12 @@ import Posts from "../components/Posts"
 import { FeedLayout } from "../Layouts/Layouts";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useEffect } from 'react';
-import { useAuth } from "../contexts/AuthContext";
-import { useRouter } from "next/router";
 import axios from "axios";
 
 function Feed({trending}) {
   const { setTabActive } = useActiveTab()
-  const { currentUser } = useAuth()
-  const router = useRouter()
+
   useEffect(()=>{
-    if(!currentUser.token){
-      router.replace('/')
-    }
     setTabActive('home');
   },[])
     

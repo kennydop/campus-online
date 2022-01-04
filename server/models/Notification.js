@@ -1,13 +1,19 @@
 import mongoose from "mongoose"
 
 const NotificationMessageSchema = new mongoose.Schema({
-  title: {
-    type: String,
-  },
   message: {
     type: String,
   },
+  thumbnail: {
+    type: String,
+  },
   from: {
+    type: String,
+  },
+  type: {
+    type: String,
+  },
+  post: {
     type: String,
   },
   read: {
@@ -24,7 +30,7 @@ const NotificationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    notification:{
+    notifications:{
       type: [NotificationMessageSchema]
     }
   },

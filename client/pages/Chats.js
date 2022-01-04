@@ -9,17 +9,19 @@ import SearchChat from '../components/SearchChat';
 import { ArrowLeftIcon, SearchIcon } from '@heroicons/react/outline';
 import Message from '../components/Message';
 import Link from 'next/link';
-import { io } from "socket.io-client";
 import TimePast from '../components/TimePast';
 import FlipMove from 'react-flip-move';
 import { useRouter } from 'next/router';
 import NotFound from './404';
+import { useSocket } from '../contexts/SocketContext';
+import { useUtils } from '../contexts/UtilsContext';
 
 function Chats(){
 	const {currentUser} = useAuth();
 	const [ messages, setMessages ] = useState([]);
 	const [ chats, setChats ] = useState([]);
 	const { setTabActive } = useActiveTab()
+  const { setUnreadChats } = useUtils();
   const [searchRes, setSearchRes] = useState(null);
   const [openChat, setOpenChat] = useState();
   const [activeChat, setActiveChat] = useState();
@@ -31,7 +33,7 @@ function Chats(){
   const [directChatId, setDirectChatId] = useState();
   const [directChatRec, setDirectChatRec] = useState();
   const scrollRef = useRef();
-  const socket = useRef();
+  const {socket} = useSocket();
   const router = useRouter();
 
 //get initial Chats
@@ -47,7 +49,6 @@ function Chats(){
     };
     getChats();
   }, []);
-  
   //direct chat with
   useEffect(()=>{
     async function getUserAndChats(){
@@ -78,15 +79,14 @@ function Chats(){
 
   //get socket infos
   useEffect(() => {
-    socket.current = io("http://localhost:5000", {withCredentials: true})
-    socket.current.on("getMessage", async (data) => {
+    socket?.on("getMessage", async (data) => {
       setNewMessage(data)
     });
-    socket.current.on("msgsRead", async (id) => {
+    socket?.on("msgsRead", async (id) => {
       setReadReciepts({id, updated: Date.now()})
     });
-  }, []);
-  
+  }, [socket]);
+
   //recieved msgs
   useEffect(()=>{
     if(newMessage){
@@ -133,6 +133,7 @@ function Chats(){
   //active tabs
   useEffect(()=>{
     setTabActive('chat');
+    setUnreadChats([])
   },[])
   
   //expand text area
@@ -173,7 +174,7 @@ function Chats(){
         setChats(newChats)
       }
     }).then(()=>{
-      socket.current.emit("sendMessage", {
+      socket.emit("sendMessage", {
         from: currentUser._id,
         to: to,
         message: msg,
@@ -233,7 +234,7 @@ function Chats(){
   }
   
   function readMsgs(index, who){
-    who === "to" && socket.current.emit("readMsgs", {chatId: chats[index]._id, from: chats[index].members.find((m) => m !== currentUser._id)});
+    who === "to" && socket.emit("readMsgs", {chatId: chats[index]._id, from: chats[index].members.find((m) => m !== currentUser._id)});
     var target = chats[index]
     var newChat = chats
     if(who === "to"){

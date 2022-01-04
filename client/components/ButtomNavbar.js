@@ -9,8 +9,7 @@ function ButtomNavbar() {
   const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
   const router = useRouter();
   const { currentUser } = useAuth();
-  const { unreadChats } = useUtils();
-  const { unreadNotifications } = useUtils();
+  const { unreadNotifications, setUnreadNotifications, unreadChats } = useUtils();
 
   function handleHome(){
     if(typeof window === 'object' && router.pathname === '/feed'){
@@ -36,8 +35,8 @@ return (
     <div className='mx-auto' onClick = {handleHome}><HeaderIcon active = {tabActive[tabActive.length -1] === 'home'?true:undefined} Icon = {HomeIcon}/></div>
     <div className='mx-auto' onClick = {handleGlobal}><HeaderIcon active = {tabActive[tabActive.length -1] === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
     <div className='mx-auto' onClick = {()=>{setTabActive('post')}}><HeaderIcon active = {tabActive[tabActive.length -1].slice(0, 4) === 'post'?true:undefined} Icon = {PlusCircleIcon}/></div>
-    <div className='mx-auto' onClick = {()=>{setTabActive('chat'); router.push('/chats')}}><HeaderIcon active = {tabActive[tabActive.length -1] === 'chat'?true:undefined} Icon = {ChatAlt2Icon} unread={unreadChats !== 0 && unreadChats}/></div>
-    <div className='mx-auto' onClick = {()=>{setTabActive('notification')}}><HeaderIcon active = {tabActive[tabActive.length -1] === 'notification'?true:undefined} Icon = {BellIcon} unread={unreadNotifications !== 0 && unreadNotifications}/></div>
+    <div className='mx-auto' onClick = {()=>{setTabActive('chat'); router.push('/chats')}}><HeaderIcon active = {tabActive[tabActive.length -1] === 'chat'?true:undefined} Icon = {ChatAlt2Icon} unread={unreadChats?.length !== 0 && unreadChats?.length}/></div>
+    <div className='mx-auto' onClick = {()=>{setTabActive('notification'); setUnreadNotifications(0)}}><HeaderIcon active = {tabActive[tabActive.length -1] === 'notification'?true:undefined} Icon = {BellIcon} unread={unreadNotifications !== 0 && unreadNotifications}/></div>
     </>:
     <div className="items-center justify-center text-center cursor-pointer text-pink-500 font-semibold" onClick={()=>{router.replace('/login')}}>
       Login

@@ -4,20 +4,35 @@ import { useAuth } from '../contexts/AuthContext';
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useSocket } from '../contexts/SocketContext';
+import { useUtils } from '../contexts/UtilsContext';
 
 function NotificationPane() {
-  const { tabActive, setTabActive } = useActiveTab()
+  const { tabActive, setTabActive } = useActiveTab();
   const { currentUser } = useAuth();
   const [notifications, setNotifications] = useState();
+  const { socket } = useSocket();
+  const { unreadNotifications } = useUtils();
 
   useEffect(()=>{
     async function getNotifications(){
-      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/notifications/"+currentUser._id).then((res)=>{
-        setNotifications(res.data)
-      })
+      if(tabActive[tabActive.length-1]==='notification'){
+        axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/notifications/"+currentUser._id).then((res)=>{
+          setNotifications(res.data)
+          readNotifications()
+        })
+      }
     }
     getNotifications()
-  },[])
+  },[tabActive[tabActive.length-1]==='notification'])
+
+  const readNotifications = () => {
+    if(unreadNotifications !== 0){
+      socket.emit('readNotifications', {
+        id: currentUser._id,
+      })
+    }
+  }
 
   return (
     <div className={`side-bar ${tabActive[tabActive.length-1]==='notification'?'translate-x-0':'translate-x-full'}`}>
@@ -30,7 +45,7 @@ function NotificationPane() {
           notifications ?
             notifications.length !== 0 ?
             notifications.map((notification)=>
-              <Notification message={notification.message.replace('$__user$', currentUser.username)} read={notification.read}/>
+              <Notification notification={notification}/>
             )
             :
             <div className='mt-16 mx-3 flex flex-col justify-center items-center cursor-default text-gray-500 dark:text-gray-400 space-y-3'>
@@ -40,7 +55,7 @@ function NotificationPane() {
             <div className="loader-bg mx-auto animate-spin mt-5 z-50"/>
             
         }
-        {/* <div className='mt-20'/> */}
+        <div className='mt-20'/>
       </div>
     </div>
   )

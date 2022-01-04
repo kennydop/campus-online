@@ -15,8 +15,18 @@ function ProfileToFollow({name, username ,pic, college, id, page}) {
     axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${id}/follow`, {userId: currentUser._id}).then((res)=>{
     if(res.data === "user has been followed"){
         setButtonText('Unfollow')
+        socket.emit('sendNotification', {
+          from: currentUser._id,
+          to: id,
+          type: "follow",
+        })
       }else if(res.data === "user has been unfollowed"){
         setButtonText('Follow')
+        socket.emit('sendNotification', {
+          from: currentUser._id,
+          to: id,
+          type: "unfollow",
+        })
       }
     })
   }

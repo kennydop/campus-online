@@ -18,6 +18,7 @@ import cookieSession from "cookie-session";
 import College from "./models/College.js";
 import User from "./models/User.js";
 import Chat from "./models/Chat.js";
+import { createNotification, readNotifications } from "./controllers/notificationsController.js";
 
 import("./authStrategies/JWTStrategry.js");
 import("./authStrategies/authenticate.js");
@@ -113,6 +114,13 @@ io.on("connection", async (socket) => {
     });
   });
 
+  //send and get notifications
+  socket.on("sendNotification", (data) => {
+    const user = getUser(data.to);
+    createNotification(data)
+    io.to(user?.socketId).emit("newNotification");
+  });
+
   //when disconnect
   socket.on("disconnect", () => {
     console.log("a user disconnected!");
@@ -131,6 +139,10 @@ io.on("connection", async (socket) => {
     })
     chat.save()
   });
+
+  socket.on("readNotifications", async ({id}) => {
+    readNotifications(id)
+  })
 
 });
 

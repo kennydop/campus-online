@@ -72,8 +72,13 @@ export async function getChat(req, res){
 export async function getUnreadChats(req, res){
   try{
     const chats = await Chat.find({members: {$in: [req.params.id]}});
-    const unread = chats.filter(c=>c.messages[c.messages.length-1].read === false)
-    res.status(200).json(unread.length)
+    const unreadChats = chats.filter(c=>c.messages[c.messages.length-1].read === false)
+    const unread = []
+    unreadChats.forEach((c)=>{
+      unread.push(c.members.find(m=>m!==req.params.id))
+    })
+    console.log(unread)
+    res.status(200).json(unread)
   }catch(error){
     console.log(error)
     res.send(error)

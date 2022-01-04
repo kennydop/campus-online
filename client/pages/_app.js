@@ -5,6 +5,7 @@ import { ThemeProvider } from 'next-themes'
 import { AuthProvider } from '../contexts/AuthContext';
 import { ActiveTab } from '../contexts/ActiveTabContext';
 import { UtilsContext } from '../contexts/UtilsContext';
+import { SocketProvider } from '../contexts/SocketContext';
 
 export default function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout || ((page) => <>{page}</>)
@@ -15,13 +16,15 @@ export default function MyApp({ Component, pageProps }) {
         <title>Campus Online</title>
         <link rel='icon' href="/favicon.png"/>
       </Head>
-      <ActiveTab>
-        <ThemeProvider attribute="class" enableSystem={true} defaultTheme='system'>
-          <UtilsContext>
-            {getLayout(<Component {...pageProps} />)}
-          </UtilsContext>
-        </ThemeProvider>
-      </ActiveTab>
+      <UtilsContext>
+        <ActiveTab>
+          <SocketProvider>
+            <ThemeProvider attribute="class" enableSystem={true} defaultTheme='system'>
+              {getLayout(<Component {...pageProps} />)}
+            </ThemeProvider>
+          </SocketProvider>
+        </ActiveTab>
+      </UtilsContext>
     </AuthProvider>
   )
 }

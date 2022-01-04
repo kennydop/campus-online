@@ -8,12 +8,14 @@ import { useEffect, useState } from "react";
 import { defaultCoverPicture } from "../images/defaults"
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useAuth } from "../contexts/AuthContext";
+import { useSocket } from "../contexts/SocketContext";
 
 function ProfileCard({ admin, user, loggedIn, refreshUser }) {
   const [ followBtnText, setFollowBtnText ] = useState(user.isfollowing ?'Unfollow' : 'Follow')
   const { setTabActive } = useActiveTab()
   const { currentUser } = useAuth()
-
+  const { socket } = useSocket()
+  
   function followUser(){
     if(!loggedIn){
       router.replace('/login?returnUrl=/'+user._id)
@@ -23,9 +25,19 @@ function ProfileCard({ admin, user, loggedIn, refreshUser }) {
     setFollowBtnText("...")
     axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${user._id}/follow`, {userId: currentUser._id}).then((res)=>{
       if(res.data === "user has been followed"){
-      setFollowBtnText('Unfollow')
+        setFollowBtnText('Unfollow')
+        socket.emit('sendNotification', {
+          from: currentUser._id,
+          to: user._id,
+          type: "follow",
+        })
       }else if(res.data === "user has been unfollowed"){
         setFollowBtnText('Follow')
+        socket.emit('sendNotification', {
+          from: currentUser._id,
+          to: user._id,
+          type: "unfollow",
+        })
       }
       refreshUser()
     })
