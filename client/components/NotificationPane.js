@@ -12,21 +12,21 @@ function NotificationPane() {
   const { currentUser } = useAuth();
   const [notifications, setNotifications] = useState();
   const { socket } = useSocket();
-  const { unreadNotifications } = useUtils();
+  const { unreadNotifications, setUnreadNotifications } = useUtils();
 
   useEffect(()=>{
     async function getNotifications(){
       if(tabActive[tabActive.length-1]==='notification'){
         axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/notifications/"+currentUser._id).then((res)=>{
           setNotifications(res.data)
-          readNotifications()
         })
       }
     }
-    getNotifications()
+    getNotifications().then(readNotifications()).finally(setUnreadNotifications(0))
   },[tabActive[tabActive.length-1]==='notification'])
 
   const readNotifications = () => {
+    if(tabActive[tabActive.length-1]!=='notification')return
     if(unreadNotifications !== 0){
       socket.emit('readNotifications', {
         id: currentUser._id,

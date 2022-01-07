@@ -59,14 +59,14 @@ function TimePast({date, read, com, lastSeen, msg, _sent}) {
   return (
     msg || lastSeen ?
       <>
-          {lastSeen && <p className='fit-content text-xs'>{(lastSeen==="online" || lastSeen==="typing") ? lastSeen : TimeAgo.inWords(new Date(lastSeen).getTime())}</p>}
-          {msg && <p className="mr-1 text-1/5xs font-light">{(_sent ? 'sent: ': 'recieved: ')+TimeAgo.inWords(timeAgo)}</p>}
+          {lastSeen && <span className='fit-content text-xs'>{(lastSeen==="online" || lastSeen==="typing") ? lastSeen : TimeAgo.inWords(new Date(lastSeen).getTime())}</span>}
+          {msg && <span className="mr-1 text-1/5xs font-light">{(_sent ? 'sent: ': 'recieved: ')+TimeAgo.inWords(timeAgo)}</span>}
       </>
       :
       read === undefined ? 
-        <p className={`text-xs ${com ? 'font-thin' : 'font-light'} text-gray-600 dark:text-gray-400 truncate`}>{TimeAgo.inWords(timeAgo)}</p>
+        <span className={`text-xs ${com ? 'font-thin' : 'font-light'} text-gray-600 dark:text-gray-400 truncate`}>{TimeAgo.inWords(timeAgo)}</span>
         :
-        <div className = 'absolute bottom-3 right-3'><p className={`text-xs font-light ${read ? 'text-gray-400 dark:text-gray-500' : 'text-pink-500'}`}>{TimeAgo.inWords(timeAgo)}</p></div>
+        <div className = 'absolute bottom-3 right-3'><span className={`text-xs font-light ${read ? 'text-gray-400 dark:text-gray-500' : 'text-pink-500'}`}>{TimeAgo.inWords(timeAgo)}</span></div>
 
   )
 }

@@ -49,7 +49,6 @@ export async function getUnreadNotifications(req, res){
     const notificationBatch = await Notification.findOne({userId: req.params.id});
     if(notificationBatch){
       var notifications = notificationBatch.notifications.filter(n=>n.read === false)
-      console.log(notifications)
       res.status(200).json(notifications.length)
     }else{
       res.status(200).json(0)
@@ -77,7 +76,6 @@ export async function getNotifications(req, res){
     if(notificationBatch){
       var notifications = notificationBatch.notifications
       notifications.reverse()
-      console.log(notifications)
       res.status(200).json(notifications)
     }else{
       res.status(200).json([])
@@ -94,7 +92,7 @@ const postLikeHandler = async (data) => {
   const noti = {
     userId: data.to,
     notifications: {
-      message: `liked your ${post.type === "image" ? "picture" : post.type === "product" ? "ad": post.type} "${post.description.slice(0, 20)}..."`,
+      message: `${post.likes.length > 2 ? " and " + (post.likes.length-1) + " others" : ""} liked your ${post.type === "image" ? "picture" : post.type === "product" ? "ad": post.type} "${post.description.slice(0, 20)}..."`,
       thumbnail: post.media && (post.type !== "video" ? `https://res.cloudinary.com/kennydop/image/upload/w_100,q_auto/${post.media}` : `https://res.cloudinary.com/kennydop/video/upload/c_scale,w_100/${post.media}`),
       from: data.from,
       type: data.type,
@@ -120,7 +118,7 @@ const postCommentHandler = async (data) => {
   const noti = {
     userId: data.to,
     notifications: {
-      message: `commented on your ${post.type === "image" ? "picture" : post.type === "product" ? "ad": post.type} "${post.description.slice(0, 20)}...": ${data.comment.slice(0, 20)}`,
+      message: `${post.comments.length > 2 ? " and " + (post.comments.length-1) + " others" : ""} commented on your ${post.type === "image" ? "picture" : post.type === "product" ? "ad": post.type} "${post.description.slice(0, 20)}...": ${data.comment.slice(0, 20)}`,
       thumbnail: post.media && (post.type !== "video" ? `https://res.cloudinary.com/kennydop/image/upload/w_100,q_auto/${post.media}` : `https://res.cloudinary.com/kennydop/video/upload/c_scale,w_100/${post.media}`),
       from: data.from,
       type: data.type,
@@ -144,7 +142,7 @@ const pollVoteHandler = async (data) => {
   const noti = {
     userId: data.to,
     notifications: {
-      message: `voted in your poll "${post.description.slice(0, 20)}"`,
+      message: `${post.poll.votes.length > 2 ? " and " + (post.poll.votes.length-1) + " others" : ""} voted in your poll "${post.description.slice(0, 20)}"`,
       thumbnail: post.media && `https://res.cloudinary.com/kennydop/image/upload/w_100,q_auto/${post.media}`,
       from: data.from,
       type: data.type,

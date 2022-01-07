@@ -274,3 +274,7 @@ select{
   bottom: 0;
   left: 0;
 }
+
+.flex-basis-1 {
+  flex: 0 0 100%; /* flex-grow, flex-shrink, flex-basis */
+}

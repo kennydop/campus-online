@@ -5,10 +5,12 @@ import axios from 'axios'
 import { useState } from 'react'
 import Link from "next/link"
 import { useAuth } from '../contexts/AuthContext'
+import { useSocket } from '../contexts/SocketContext';
 
-function ProfileToFollow({name, username ,pic, college, id, page}) {
+function ProfileToFollow({name, username , pic, college, id, isfollowing, page}) {
   const { currentUser } = useAuth();
-  const [buttonText, setButtonText] = useState('Follow')
+  const [buttonText, setButtonText] = useState(isfollowing ? 'Unfollow' : 'Follow')
+  const { socket } = useSocket()
 
   function followUser(){
     setButtonText(buttonText==="Follow"?"Unfollow":"Follow")

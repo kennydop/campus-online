@@ -10,7 +10,6 @@ import { useActiveTab } from "../contexts/ActiveTabContext";
 import Link from "next/link";
 import PostDialog from "./PostDialog";
 import { useOnClickOutside } from "./Hooks";
-import { useTheme } from 'next-themes'
 import UpdateProfilePicture from "./UpdateProfilePicture";
 import UpdateCoverPicture from "./UpdateCoverPicture"
 import DeleteAccountDialog from "./DeleteAccountDialog";
@@ -28,28 +27,13 @@ function Header() {
   const router = useRouter();
   const accRef = useRef();
   const minAccRef = useRef();
-  const {theme, resolvedTheme, setTheme} = useTheme()
-  const { unreadNotifications, setUnreadNotifications, unreadChats } = useUtils();
+  const { unreadNotifications, unreadChats } = useUtils();
 
   useOnClickOutside(accRef, () =>setShowAccMenu(false))
   useOnClickOutside(minAccRef, () =>setShowMinAccMenu(false))
-  
-  useEffect(()=>{
-    if(currentUser?.preferences){
-      if(!currentUser.preferences.theme){
-        setTheme(resolvedTheme)
-      }else{
-        setTheme(currentUser.preferences.theme)
-      }
-    }else{
-      if(!theme || theme === 'system'){
-        setTheme(resolvedTheme)
-      }
-    }
-  },[])
 
   useEffect(()=>{
-    if(tabActive[tabActive.length - 1].slice(0,4) === "post" || tabActive[tabActive.length - 1]==='updatePP'  || tabActive[tabActive.length - 1]==='updateCI' || tabActive[tabActive.length - 1]==='notification' || tabActive[tabActive.length - 1]==='delAcc' || tabActive[tabActive.length - 1]==='share' || enterSearchMode){
+    if(tabActive[tabActive.length - 1].slice(0,4) === "post" || tabActive[tabActive.length - 1]==='updatePP'  || tabActive[tabActive.length - 1]==='updateCI' || tabActive[tabActive.length - 1]==='notification' || tabActive[tabActive.length - 1]==='delAcc' || tabActive[tabActive.length - 1]==='share' || tabActive[tabActive.length - 1]==='fflist' || enterSearchMode){
       document.body.classList.add('lg:mr-4')
       document.body.classList.add('overflow-hidden')
     }else{
@@ -150,7 +134,7 @@ function Header() {
           <div title="global" onClick = {handleGlobal}><HeaderIcon active = {tabActive[tabActive.length-1] === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
           <div title="chat" onClick = {()=>{setTabActive('chat'); router.push('/chats')}}><HeaderIcon active = {tabActive[tabActive.length-1] === 'chat'?true:undefined} Icon = {ChatAlt2Icon} unread={unreadChats?.length !== 0 && unreadChats?.length }/></div>
           <div title="make a post" onClick = {()=>{setTabActive('post')}}><HeaderIcon active = {tabActive[tabActive.length-1].slice(0, 4) === 'post'?true:undefined} Icon = {PlusCircleIcon}/></div>
-          <div title="notifications" onClick = {()=>{setTabActive('notification'); setUnreadNotifications(0)}}><HeaderIcon active = {tabActive[tabActive.length-1] === 'notification'?true:undefined} Icon = {BellIcon} unread={unreadNotifications !== 0 && unreadNotifications }/></div>
+          <div title="notifications" onClick = {()=>{setTabActive('notification')}}><HeaderIcon active = {tabActive[tabActive.length-1] === 'notification'?true:undefined} Icon = {BellIcon} unread={unreadNotifications !== 0 && unreadNotifications }/></div>
           <div className = "hidden md:block text-center pl-3 relative">
               <img title="account" onClick = {()=>setShowAccMenu(true)}
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer ${tabActive[tabActive.length - 1]==='profile' ? 'border-2 border-pink-500': ''}`}
@@ -180,9 +164,9 @@ function Header() {
       </div>
       {enterSearchMode && <SearchContainer hits={searchRes} clearSearch={clearSearch}/>}
       {enterSearchMode && <div onClick={()=>{setEnterSearchMode(false); setSearchRes([])}} className='w-screen h-full block md:hidden fixed z-10 bg-gray-900 opacity-40'/>}
-      {(tabActive[tabActive.length - 1].slice(0,4) === "post" || tabActive[tabActive.length - 1]==='updatePP' || tabActive[tabActive.length - 1]==='updateCI' || tabActive[tabActive.length - 1]==='notification' || tabActive[tabActive.length - 1]==='delAcc' || tabActive[tabActive.length - 1]==='share') && <div onClick={()=>{setTabActive(tabActive[tabActive.length-2]==='notification' ? tabActive[tabActive.length-3] : "go back"); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
+      {(tabActive[tabActive.length - 1].slice(0,4) === "post" || tabActive[tabActive.length - 1]==='updatePP' || tabActive[tabActive.length - 1]==='updateCI' || tabActive[tabActive.length - 1]==='notification' || tabActive[tabActive.length - 1]==='delAcc' || tabActive[tabActive.length - 1]==='share' || tabActive[tabActive.length - 1]==='fflist') && <div onClick={()=>{setTabActive(tabActive[tabActive.length-2]==='notification' ? tabActive[tabActive.length-3] : "go back"); setEnterSearchMode(false)}} className='w-screen h-screen fixed top-0 z-50 bg-black opacity-40'/>}
       {currentUser && <div>
-          <NotificationPane/>
+        <NotificationPane/>
       </div>}
       {tabActive[tabActive.length - 1].slice(0,4) === "post" && <div>
         <PostDialog/>

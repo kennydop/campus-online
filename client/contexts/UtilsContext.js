@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useContext, useState, createContext, useEffect, useRef } from "react"
 import { useAuth } from "./AuthContext"
+import { useTheme } from 'next-themes'
 
 const Utils = createContext()
 
@@ -12,12 +13,12 @@ export function UtilsContext({children}){
   const [unreadChats, setUnreadChats] = useState()
   const [unreadNotifications, setUnreadNotifications] = useState()
   const { currentUser } = useAuth()
+  const {theme, resolvedTheme, setTheme} = useTheme()
 
   useEffect(()=>{
     async function getUnreadChats(){
       if(!unreadChats && currentUser){
         axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/chats/unread/"+currentUser._id).then((res)=>{
-          console.log(res.data)
           setUnreadChats(res.data)
         })
       }
@@ -32,6 +33,20 @@ export function UtilsContext({children}){
     getUnreadChats()
     getUnreadNotifications()
   },[])
+
+  useEffect(()=>{
+    if(currentUser?.preferences){
+      if(!currentUser.preferences.theme){
+        setTheme(resolvedTheme)
+      }else{
+        setTheme(currentUser.preferences.theme)
+      }
+    }else{
+      if(!theme || theme === 'system'){
+        setTheme(resolvedTheme)
+      }
+    }
+  },[currentUser])
 
   const value = {
     unreadChats,

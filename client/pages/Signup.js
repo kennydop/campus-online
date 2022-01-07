@@ -77,6 +77,7 @@ function Signup() {
 						<input
 						ref={username}
             minLength="3"
+            maxLength="30"
             pattern="^[A-Za-z0-9_]{3,15}$"
             required={true}
 						type="text"

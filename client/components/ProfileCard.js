@@ -9,10 +9,12 @@ import { defaultCoverPicture } from "../images/defaults"
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useSocket } from "../contexts/SocketContext";
+import FollowersAndFollowingsList from "./FollowersAndFollowingsList";
 
 function ProfileCard({ admin, user, loggedIn, refreshUser }) {
   const [ followBtnText, setFollowBtnText ] = useState(user.isfollowing ?'Unfollow' : 'Follow')
-  const { setTabActive } = useActiveTab()
+  const [ showFF, setShowFF ] = useState()
+  const { tabActive, setTabActive } = useActiveTab()
   const { currentUser } = useAuth()
   const { socket } = useSocket()
   
@@ -48,6 +50,7 @@ function ProfileCard({ admin, user, loggedIn, refreshUser }) {
   }, [user])
 
   return (
+    <>
     <div className='md:mx-auto w-full md:w-8/12 bg-white dark:bg-bdark-100 shadow-md rounded-b-lg md:my-6 mb-6 md:rounded-lg overflow-hidden'>
       <div className='relative w-full h-52 md:h-60 overflow-hidden'>
         <img src={ user?.coverPicture ? user.coverPicture : defaultCoverPicture}
@@ -62,8 +65,8 @@ function ProfileCard({ admin, user, loggedIn, refreshUser }) {
               <div ><p className = 'text-gray-500 dark:text-gray-400 text-xs font-light'>{user.college}</p></div>
             </div>
             <div className='flex space-x-5 mx-auto lg:ml-56'>
-              <div className = 'text-center text-gray-500 dark:text-gray-400 font-light cursor-pointer'>{user.followers ?( user.followers.length === 1 ? "1 Follower" : user.followers.length + " Followers")  : "0 Followers"}</div>
-              <div className = 'text-center text-gray-500 dark:text-gray-400 font-light cursor-pointer'>{user.followings ? user.followings.length : "0"} Followings</div>
+              <div onClick={()=>{setShowFF('followers'); setTabActive('fflist')}} className = 'text-center text-gray-500 dark:text-gray-400 font-light cursor-pointer'>{user.followers ?( user.followers.length === 1 ? "1 Follower" : user.followers.length + " Followers")  : "0 Followers"}</div>
+              <div onClick={()=>{setShowFF('followings'); setTabActive('fflist')}} className = 'text-center text-gray-500 dark:text-gray-400 font-light cursor-pointer'>{user.followings ? user.followings.length : "0"} Followings</div>
             </div>
           </div>
           <div className='absolute -top-20 left-1/2 -ml-14 lg:-top-20 lg:left-32'>
@@ -85,6 +88,8 @@ function ProfileCard({ admin, user, loggedIn, refreshUser }) {
           </div>
         </div>
     </div>
+    {(showFF && tabActive[tabActive.length - 1] === 'fflist') && <FollowersAndFollowingsList setShowFF={setShowFF} _followers={user.followers} _followings={user.followings} username={user.username} showFF={showFF}/>}
+    </>
   )
 }
 export default ProfileCard

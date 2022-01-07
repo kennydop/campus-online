@@ -16,15 +16,15 @@ export default function MyApp({ Component, pageProps }) {
         <title>Campus Online</title>
         <link rel='icon' href="/favicon.png"/>
       </Head>
-      <UtilsContext>
-        <ActiveTab>
-          <SocketProvider>
-            <ThemeProvider attribute="class" enableSystem={true} defaultTheme='system'>
+      <ThemeProvider attribute="class" enableSystem={true} defaultTheme='system'>
+        <UtilsContext>
+          <ActiveTab>
+            <SocketProvider>
               {getLayout(<Component {...pageProps} />)}
-            </ThemeProvider>
-          </SocketProvider>
-        </ActiveTab>
-      </UtilsContext>
+            </SocketProvider>
+          </ActiveTab>
+        </UtilsContext>
+      </ThemeProvider>
     </AuthProvider>
   )
 }
