@@ -12,7 +12,7 @@ function Suggestions() {
 
   
   useEffect(()=>{
-      setTabActive('suggestions');
+    setTabActive('suggestions');
   },[])
 
   useEffect(()=>{

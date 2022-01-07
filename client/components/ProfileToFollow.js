@@ -7,7 +7,7 @@ import Link from "next/link"
 import { useAuth } from '../contexts/AuthContext'
 import { useSocket } from '../contexts/SocketContext';
 
-function ProfileToFollow({name, username , pic, college, id, isfollowing, page}) {
+function ProfileToFollow({name, username , pic, college, id, isfollowing, page, il}) {
   const { currentUser } = useAuth();
   const [buttonText, setButtonText] = useState(isfollowing ? 'Unfollow' : 'Follow')
   const { socket } = useSocket()
@@ -35,7 +35,7 @@ function ProfileToFollow({name, username , pic, college, id, isfollowing, page})
 
   return (
     page ?
-    <div className="flex flex-col items-center justify-center bg-white dark:bg-bdark-100 text-gray-500 dark:text-gray-400 p-2 rounded-lg shadow-md dark:shadow-lg m-4">
+    <div className={`flex flex-col items-center justify-center bg-white dark:bg-bdark-100 text-gray-500 dark:text-gray-400 p-2 rounded-lg shadow-md dark:shadow-lg ${il ? 'mx-1.5 w-40' : 'm-2 md:m-4'}`}>
       <div className='h-16 w-16 rounded-full overflow-hidden my-2'>
         <Link href={`/${username}`}><img
           alt={`${name}'s profile picture`}
@@ -43,12 +43,12 @@ function ProfileToFollow({name, username , pic, college, id, isfollowing, page})
           src={pic}
         /></Link>
       </div>
-      <div className='w-full px-4 flex flex-col items-center justify-center overflow-hidden'>
+      <div className={`w-full flex flex-col items-center justify-center overflow-hidden ${il ? 'px-1' : 'px-4'}`}>
         <Link href={`/${username}`}><p className="cursor-pointer text-sm truncate w-full text-center">{name}</p></Link>
         <Link href={`/${username}`}><p className="cursor-pointer text-xs truncate w-full text-center">@{username}</p></Link>
         <p className='text-xs font-extralight truncate w-full text-center'>{college}</p>
       </div>
-      <div className={`my-2 py-1.5 px-4 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-xs ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={followUser}>{buttonText}</div>
+      <button className={`clicky my-2 py-1.5 px-4 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-xs ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={followUser}>{buttonText}</button>
     </div>
     :
     <div className='flex items-center justify-between border-b dark:border-bdark-200 px-2 py-4 mb-2 text-gray-500 dark:text-gray-400 w-full'>
