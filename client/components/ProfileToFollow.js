@@ -35,7 +35,7 @@ function ProfileToFollow({name, username , pic, college, id, isfollowing, page, 
 
   return (
     page ?
-    <div className={`flex flex-col items-center justify-center bg-white dark:bg-bdark-100 text-gray-500 dark:text-gray-400 p-2 rounded-lg shadow-md dark:shadow-lg ${il ? 'mx-1.5 w-40' : 'm-2 md:m-4'}`}>
+    <div className={`flex flex-col items-center justify-center bg-white dark:bg-bdark-100 text-gray-500 dark:text-gray-400 p-2 rounded-lg shadow-md dark:shadow-lg flex-shrink-0 ${il ? 'mx-1.5 w-40 mb-1.5' : 'm-2 md:m-4'}`}>
       <div className='h-16 w-16 rounded-full overflow-hidden my-2'>
         <Link href={`/${username}`}><img
           alt={`${name}'s profile picture`}

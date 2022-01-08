@@ -13,7 +13,6 @@ const uprotectedRoutes = ['/login', '/signup', '/forgotpassword', '/', '/[profil
 
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState()
-	const [refreshPosts, setRefreshPosts] = useState()
 	const [loading, setLoading] = useState(true)
 	const router = useRouter()
 
@@ -59,8 +58,6 @@ export function AuthProvider({ children }) {
 
 	const value = {
 		currentUser,
-    refreshPosts,
-    setRefreshPosts,
     setCurrentUser,
 		logout,
 	}

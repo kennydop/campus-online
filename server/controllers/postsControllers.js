@@ -5,6 +5,9 @@ import cloudinary from "../utils/cloudinary.js";
 export const createNewPost = async (req, res) => {
   var post = req.body
   try {
+    if(post.media === false){
+      delete post.media
+    }
     if(post.media){
       const uploadResponse = await cloudinary.uploader.upload(post.media, {
         upload_preset: 'co_posts', resource_type: "auto"
@@ -47,7 +50,6 @@ export const updatePost = async (req, res) => {
 export const deletePost = async (req, res) => {
 	try {
     const post = await Post.findById(req.params.id)
-    await User.findByIdAndUpdate(post.authorId, {$inc: {posts: -1}}, {new: true})
     if(post.media){
       if(post.type !== "video"){
         await cloudinary.uploader.destroy(post.media.split("upload/")[1].split('.')[0]);
@@ -56,10 +58,12 @@ export const deletePost = async (req, res) => {
       }
     }
 		await Post.findByIdAndDelete(req.params.id).then(()=>
-			res.status(200).json("the post has been deleted")
+      res.status(200).json("the post has been deleted")
     )
-	} catch (error) {
-	res.status(403).json(error);
+    await User.findByIdAndUpdate(post.authorId, {$inc: {posts: -1}}, {new: true})
+	}catch (error){
+    console.log(error)
+	  res.status(403).json(error);
 	}
 }
 

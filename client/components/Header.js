@@ -27,7 +27,7 @@ function Header() {
   const router = useRouter();
   const accRef = useRef();
   const minAccRef = useRef();
-  const { unreadNotifications, unreadChats } = useUtils();
+  const { unreadNotifications, unreadChats, newPosts, setRefreshPosts } = useUtils();
 
   useOnClickOutside(accRef, () =>setShowAccMenu(false))
   useOnClickOutside(minAccRef, () =>setShowMinAccMenu(false))
@@ -46,6 +46,7 @@ function Header() {
   function handleHome(){
     if(typeof window === 'object' && router.pathname === '/feed'){
       window.scrollTo({top: 0, behavior: 'smooth'})
+      newPosts > 0 && setRefreshPosts(true)
     }else{
     router.push('/feed');
     }
@@ -130,7 +131,7 @@ function Header() {
         {/*right*/}
         {currentUser ? 
         <div className = "hidden md:flex md:items-center md:justify-end md:mr-8 lg:mr-16">
-          <div title="home" onClick = {handleHome}><HeaderIcon active = {tabActive[tabActive.length-1] === 'home'?true:undefined} Icon = {HomeIcon}/></div>
+          <div title="home" onClick = {handleHome}><HeaderIcon active = {tabActive[tabActive.length-1] === 'home'?true:undefined} Icon = {HomeIcon} unread={newPosts !==0 && newPosts}/></div>
           <div title="global" onClick = {handleGlobal}><HeaderIcon active = {tabActive[tabActive.length-1] === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
           <div title="chat" onClick = {()=>{setTabActive('chat'); router.push('/chats')}}><HeaderIcon active = {tabActive[tabActive.length-1] === 'chat'?true:undefined} Icon = {ChatAlt2Icon} unread={unreadChats?.length !== 0 && unreadChats?.length }/></div>
           <div title="make a post" onClick = {()=>{setTabActive('post')}}><HeaderIcon active = {tabActive[tabActive.length-1].slice(0, 4) === 'post'?true:undefined} Icon = {PlusCircleIcon}/></div>
@@ -158,8 +159,8 @@ function Header() {
         </div>
         :
         <div className="hidden md:flex items-center justify-end space-x-5 mr-8">
-          <button className='h-8 w-24 rounded-full shadow-md  text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl bg-pink-500 text-white dark:text-gray-200' onClick={()=>{router.replace('/login')}}>Login</button>
-          <button className='h-8 w-24 rounded-full shadow-md border border-pink-500 text-pink-500 text-center bg-white dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:text-pink-500 dark:shadow-lg dark:hover:shadow-xl' onClick={()=>{router.replace('/signup')}}>Sign Up</button>
+          <button className='clicky h-8 w-24 rounded-full shadow-md  text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl bg-pink-500 text-white dark:text-gray-200' onClick={()=>{router.replace('/login')}}>Login</button>
+          <button className='clicky h-8 w-24 rounded-full shadow-md border border-pink-500 text-pink-500 text-center bg-white dark:bg-bdark-200 cursor-pointer hover:shadow-lg dark:text-pink-500 dark:shadow-lg dark:hover:shadow-xl' onClick={()=>{router.replace('/signup')}}>Sign Up</button>
         </div>}
       </div>
       {enterSearchMode && <SearchContainer hits={searchRes} clearSearch={clearSearch}/>}

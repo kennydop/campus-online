@@ -7,10 +7,10 @@ import { useState, useRef, useEffect } from "react"
 import {useOnClickOutside} from "./Hooks"
 import axios from "axios"
 
-function Comment({ comment, admin, delCom}) {
+function Comment ({ comment, admin, delCom}){
   const [del, setDel] = useState()
   const [author, setAuthor] = useState()
-  const ref = useRef();
+  const mref = useRef();
 
   useEffect(()=>{
     async function getAuthor(){
@@ -18,28 +18,30 @@ function Comment({ comment, admin, delCom}) {
         setAuthor(res.data)
       })
     }
-    getAuthor()
+    !author && getAuthor()
   },[])
 
-  useOnClickOutside(ref, () =>setDel(false))
+  useOnClickOutside(mref, () =>setDel(false))
 
   return (
-    <div className='relative flex flex-col items-start my-2 mx-2'>
-      <div className='flex items-center w-full justify-between'>
-        <div className='flex items-center'>
-          <Link href={`/${author?.username}`}><img src={author?.profilePicture} className='h-6 w-6 rounded-full object-cover mr-2 cursor-pointer'/></Link>
-          <div>
-            <div className='flex justify-center items-center space-x-2 truncate'>
-              <Link href={`/${author?.username}`}><p className='text-sm text-gray-600 font-light dark:text-gray-400 truncate cursor-pointer'>{author?.name}</p></Link>
-              <Link href={`/${author?.username}`}><p className='text-gray-700 dark:text-gray-300 text-xs font-thin truncate cursor-pointer'>@{author?.username}</p></Link>
-            </div>
-            <TimePast com date={new Date(comment.createdAt)}/>
-          </div>
-        </div>
-        {admin && <div className="mx-3" onClick={()=>setDel(true)}><DotsVerticalIcon className="h-4 text-gray-500 dark:text-gray-400 cursor-pointer"/></div>}
+    <div className='flex items-start my-2.5 w-full relative'>
+      <div className='h-7 w-7 md:h-9 md:w-9 rounded-full flex-shrink-0 mr-1 md:mr-2'>
+        <Link href={`/${author?.username}`}><img src={author?.profilePicture} className='h-7 w-7 md:h-9 md:w-9 rounded-full object-cover cursor-pointer'/></Link>
       </div>
-      {admin && <div ref={ref} onClick={()=>{setDel(false); delCom(comment._id)}} className={`absolute top-0 right-3.5 bg-gray-50 dark:bg-bdark-50 ${del ? "shadow-all dark:shadow-xl text-red-500 hover:bg-gray-100 dark:hover:bg-bdark-100 rounded-lg px-4 py-1 cursor-pointer" : "hidden"}`}>Delete</div>}
-      <div  className='text-gray-600 dark:text-gray-400 self-start whitespace-pre-wrap cursor-default text-sm font-light'>{comment.comment}</div>
+      <div className='wpps md:wppm'>
+        <div className="relative py-1 px-2 rounded-lg bg-blue-grey-50 dark:bg-bdark-200">
+          <div className="flex justify-between items-center">
+            <span className='space-x-2 truncate'>
+              <Link href={`/${author?.username}`}><span className='text-sm text-gray-600 font-semibold dark:text-gray-400 truncate cursor-pointer'>{author?.name}</span></Link>
+              <Link href={`/${author?.username}`}><span className='text-gray-600 dark:text-gray-400 text-sm truncate cursor-pointer'>@{author?.username}</span></Link>
+            </span>
+            {admin && <div onClick={()=>setDel(true)}><DotsVerticalIcon className="h-4 ml-2 text-gray-500 dark:text-gray-400 cursor-pointer"/></div>}
+          </div>
+          <div className='text-gray-600 dark:text-gray-400 self-start whitespace-pre-wrap cursor-default text-sm'>{comment.comment}</div>
+          {admin && <div ref={mref} onClick={()=>{setDel(false); delCom(comment._id)}} className={`absolute top-1.5 right-3.5 bg-white dark:bg-bdark-100 ${del ? "shadow-all dark:shadow-xl text-red-500 hover:bg-gray-100 dark:hover:bg-bdark-100 rounded-lg px-4 py-1 cursor-pointer" : "hidden"}`}>Delete</div>}
+        </div>
+        <TimePast date={new Date(comment.createdAt)}/>
+      </div>
     </div>
   )
 }

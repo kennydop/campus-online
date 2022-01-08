@@ -10,8 +10,10 @@ export function useUtils(){
 }
 
 export function UtilsContext({children}){
-  const [unreadChats, setUnreadChats] = useState()
-  const [unreadNotifications, setUnreadNotifications] = useState()
+  const [unreadChats, setUnreadChats] = useState([])
+  const [unreadNotifications, setUnreadNotifications] = useState(0)
+  const [newPosts, setNewPosts] = useState(0)
+  const [refreshPosts, setRefreshPosts] = useState()
   const { currentUser } = useAuth()
   const {theme, resolvedTheme, setTheme} = useTheme()
 
@@ -51,8 +53,12 @@ export function UtilsContext({children}){
   const value = {
     unreadChats,
     unreadNotifications,
+    newPosts,
+    refreshPosts, 
     setUnreadChats,
-    setUnreadNotifications
+    setUnreadNotifications,
+    setNewPosts,
+    setRefreshPosts
   }
   
   return(

@@ -6,6 +6,7 @@ import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useEffect } from 'react';
 import axios from "axios";
 import InLineQuickFollow from "../components/InLineQuickFollow";
+import { PostsProvider } from "../contexts/PostsContext";
 
 function Feed({trending}) {
   const { setTabActive } = useActiveTab()
@@ -15,18 +16,20 @@ function Feed({trending}) {
   },[])
     
   return (
-    <div>
-      {/* <Stories userId={currentUser._id}/> */}
-      <div className='mt-2'></div>
-        <div className='flex flex-col'>
-          <div className='mx-auto mt-2 md:mt-3'>
-            <AddPost/>
-            <InLineQuickFollow/>
-            <Posts/>
-          </div>
-        <div className='pt-20'></div>
+    <PostsProvider>
+      <div>
+        {/* <Stories userId={currentUser._id}/> */}
+        <div className='mt-2'></div>
+          <div className='flex flex-col'>
+            <div className='mx-auto mt-1 md:mt-3'>
+              <AddPost/>
+              <InLineQuickFollow/>
+              <Posts/>
+            </div>
+          <div className='pt-20'></div>
+        </div>
       </div>
-    </div>
+    </PostsProvider>
   )
 }
 Feed.getLayout = function getLayout(page) {

@@ -253,17 +253,11 @@ select{
     border-bottom-left-radius: 0.5rem;
     border-top-right-radius: 0px;
   }
-  .text-xs {
-    font-size: 0.65rem;
-    line-height: 0.85rem;
+  .wpps{
+    max-width: calc(100% - 32px);
   }
-  .text-2xs{
-  font-size: 0.5rem;
-  line-height: 0.75rem;
-  }
-  .text-1\/5xs{
-  font-size: 0.5rem;
-  line-height: 0.75rem;
+  .wppm{
+    max-width: calc(100% - 44px);
   }
 }
 

@@ -3,9 +3,10 @@ import { useActiveTab } from "../contexts/ActiveTabContext"
 import { useState, useEffect, useRef } from "react"
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
+import { useSocket } from "../contexts/SocketContext";
 
 function PostDialog() {
-  const { currentUser, setRefreshPosts } = useAuth()
+  const { currentUser } = useAuth()
   const { setTabActive, tabActive } = useActiveTab()
   const postRef = useRef(null);
   const [mediaToPost, setMediaToPost] = useState()
@@ -18,6 +19,7 @@ function PostDialog() {
   const [posting, setPosting] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isAnonymous, setIsAnonymous] = useState(false)
+  const { socket } = useSocket()
 
   useEffect(()=>{
     if(tabActive[tabActive.length-1] === "post media"){
@@ -134,33 +136,36 @@ function PostDialog() {
 				return
 			}
     }
-      
+    const post = {
+      authorId: currentUser._id,
+      type: type,
+      description: type === "product" ? product_desc.value.trim() : (type === "poll" ? poll_desc.value.trim() : postRef.current.value.trim()),
+      media: type === "product" ? productImg : (type === "poll" ? pollImg : (_riv && mediaToPost)),
+      college: currentUser.college,
+      isAnonymous: type !== "product" && isAnonymous,
+      poll: type === "poll" && {
+        exp: (poll_duration_p.value + ' ' + poll_duration_s.value),
+        choices: poll_choices,
+      },
+      product: type === "product" && {
+        productName: product_name.value.trim(),
+        productPrice: Math.abs(product_price.value).toFixed(2),
+        productCondition: product_condition.value.trim()
+      }
+    }
+
     setPosting(true)
-    axios.post(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts", 
-      {
-        authorId: currentUser._id,
-        type: type,
-        description: type === "product" ? product_desc.value.trim() : (type === "poll" ? poll_desc.value.trim() : postRef.current.value.trim()),
-        media: type === "product" ? productImg : (type === "poll" ? pollImg : (_riv && mediaToPost)),
-        college: currentUser.college,
-        isAnonymous: type !== "product" && isAnonymous,
-				poll: type === "poll" && {
-					exp: (poll_duration_p.value + ' ' + poll_duration_s.value),
-        	choices: poll_choices,
-				},
-				product: type === "product" && {
-					productName: product_name.value.trim(),
-					productPrice: Math.abs(product_price.value).toFixed(2),
-					productCondition: product_condition.value.trim()
-				}
-      }).then(()=>{
-        setPosting(false)
-        setRefreshPosts(true)
-        document.getElementById("close_post").click()
-      }).catch((error)=>{
-        type === "poll" ? setPollError(error) : (type === "product" ? setProductError(error) : setError(error))        
-        document.getElementById("close_post").click()
+    axios.post(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts", post).then(()=>{
+      setPosting(false)
+      socket.emit('sendPost', {
+        id: currentUser._id,
+        college: currentUser.college
       })
+      document.getElementById("close_post").click()
+    }).catch((error)=>{
+      type === "poll" ? setPollError(error) : (type === "product" ? setProductError(error) : setError(error))        
+      document.getElementById("close_post").click()
+    })
   }
 
   function createChoiceFields(e){

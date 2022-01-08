@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import NotFound from './404';
+import { PostsProvider } from '../contexts/PostsContext';
 
 function Profile() {
   const { setTabActive } = useActiveTab()
@@ -81,12 +82,12 @@ function Profile() {
       <NotFound/>
       :
       user ?
-      <>
+      <PostsProvider>
         <ProfileCard admin={admin} user={user} loggedIn={loggedIn} refreshUser={refreshUser}/>
         <About admin={admin} user={user}/>
         <MyPosts admin={admin} user={user} refreshUser={refreshUser}/>
         <div className='pt-20'></div>
-      </>
+      </PostsProvider>
         :
       <div className="mt-8">
         <div className="loader-bg mx-auto animate-spin"></div>

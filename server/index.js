@@ -75,20 +75,16 @@ const io = new Server(server, {
 let users = [];
 
 const addUser = async(userId, socketId) => {
-  console.log("++++++++++++++++++++++++++", {userId: userId, socketId: socketId})
   if(!users.some((user) => user.userId === userId)){
     users.push({ userId, socketId });
     await User.findByIdAndUpdate(userId, {lastSeen: "online"})
-    console.log(":::::::::::::::::::::::::::", users)
   }
 };
 
 const removeUser = async(socketId) => {
   const _user = await users.find((user)=>user.socketId === socketId)
-  console.log("-----------------------",_user)
   _user && await User.findByIdAndUpdate(_user?.userId, {lastSeen: new Date().toISOString()})
   users = users.filter((user) => user.socketId !== socketId);
-  console.log(":::::::::::::::::::::::::",users)
 };
 
 const getUser = (userId) => {
@@ -139,9 +135,30 @@ io.on("connection", async (socket) => {
     })
     chat.save()
   });
-
+  //read notifications
   socket.on("readNotifications", async ({id}) => {
     readNotifications(id)
+  })
+  
+  //send post
+  socket.on("sendPost", async (data) => {
+    io.emit("newPost", data)
+  })
+  //send like
+  socket.on("sendLike", async (data) => {
+    socket.broadcast.emit("newLike", data)
+  })
+  //send comment
+  socket.on("sendComment", async (data) => {
+    socket.broadcast.emit("newComment", data)
+  })
+  //delete post
+  socket.on("sendDeletePost", async (data) => {
+    socket.broadcast.emit("deletePost", data)
+  })
+  //delete comment
+  socket.on("sendDeleteComment", async (data) => {
+    socket.broadcast.emit("deleteComment", data)
   })
 
 });

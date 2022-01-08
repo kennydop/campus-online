@@ -6,9 +6,8 @@ import Image from 'next/image'
 import {HeartIcon, ChatAltIcon, ShareIcon} from '@heroicons/react/outline'
 import { DotsVerticalIcon } from "@heroicons/react/outline"
 import { useAuth } from "../contexts/AuthContext";
-import { forwardRef } from 'react';
 import {HeartIcon as Filled} from '@heroicons/react/solid'
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, forwardRef } from 'react';
 import { useTheme } from 'next-themes';
 import TimePast from './TimePast';
 import axios from 'axios';
@@ -19,6 +18,7 @@ import { useRouter } from 'next/router';
 import { useActiveTab } from '../contexts/ActiveTabContext';
 import Share from './Share';
 import { useSocket } from '../contexts/SocketContext'
+import { usePosts } from '../contexts/PostsContext';
 
 
 const urlify = (text) => {
@@ -29,7 +29,7 @@ const urlify = (text) => {
 }
 
 const Post = forwardRef(({ _post, refreshUser }, ref) => {
-  const { currentUser, setRefreshPosts } = useAuth();
+  const { currentUser } = useAuth();
   const { setTabActive, tabActive } = useActiveTab();
   const [post, setPost] = useState(_post)
   const [author, setAuthor] = useState()
@@ -40,12 +40,15 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
   const [voted, setVoted] = useState(false)
   const [votingClosed, setVotingClosed] = useState(false)
   const [pdesc, setPDesc] = useState(urlify(_post.description).slice(0, 100))
+  const [newLike, setNewLike] = useState()
+  const [newComment, setNewComment] = useState()
+  const [shownComments, setShownComments] = useState([])
   const comRef = useRef()
-  const scrollRef = useRef()
   const { theme } = useTheme()
   const moreRef = useRef();
   const router = useRouter()
   const { socket } = useSocket()
+  const { deletePost, unfollowUser } = usePosts()
 
   useOnClickOutside(moreRef, () =>setOpenOptions(false))
 
@@ -57,6 +60,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
         setVotingClosed(new Date(post.poll.expireAt) <= new Date())
       }
     }
+    setShownComments(post ? post.comments.reverse().slice(0, 4).reverse() : _post.comments.reverse().slice(0, 4).reverse())
   }, [_post, post])
 
   useEffect(() => {
@@ -65,51 +69,86 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
         setAuthor(res.data)
       })
     }
-    !post.isAnonymous && getAuthor()
+    (!post.isAnonymous && !author) && getAuthor()
   }, [])
 
-//voted?
-useEffect(() => {
-  if(post.type === "poll" && (voted || votingClosed)){
-    const choices = document.getElementById(post._id).getElementsByClassName("poll-btn")
-    if(voted){
-      const chosen = post.poll.choices.find(c => c.votes.includes(currentUser._id))
-      const selected = document.getElementById(chosen._id)
-      selected.classList.replace("border-gray-400", "border-pink-500")
-      selected.classList.replace("dark:border-gray-200", "dark:border-pink-500")
-      selected.classList.replace("text-gray-500", "text-pink-500")
-      selected.classList.replace("dark:text-gray-400", "dark:text-pink-500")
+  //socket
+  useEffect(() => {
+    if(currentUser){
+      socket.on("newLike", async (data) => {
+        setNewLike(data)
+      });
+      socket.on("newComment",  async (data) => {
+        setNewComment(data)
+      });
+      socket.on("deletePost",  async (data) => {
+        post._id === data.id && deletePost(data.id)
+      });
+      socket.on("deleteComment",  async (data) => {
+        setNewComment(data)
+      });
     }
-      
-    for (let i = 0; i < choices.length; i++) {
-      const e = choices[i];
-      const index = post.poll.choices.findIndex(c=>c._id === e.id.valueOf())
-      const fillAmount = post.poll.choices[index].votes.length/post.poll.votes.length * 100
-      e.children.item(0).style.width = `${fillAmount}%`
+  }, [socket]);
+  useEffect(() => {
+    if(newLike && newLike.id === post._id){
+      setPost((oldVal)=> {oldVal.updatedAt = newLike.updatedAt, newLike.status === true ? oldVal.likes.push(newLike.sender) : oldVal.likes = oldVal.likes.filter(id=> id !== newLike.sender); return {...oldVal}})
     }
-  }
-},[voted, votingClosed])
+  },[newLike])
+  useEffect(() => {
+    if(newComment && newComment.postId === post._id){
+      if(newComment.commentId){
+        setPost((oldVal)=> {oldVal.comments = oldVal.comments.filter(c=>c._id !== newComment.commentId); return {...oldVal}})
+      }else{
+        setPost((oldVal)=> {oldVal.comments.push(newComment); return {...oldVal}})
+      }
+    }
+  },[newComment])
 
-//like post
+  //voted?
+  useEffect(() => {
+    if(post.type === "poll" && (voted || votingClosed)){
+      const choices = document.getElementById(post._id).getElementsByClassName("poll-btn")
+      if(voted){
+        const chosen = post.poll.choices.find(c => c.votes.includes(currentUser._id))
+        const selected = document.getElementById(chosen._id)
+        selected.classList.replace("border-gray-400", "border-pink-500")
+        selected.classList.replace("dark:border-gray-200", "dark:border-pink-500")
+        selected.classList.replace("text-gray-500", "text-pink-500")
+        selected.classList.replace("dark:text-gray-400", "dark:text-pink-500")
+      }
+        
+      for (let i = 0; i < choices.length; i++) {
+        const e = choices[i];
+        const index = post.poll.choices.findIndex(c=>c._id === e.id.valueOf())
+        const fillAmount = post.poll.choices[index].votes.length/post.poll.votes.length * 100
+        e.children.item(0).style.width = `${fillAmount}%`
+      }
+    }
+  },[voted, votingClosed])
+
+  //like post
   async function likePost(){
     if(currentUser){
       const prev = hasLiked 
       setHasLiked(!hasLiked)
       axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/like?userId=${currentUser?._id}`).then((res)=>{
         setPost(res.data)
-        !prev && socket.emit('sendNotification', {
-          from: currentUser._id,
-          to: author._id,
-          type: "postLike",
-          post: post._id,
-        })
+        socket.emit("sendLike", {id: post._id, sender: currentUser._id, updatedAt: new Date(), status: !prev})
+        if(currentUser._id !== author._id){
+          !prev && socket.emit('sendNotification', {
+            from: currentUser._id,
+            to: author._id,
+            type: "postLike",
+            post: post._id,
+          })
+        }
       }).catch(()=> setHasLiked(false))
     }else{
       router.push('/login?returnUrl=/'+author._id)
     }
   }
   
-//comment on a post
+  //comment on a post
   async function commentOnPost(e){
     e.preventDefault();
     if(currentUser){
@@ -119,7 +158,14 @@ useEffect(() => {
         comment: comRef.current.value
       }).then((res)=>{
         setPost(res.data)
-        socket.emit('sendNotification', {
+        socket.emit("sendComment", {
+          postId: post._id,
+          authorId: currentUser._id,
+          comment: comRef.current.value,
+          createdAt: new Date(),
+          _id: new Date(),
+        })
+        currentUser._id !== author._id && socket.emit('sendNotification', {
           from: currentUser._id,
           to: author._id,
           type: "postComment",
@@ -135,21 +181,19 @@ useEffect(() => {
 
   //delete a comment
   async function deleteComment(cid){
-    axios.delete(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/comment?comment=${cid}`, { headers: { Authorization: `Bearer ${currentUser?.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>setPost(res.data))
+    axios.delete(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/comment?comment=${cid}`, { headers: { Authorization: `Bearer ${currentUser?.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
+      socket.emit('sendDeleteComment', {postId: post._id, commentId: cid})
+      setPost(res.data)
+    })
   }
 
   //delete posts
   async function deletePosts(){
     setOpenOptions(false)
     axios.delete(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}`, { headers: { Authorization: `Bearer ${currentUser?.token}`}, withCredentials: true, credentials: 'include'}).then(()=>{
-      setRefreshPosts(true)
-      socket.emit('sendNotification', {
-        to: currentUser._id,
-        type: "deletedPost",
-        post: post._id,
-      })
-    }
-    )
+      socket.emit('sendDeletePost', {id: post._id})
+      deletePost(post._id)
+    })
   }
   
   //follow/unfollow
@@ -157,7 +201,7 @@ useEffect(() => {
     setOpenOptions(false)
     axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${author._id}/follow`, {userId: currentUser?._id}).then((res)=>{
       if(res.data === "user has been unfollowed"){
-        setRefreshPosts(true)
+        unfollowUser(author._id)
         socket.emit('sendNotification', {
           from: currentUser._id,
           to: author._id,
@@ -173,7 +217,7 @@ useEffect(() => {
       !post.isAnonymous && axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/"+post.authorId).then((res)=>{
         setAuthor(res.data)
       })
-      refreshUser()
+      refreshUser && refreshUser()
     })
   }
 
@@ -191,9 +235,6 @@ useEffect(() => {
     })
   }
 
-  useEffect(()=>{
-    scrollRef.current?.scrollIntoView()
-  },[post.comments, openComments===true])
 
   return (
     <div id={post._id} ref={ref} className='w-screen p-1.5 md:w-102'>
@@ -201,20 +242,20 @@ useEffect(() => {
         <div className='py-1 flex border-b border-gray-200 dark:border-bdark-200 justify-between items-center'>
           <div className="flex items-center truncate">
           {!post.isAnonymous && <Link href={`/${author?.username}`}><img className='h-9 w-9 mr-3 rounded-full object-cover cursor-pointer' src={author?.profilePicture}/></Link>}
-            <div>
-              {!post.isAnonymous && <div className='flex justify-center items-center space-x-2 truncate'>
-                <Link href={`/${author?.username}`}><p className='text-gray-600 dark:text-gray-400 text-lg truncate cursor-pointer'>{author?.name}</p></Link>
-                <Link href={`/${author?.username}`}><p className='text-gray-600 dark:text-gray-400 text-sm font-light truncate cursor-pointer'>@{author?.username}</p></Link>
-              </div>}
+            <span>
+              {!post.isAnonymous && <span className='flex justify-center items-center space-x-2 truncate'>
+                <Link href={`/${author?.username}`}><span className='text-gray-500 dark:text-gray-400 text-lg font-semibold truncate cursor-pointer'>{author?.name}</span></Link>
+                <Link href={`/${author?.username}`}><span className='text-gray-500 dark:text-gray-400 text-sm truncate cursor-pointer'>@{author?.username}</span></Link>
+              </span>}
               {post.isAnonymous && <p className='text-gray-600 dark:text-gray-400 text-lg truncate'>Anonymous</p>}
               <TimePast date={new Date(post.createdAt)}/>
-            </div>
+            </span>
           </div>
           <div onClick={()=>setOpenOptions(true)}><DotsVerticalIcon className="h-5 text-gray-500 dark:text-gray-400 cursor-pointer"/></div>
-          <div ref={moreRef} className={`absolute right-3 top-6 z-10 bg-gray-50 dark:bg-bdark-50 rounded-lg shadow-all overflow-hidden ${openOptions ? "w-40 transition-all duration-300" : "w-0 h-0 hidden"}`}>
-            {(post.authorId !== currentUser?._id && !post.isAnonymous) && <div onClick={followUser} className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">{author?.followers.indexOf(currentUser._id) > -1 ? "Unfollow" : "Follow"}</div>}
-            <Link href={`/p/${post._id}`}><div className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">Go To Post</div></Link>
-            {post.authorId === currentUser?._id && <div onClick={deletePosts} className="w-full text-center py-2 text-red-500 cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-200">Delete Post</div>}
+          <div ref={moreRef} className={`absolute right-3 top-6 z-10 bg-white dark:bg-bdark-100 rounded-lg shadow-all overflow-hidden ${openOptions ? "w-40 transition-all duration-300" : "w-0 h-0 hidden"}`}>
+            {(post.authorId !== currentUser?._id && !post.isAnonymous) && <div onClick={followUser} className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-blue-grey-50 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">{author?.followers.indexOf(currentUser._id) > -1 ? "Unfollow" : "Follow"}</div>}
+            <Link href={`/p/${post._id}`}><div className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-blue-grey-50 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">Go To Post</div></Link>
+            {post.authorId === currentUser?._id && <div onClick={deletePosts} className="w-full text-center py-2 text-red-500 cursor-pointer hover:bg-blue-grey-50 dark:hover:bg-bdark-200">Delete Post</div>}
           </div>
         </div>
         {(post.type==="text"||post.type==="image" || post.type==="video") && <div className="py-2">
@@ -233,12 +274,12 @@ useEffect(() => {
                 blurDataURL = {theme==='dark'? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABmCAYAAAA53+RiAAAABHNCSVQICAgIfAhkiAAAAXRJREFUeF7t1VEJADAMxNBVTv0L3GAq8vGqICQcnd29x+UMjDC5Jh9ImGYXYaJdhBGmaiDK5ccIEzUQxbIYYaIGolgWI0zUQBTLYoSJGohiWYwwUQNRLIsRJmogimUxwkQNRLEsRpiogSiWxQgTNRDFshhhogaiWBYjTNRAFMtihIkaiGJZjDBRA1EsixEmaiCKZTHCRA1EsSxGmKiBKJbFCBM1EMWyGGGiBqJYFiNM1EAUy2KEiRqIYlmMMFEDUSyLESZqIIplMcJEDUSxLEaYqIEolsUIEzUQxbIYYaIGolgWI0zUQBTLYoSJGohiWYwwUQNRLIsRJmogimUxwkQNRLEsRpiogSiWxQgTNRDFshhhogaiWBYjTNRAFMtihIkaiGJZjDBRA1EsixEmaiCKZTHCRA1EsSxGmKiBKJbFCBM1EMWyGGGiBqJYFiNM1EAUy2KEiRqIYlmMMFEDUSyLESZqIIplMcJEDUSxLEaYqIEo1gNTr5cDklMVSwAAAABJRU5ErkJggg==' : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABmCAYAAAA53+RiAAAABHNCSVQICAgIfAhkiAAAAXZJREFUeF7t1cEJACAQxEDtv1URrEDBKuaRqyAkLDfXPnd0nIFZGK7JByqM2aUwaJfCFEY1gHL1YwqDGkCxWkxhUAMoVospDGoAxWoxhUENoFgtpjCoARSrxRQGNYBitZjCoAZQrBZTGNQAitViCoMaQLFaTGFQAyhWiykMagDFajGFQQ2gWC2mMKgBFKvFFAY1gGK1mMKgBlCsFlMY1ACK1WIKgxpAsVpMYVADKFaLKQxqAMVqMYVBDaBYLaYwqAEUq8UUBjWAYrWYwqAGUKwWUxjUAIrVYgqDGkCxWkxhUAMoVospDGoAxWoxhUENoFgtpjCoARSrxRQGNYBitZjCoAZQrBZTGNQAitViCoMaQLFaTGFQAyhWiykMagDFajGFQQ2gWC2mMKgBFKvFFAY1gGK1mMKgBlCsFlMY1ACK1WIKgxpAsVpMYVADKFaLKQxqAMVqMYVBDaBYLaYwqAEUq8UUBjWAYrWYwqAGUKwWUxjUAIr1AIxPgvK2EjJAAAAAAElFTkSuQmCC'}
                 />
               </div>
-              {post.type==="product" && <div className="absolute bg-gradient-to-t from-black to-transparent w-full bottom-0 text-white dark:text-gray-200 cursor-default px-3 pt-9">
+              {post.type==="product" && <div className="absolute bg-gradient-to-t from-black to-transparent w-full bottom-0 text-white dark:text-gray-200 cursor-default px-2 sm:px-3 pt-3 sm:pt-9">
                 <div className="w-full flex justify-between">
                   <p className="font-semibold text-xl w-9/12 truncate">{post.product.productCondition + " " + post.product.productName}</p>
                   <p title={post.product.productPrice === "0.00" ? "Free" : `GH₵${post.product.productPrice}`} className="font-semibold text-xl truncate">{post.product.productPrice === "0.00" ? "Free" : `GH₵${post.product.productPrice}`}</p>
                 </div>  
-                <div className='w-full py-2'>
+                <div className='w-full py-1 sm:py-2'>
                     <div className='text-white dark:text-gray-200 whitespace-pre-wrap break-words max-h-40 overflow-y-auto hide-scrollbar' dangerouslySetInnerHTML={{__html: pdesc}}/>
                     {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm text-right" onClick={()=>{setPDesc(pdesc.length > 100 ? urlify(post?.description).slice(0, 100) : urlify(post?.description))}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}
                 </div>
@@ -262,7 +303,7 @@ useEffect(() => {
                   </button>
                 )
               }
-              <div className="text-gray-400 dark:text-gray-500 text-xs md:text-1/5xs mt-3">{post.poll.votes.length === 1 ? '1 vote' : `${post.poll.votes.length} votes`}</div>
+              <div className="text-gray-400 dark:text-gray-500 text-xs mt-3">{post.poll.votes.length === 1 ? '1 vote' : `${post.poll.votes.length} votes`}</div>
             </div>}
           </div>}
           {(post.type==='video' && post.media) &&
@@ -276,16 +317,25 @@ useEffect(() => {
           {(post.type === 'video' && !post.media) && <div className='w-full h-80 bg-gray-200 dark:bg-bdark-50 animate-pulse'></div>}
         </div>
         {
-          <div className={`transition duration-300 ${openComments ? 'max-h-80 bg-white dark:bg-bdark-100 mt-2' : 'h-0 max-h-0 hidden'}`}>
-            {post.comments?.length !== 0 && <div className='overflow-y-auto max-h-60 hide-scrollbar border-t border-b border-gray-200 dark:border-bdark-200 py-2'>
-              {
-                post.comments?.map((comment)=>
-                  <Comment key={comment._id} comment={comment} admin={comment.authorId === currentUser?._id} delCom={deleteComment}/>
-                )
-              }
-              <div ref={scrollRef}></div>
-            </div>}
-            <div className='flex items-center justify-center w-full py-4 bg-white dark:bg-bdark-100'>
+          <div className={`${openComments ? 'h-full bg-white dark:bg-bdark-100 mt-2' : 'h-0 hidden'}`}>
+            {post.comments?.length !== 0 ? 
+              <div className='border-t border-b border-gray-200 dark:border-bdark-200 pt-1 pb-2'>
+              <div className="flex justify-between items-center mb-1">
+                <div className="text-gray-500 dark:text-gray-400 font-semibold">Comments</div>
+                <Link href={`/p/${post._id}`}><div className="text-pink-500 text-sm cursor-pointer">See all comments</div></Link>
+              </div>
+                {
+                  shownComments.map((comment)=>
+                    <Comment key={comment._id} comment={comment} admin={comment.authorId === currentUser?._id} delCom={deleteComment}/>
+                  )
+                }
+              </div>
+              :
+              <div className="text-gray-500 dark:text-gray-400 h-16 flex justify-center items-center">
+                Be the first to comment on this
+              </div>
+            }
+            <div className='flex items-center justify-center w-full py-3 bg-white dark:bg-bdark-100'>
               <form className='w-11/12'>
                 <input ref={comRef} type = 'text' className='pl-3 placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 rounded-full outline-none h-10 overflow-hidden w-full bg-blue-grey-50 dark:bg-bdark-200' placeholder='Write a comment' />
                 <button hidden onClick={commentOnPost}></button>

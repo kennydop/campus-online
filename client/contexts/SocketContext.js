@@ -1,3 +1,4 @@
+import axios from "axios"
 import { useContext, useState, useEffect, createContext, useRef } from "react"
 import { io } from "socket.io-client"
 import { useActiveTab } from "./ActiveTabContext"
@@ -14,10 +15,23 @@ export const useSocket = () => {
 export function SocketProvider({children}) {
   const { currentUser } = useAuth()
   const socket = useRef();
+  const [user, setUser] = useState()
   const [online, setOnline] = useState()
   const [recievedMessage, setRecievedMessage] = useState()
-  const { unreadChats, setUnreadNotifications, setUnreadChats } = useUtils();
+  const [recievedPost, setRecievedPost] = useState()
+  const { unreadChats, setUnreadNotifications, setUnreadChats, setRefreshPosts, setNewPosts } = useUtils();
   const { tabActive } = useActiveTab()
+
+  useEffect(() => {
+    async function getMyProfile(){
+      axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}`).then((res)=>{
+        setUser(res.data)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    }
+    getMyProfile()
+  },[currentUser])
 
   //add user (online)
   useEffect(()=>{
@@ -29,15 +43,18 @@ export function SocketProvider({children}) {
     }
     userIsOnline().then(setOnline(true))
   }, [socket.current, currentUser])
-
+  
   //get socket infos
   useEffect(() => {
     if(online && currentUser){
       socket.current.on("newNotification", () => {
-        setUnreadNotifications((oldVal)=> {return oldVal+1})
+        setUnreadNotifications((oldVal) => {return oldVal + 1})
       });
       socket.current.on("getMessage",  async (data) => {
         setRecievedMessage(data)
+      });
+      socket.current.on("newPost",  async (data) => {
+        setRecievedPost(data)
       });
     }
   }, [online]);
@@ -50,6 +67,16 @@ export function SocketProvider({children}) {
       }
     }
   },[recievedMessage])
+
+  useEffect(() => {
+    if(recievedPost){
+      if(recievedPost.id === currentUser._id){
+        setRefreshPosts(true)
+      }else if(user?.followings.includes(recievedPost.id) || user?.college === recievedPost.college){
+        setNewPosts((oldVal)=> {return oldVal + 1})
+      }
+    }
+  },[recievedPost])
   
   const value = {
     socket: socket?.current,
