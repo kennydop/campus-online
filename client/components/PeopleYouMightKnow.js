@@ -1,31 +1,12 @@
-import { useState, useEffect } from "react"
-import { useAuth } from "../contexts/AuthContext"
-import axios from "axios"
 import ProfileToFollow from "./ProfileToFollow"
 import QuickFollowPlaceholder from "./QuickFollowPlaceholder"
 import { useRouter } from "next/router"
+import { useUtils } from "../contexts/UtilsContext"
 
 function PeopleYouMightKnow() {
-  const {currentUser} = useAuth()
-  const [ suggestions, setSuggestions ] = useState()
+  const { suggestions } = useUtils()
   const router = useRouter()
-  useEffect(()=>{
-    if(currentUser){
-      async function getSuggestionsForLoggedInUser(){
-        axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}/suggestions`).then((res)=>{
-          setSuggestions(res.data)
-        })
-      }
-      getSuggestionsForLoggedInUser()
-    }else{
-      async function getSuggestionsForNotLoggedInUser(){
-        axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/suggestions/nl`).then((res)=>{
-          setSuggestions(res.data)
-        })
-      }
-      getSuggestionsForNotLoggedInUser()
-    }
-  },[])
+
   
   return (
     <div className='hidden lg:block h-full sticky top-20 my-2 ml-6 mt-3 p-2 w-tt rounded-lg shadow-md bg-white dark:bg-bdark-100'>

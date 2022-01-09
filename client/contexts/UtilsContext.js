@@ -13,7 +13,12 @@ export function UtilsContext({children}){
   const [unreadChats, setUnreadChats] = useState([])
   const [unreadNotifications, setUnreadNotifications] = useState(0)
   const [newPosts, setNewPosts] = useState(0)
-  const [refreshPosts, setRefreshPosts] = useState()
+  const [refreshFeedPosts, setRefreshFeedPosts] = useState()
+  const [refreshGlobalPosts, setRefreshGlobalPosts] = useState()
+  const [feedScroll, setFeedScroll] = useState()
+  const [globalScroll, setGlobalScroll] = useState()
+  const [suggestions, setSuggestions] = useState()
+  const [trending, setTrending] = useState()
   const { currentUser } = useAuth()
   const {theme, resolvedTheme, setTheme} = useTheme()
 
@@ -50,15 +55,50 @@ export function UtilsContext({children}){
     }
   },[currentUser])
 
+  useEffect(()=>{
+    if(currentUser){
+      async function getSuggestionsForLoggedInUser(){
+        axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}/suggestions`).then((res)=>{
+          setSuggestions(res.data)
+        })
+      }
+      getSuggestionsForLoggedInUser()
+    }else{
+      async function getSuggestionsForNotLoggedInUser(){
+        axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/suggestions/nl`).then((res)=>{
+          setSuggestions(res.data)
+        })
+      }
+      getSuggestionsForNotLoggedInUser()
+    }
+  },[])
+
+  useEffect(()=>{
+    async function getTrending(){
+      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/trending").then(res=>{
+        setTrending(res.data)
+      })
+    }
+    getTrending()
+  },[])
+
   const value = {
     unreadChats,
     unreadNotifications,
     newPosts,
-    refreshPosts, 
+    refreshFeedPosts,
+    refreshGlobalPosts,
+    feedScroll,
+    globalScroll,
+    suggestions,
+    trending,
     setUnreadChats,
     setUnreadNotifications,
     setNewPosts,
-    setRefreshPosts
+    setRefreshFeedPosts,
+    setRefreshGlobalPosts,
+    setFeedScroll,
+    setGlobalScroll
   }
   
   return(

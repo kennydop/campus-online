@@ -362,7 +362,7 @@ function PostDialog() {
           </form>
         </div>
       </div>}
-      <div className="flex p-3 justify-between pt-5 border-t dark:border-bdark-200 items-center">
+      <div className="flex p-3 justify-between pt-5 pb-20 border-t dark:border-bdark-200 items-center">
         <div className="flex space-x-3">
           <div onClick={()=>{type === "text" || type === "image" || type === "video" ? document.getElementById("post_media").click() : setType(mediaToPost ? mediaToPost.startsWith("data:video") ? 'video' : 'image' : 'text')}}>
             <PhotographIcon className="h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400"/>

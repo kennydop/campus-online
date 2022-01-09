@@ -1,21 +1,9 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import ProfileToFollow from "../components/ProfileToFollow"
-import { useAuth } from "../contexts/AuthContext";
 import Link from "next/link"
+import { useUtils } from "../contexts/UtilsContext";
 
 function InLineQuickFollow() {
-  const { currentUser } = useAuth();
-  const [ suggestions, setSuggestions ] = useState()
-
-  useEffect(()=>{
-    async function getSuggestions(){
-      axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}/suggestions`).then((res)=>{
-        setSuggestions(res.data)
-      })
-    }
-    getSuggestions()
-  },[])
+  const { suggestions } = useUtils()
 
   return (
     (suggestions && suggestions?.length !== 0) ?

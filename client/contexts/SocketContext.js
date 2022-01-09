@@ -19,7 +19,7 @@ export function SocketProvider({children}) {
   const [online, setOnline] = useState()
   const [recievedMessage, setRecievedMessage] = useState()
   const [recievedPost, setRecievedPost] = useState()
-  const { unreadChats, setUnreadNotifications, setUnreadChats, setRefreshPosts, setNewPosts } = useUtils();
+  const { unreadChats, setUnreadNotifications, setUnreadChats, setRefreshFeedPosts, setNewPosts } = useUtils();
   const { tabActive } = useActiveTab()
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export function SocketProvider({children}) {
   useEffect(() => {
     if(recievedPost){
       if(recievedPost.id === currentUser._id){
-        setRefreshPosts(true)
+        setRefreshFeedPosts(true)
       }else if(user?.followings.includes(recievedPost.id) || user?.college === recievedPost.college){
         setNewPosts((oldVal)=> {return oldVal + 1})
       }

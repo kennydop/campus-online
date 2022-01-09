@@ -4,7 +4,6 @@ import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useEffect } from 'react';
 import axios from "axios";
 import Posts from "../components/Posts";
-import { PostsProvider } from "../contexts/PostsContext";
 
 export default function Global({trending}) {
   const { setTabActive } = useActiveTab()
@@ -14,17 +13,15 @@ export default function Global({trending}) {
   },[])
     
   return (
-    <PostsProvider>
-      <div>
-        <div className='mt-2'></div>
-          <div className='flex flex-col'>
-            <div className='mx-auto mt-3'>
-              <Posts global/>
-            </div>
-          <div className='pt-20'></div>
-        </div>
+    <div>
+      <div className='mt-2'></div>
+        <div className='flex flex-col'>
+          <div className='mx-auto mt-3'>
+            <Posts global/>
+          </div>
+        <div className='pt-20'></div>
       </div>
-    </PostsProvider>
+    </div>
   )
 }
 

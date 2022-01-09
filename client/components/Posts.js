@@ -3,9 +3,11 @@ import FlipMove from 'react-flip-move';
 import PostPlaceholder from './PostPlaceholder';
 import { usePosts } from '../contexts/PostsContext';
 import { useEffect, useState } from 'react';
+import { useUtils } from '../contexts/UtilsContext';
 
 function Posts({global}) {
   const { feedPosts, globalPosts } = usePosts()
+  const { feedScroll, globalScroll } = useUtils();
   const [ posts, setPost ] = useState()
 
   useEffect(() => {
@@ -15,6 +17,16 @@ function Posts({global}) {
       setPost(feedPosts)
     }
   },[feedPosts, globalPosts])
+
+  useEffect(() => {
+    if(posts){
+      if(global){
+        globalScroll && window.scrollTo(0, globalScroll)
+      }else{
+        feedScroll && window.scrollTo(0, feedScroll)
+      }
+    }
+  },[posts])
 
   return (
     <>

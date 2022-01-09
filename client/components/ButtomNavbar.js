@@ -9,13 +9,14 @@ function ButtomNavbar() {
   const { tabActive, setTabActive } = useActiveTab()
   const router = useRouter();
   const { currentUser } = useAuth();
-  const { unreadNotifications, setUnreadNotifications, unreadChats, newPosts, setRefreshPosts } = useUtils();
+  const { unreadNotifications, setUnreadNotifications, unreadChats, newPosts, setRefreshFeedPosts, setRefreshGlobalPosts, setFeedScroll, setGlobalScroll } = useUtils();
 
   function handleHome(){
     if(typeof window === 'object' && router.pathname === '/feed'){
       window.scrollTo({top: 0, behavior: 'smooth'})
-      newPosts > 0 && setRefreshPosts(true)
+      newPosts > 0 && setRefreshFeedPosts(true)
     }else{
+      router.pathname === '/global' && setGlobalScroll(window.scrollY)
       router.push('/feed');
     }
     setTabActive('home')
@@ -25,7 +26,8 @@ function ButtomNavbar() {
     if(typeof window === 'object' && router.pathname === '/global'){
       window.scrollTo({top: 0, behavior: 'smooth'})
     }else{
-    router.push('/global');
+      router.pathname === '/feed' && setFeedScroll(window.scrollY)
+      router.push('/global');
     }
     setTabActive('global')
   }

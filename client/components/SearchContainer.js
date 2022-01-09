@@ -1,27 +1,17 @@
-import axios from "axios";
 import Link from "next/link"
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { useUtils } from "../contexts/UtilsContext";
 import { useOnClickOutside } from "./Hooks";
 
 function SearchContainer({hits, clearSearch}) {
   const ref = useRef()
-  const [trending, setTrending] = useState()
+  const {trending} = useUtils()
   const { currentUser } = useAuth()
-
-  useEffect(()=>{
-    async function getTrending(){
-      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/trending").then((res)=>{
-        setTrending(res.data)
-      })
-    }
-    getTrending()
-  },[])
 
   useOnClickOutside(ref, ()=>{clearSearch()})
   
   return (
-    // (hits?.length !== 0 ||  trending?.length !== 0) &&
     <div ref={ref} className="flex flex-col w-screen x-centered md:w-100 bg-white dark:bg-bdark-100 rounded-b-lg shadow-all-md dark:shadow-all-lg z-20 text-gray-500 dark:text-gray-400 max-h-96 overflow-y-auto">
       {hits?.length !== 0 ?
         hits?.map(hit => 

@@ -11,7 +11,6 @@ import { useActiveTab } from "../contexts/ActiveTabContext";
 function Trending() {
   const router = useRouter()
   const [ posts, setPosts ] = useState()
-  const { refreshPosts, setRefreshPosts } = useAuth()
 	const { setTabActive } = useActiveTab()
 
   useEffect(()=>{
@@ -22,11 +21,10 @@ function Trending() {
     async function getPosts(){
       axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/trendingposts?word="+router.query.word).then((res)=>{
         setPosts(res.data)
-        setRefreshPosts(false)
       })
     }
     getPosts()
-  },[refreshPosts === true, router.query.word])
+  },[router.query.word])
   
   return (
     <>
