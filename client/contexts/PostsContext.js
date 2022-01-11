@@ -13,7 +13,7 @@ export function PostsProvider({children}) {
   const [feedPosts, setFeedPosts] = useState()
   const [globalPosts, setGlobalPosts] = useState()
   const { currentUser } = useAuth()
-  const { refreshFeedPosts, refreshGlobalPosts, setNewPosts, setFeedScroll } = useUtils()
+  const { refreshFeedPosts, refreshGlobalPosts, setNewPosts, setFeedScroll, setGlobalScroll } = useUtils()
   
   useEffect(()=>{
     async function getGlobalPosts(){
@@ -22,7 +22,7 @@ export function PostsProvider({children}) {
       })
     }
     refreshGlobalPosts && setGlobalScroll(0)
-    getGlobalPosts()
+    currentUser && getGlobalPosts()
   },[refreshGlobalPosts === true])
 
   useEffect(()=>{
@@ -33,7 +33,7 @@ export function PostsProvider({children}) {
       })
     }
     refreshFeedPosts && setFeedScroll(0)
-    getFeedPosts()
+    currentUser && getFeedPosts()
   },[refreshFeedPosts === true])
 
   function deletePost(id){

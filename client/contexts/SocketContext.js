@@ -30,7 +30,7 @@ export function SocketProvider({children}) {
         console.log(error)
       })
     }
-    getMyProfile()
+    currentUser && getMyProfile()
   },[currentUser])
 
   //add user (online)

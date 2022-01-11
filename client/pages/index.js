@@ -23,7 +23,6 @@ export default function Home() {
   },[])
 
   return (
-    <div className='bg-blue-grey-50 dark:bg-bdark-200'>
-    </div>
+    <></>
   )
 }
