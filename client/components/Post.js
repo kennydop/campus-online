@@ -28,7 +28,7 @@ const urlify = (text) => {
   })
 }
 
-const Post = forwardRef(({ _post, refreshUser }, ref) => {
+const Post = forwardRef(({ _post, refreshUser, page }, ref) => {
   const { currentUser } = useAuth();
   const { setTabActive, tabActive } = useActiveTab();
   const [post, setPost] = useState(_post)
@@ -39,7 +39,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
   const [share, setShare] = useState(false)
   const [voted, setVoted] = useState(false)
   const [votingClosed, setVotingClosed] = useState(false)
-  const [pdesc, setPDesc] = useState(urlify(_post.description).slice(0, 100))
+  const [pdesc, setPDesc] = useState(page ? urlify(_post.description) : urlify(_post.description).slice(0, 100))
   const [newLike, setNewLike] = useState()
   const [newComment, setNewComment] = useState()
   const [shownComments, setShownComments] = useState([])
@@ -60,7 +60,7 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
         setVotingClosed(new Date(post.poll.expireAt) <= new Date())
       }
     }
-    setShownComments(post ? post.comments.reverse().slice(0, 4).reverse() : _post.comments.reverse().slice(0, 4).reverse())
+    page ? setShownComments(post ? post.comments.reverse() : _post.comments.reverse()) : setShownComments(post ? post.comments.reverse().slice(0, 4) : _post.comments.reverse().slice(0, 4))
   }, [_post, post])
 
   useEffect(() => {
@@ -70,11 +70,12 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
       })
     }
     (!post.isAnonymous && !author) && getAuthor()
+    page && setOpenComments(true)
   }, [])
 
   //socket
   useEffect(() => {
-    if(currentUser){
+    if(currentUser && socket){
       socket.on("newLike", async (data) => {
         setNewLike(data)
       });
@@ -125,6 +126,16 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
       }
     }
   },[voted, votingClosed])
+
+  //resizing comment box
+  useEffect(()=>{
+    if(comRef.current){
+      comRef.current.oninput = function() {
+        comRef.current.style.height = ""; /* Reset the height*/
+        comRef.current.style.height = comRef.current.scrollHeight + "px";
+      }
+    }
+  },[comRef.current])
 
   //like post
   async function likePost(){
@@ -227,25 +238,26 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
     axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/vote`,{id, user: currentUser._id}).then((res)=>{
       setPost(res.data)
       setVoted(true)
-      socket.emit('sendNotification', {
+      currentUser._id !== author._id && socket.emit('sendNotification', {
         from: currentUser._id,
         to: author._id,
         type: "pollVote",
+        post: post._id,
       })
     })
   }
 
 
   return (
-    <div id={post._id} ref={ref} className='w-screen p-1.5 md:w-102'>
-      <div className='p-2 relative rounded-lg shadow-md bg-white dark:bg-bdark-100 flex flex-grow flex-col'>
+    <div id={post?._id} ref={ref} className={`${page ? 'w-screen md:w-8/12' : 'w-screen p-1.5 md:w-102'}`}>
+      <div className={`p-2 relative flex flex-grow flex-col ${page ? 'border-r border-gray-200 dark:border-bdark-200 ' : 'rounded-lg shadow-md bg-white dark:bg-bdark-100'}`}>
         <div className='py-1 flex border-b border-gray-200 dark:border-bdark-200 justify-between items-center'>
           <div className="flex items-center truncate">
           {!post.isAnonymous && <Link href={`/${author?.username}`}><img className='h-9 w-9 mr-3 rounded-full object-cover cursor-pointer' src={author?.profilePicture}/></Link>}
             <span>
               {!post.isAnonymous && <span className='flex justify-center items-center space-x-2 truncate'>
-                <Link href={`/${author?.username}`}><span className='text-gray-500 dark:text-gray-400 text-lg font-semibold truncate cursor-pointer'>{author?.name}</span></Link>
-                <Link href={`/${author?.username}`}><span className='text-gray-500 dark:text-gray-400 text-sm truncate cursor-pointer'>@{author?.username}</span></Link>
+                {author?.name ? <Link href={`/${author.username}`}><span className='text-gray-500 dark:text-gray-400 text-lg font-semibold truncate cursor-pointer'>{author.name}</span></Link> : <div className='w-44 h-2.5 bg-gray-100 animate-pulse'/>}
+                {author?.username ? <Link href={`/${author.username}`}><span className='text-gray-500 dark:text-gray-400 text-sm truncate cursor-pointer'>@{author.username}</span></Link> : <div className='w-36 h-2.5 bg-gray-100 animate-pulse'/>}
               </span>}
               {post.isAnonymous && <p className='text-gray-600 dark:text-gray-400 text-lg truncate'>Anonymous</p>}
               <TimePast date={new Date(post.createdAt)}/>
@@ -254,13 +266,13 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
           <div onClick={()=>setOpenOptions(true)}><DotsVerticalIcon className="h-5 text-gray-500 dark:text-gray-400 cursor-pointer"/></div>
           <div ref={moreRef} className={`absolute right-3 top-6 z-10 bg-white dark:bg-bdark-100 rounded-lg shadow-all overflow-hidden ${openOptions ? "w-40 transition-all duration-300" : "w-0 h-0 hidden"}`}>
             {(post.authorId !== currentUser?._id && !post.isAnonymous) && <div onClick={followUser} className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-blue-grey-50 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">{author?.followers.indexOf(currentUser._id) > -1 ? "Unfollow" : "Follow"}</div>}
-            <Link href={`/p/${post._id}`}><div className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-blue-grey-50 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">Go To Post</div></Link>
+            {!page && <Link href={`/p/${post._id}`}><div onClick={()=>setOpenOptions(false)} className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-blue-grey-50 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">Go To Post</div></Link>}
             {post.authorId === currentUser?._id && <div onClick={deletePosts} className="w-full text-center py-2 text-red-500 cursor-pointer hover:bg-blue-grey-50 dark:hover:bg-bdark-200">Delete Post</div>}
           </div>
         </div>
         {(post.type==="text"||post.type==="image" || post.type==="video") && <div className="py-2">
           <div className='text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words cursor-default' dangerouslySetInnerHTML={{__html: pdesc}}/>
-          {post?.description.length > 100 && <p className="text-pink-500 cursor-pointer text-sm text-right" onClick={()=>{setPDesc(pdesc.length > 100 ? urlify(post?.description).slice(0, 100) : urlify(post?.description))}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}
+          {(!page && post?.description.length > 100) && <p className="text-pink-500 cursor-pointer text-sm text-right" onClick={()=>{setPDesc(pdesc.length > 100 ? urlify(post?.description).slice(0, 100) : urlify(post?.description))}}>{pdesc?.length <= 100 ? '...Read more' : ' Read Less'}</p>}
         </div>}
         <div>
           {((post.type==='image'|| post.type==='poll' || post.type==='product') && post.media) &&
@@ -296,14 +308,14 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
             {<div>
               {
                 post.poll.choices.map(c=>
-                  <button disabled={voted || votingClosed} id={c._id} onClick={()=> pollVote(c._id)} className={`poll-btn clicky border-gray-400 dark:border-gray-200 text-gray-500 dark:text-gray-400 ${(!voted && !votingClosed) && 'hover:bg-blue-grey-50 dark:hover:bg-bdark-50'}`}>
-                    <div className="progress transition duration-150 ease-linear bg-blue-grey-50 dark:bg-bdark-200"></div>
+                  <button key={c._id} disabled={voted || votingClosed} id={c._id} onClick={()=> pollVote(c._id)} className={`poll-btn clicky border-gray-400 dark:border-gray-200 text-gray-500 dark:text-gray-400 ${(!voted && !votingClosed) && 'hover:bg-blue-grey-50 dark:hover:bg-bdark-50'}`}>
+                    <div className="progress bg-blue-grey-50 dark:bg-bdark-200" style={{width: '0%', transition: "all .5s",}}></div>
                     <p className="z-10">{c.choice}</p>
                     {(voted || votingClosed) && <p className="absolute right-0 z-10 mr-4">{post.poll.votes.length === 0 ? "0" : parseInt(c.votes.length/post.poll.votes.length * 100)}%</p>}
                   </button>
                 )
               }
-              <div className="text-gray-400 dark:text-gray-500 text-xs mt-3">{post.poll.votes.length === 1 ? '1 vote' : `${post.poll.votes.length} votes`}</div>
+              <span className="text-gray-400 dark:text-gray-500 text-xs mt-3"><span>{post.poll.votes.length === 1 ? '1 vote' : `${post.poll.votes.length} votes`}</span><span> · </span><span>{votingClosed ? "ended" : "ongoing"}</span></span>
             </div>}
           </div>}
           {(post.type==='video' && post.media) &&
@@ -318,12 +330,18 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
         </div>
         {
           <div className={`${openComments ? 'h-full bg-white dark:bg-bdark-100 mt-2' : 'h-0 hidden'}`}>
+            <div className='flex items-center justify-center w-full py-3 bg-white dark:bg-bdark-100'>
+              <form className='flex items-center justify-center bg-blue-grey-50 dark:bg-bdark-200 rounded-lg focus:ring-1 focus:ring-gray-500 w-full' onSubmit={commentOnPost}>
+                <textarea ref={comRef} type = 'text' className='max-h-32 overflow-y-auto hide-scrollbar no-ta-resize outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 h-10 p-2 overflow-hidden bg-transparent w-full' placeholder='Write a comment' />
+                <button className='text-center text-pink-500 mr-4 hover:font-bold font-semibold transition-all duration-150' type='submit'>Comment</button>
+              </form>
+            </div>
             {post.comments?.length !== 0 ? 
-              <div className='border-t border-b border-gray-200 dark:border-bdark-200 pt-1 pb-2'>
-              <div className="flex justify-between items-center mb-1">
+              <div className='border-t border-gray-200 dark:border-bdark-200 py-1'>
+              {!page && <div className="flex justify-between items-center mb-1">
                 <div className="text-gray-500 dark:text-gray-400 font-semibold">Comments</div>
                 <Link href={`/p/${post._id}`}><div className="text-pink-500 text-sm cursor-pointer">See all comments</div></Link>
-              </div>
+              </div>}
                 {
                   shownComments.map((comment)=>
                     <Comment key={comment._id} comment={comment} admin={comment.authorId === currentUser?._id} delCom={deleteComment}/>
@@ -335,21 +353,15 @@ const Post = forwardRef(({ _post, refreshUser }, ref) => {
                 Be the first to comment on this
               </div>
             }
-            <div className='flex items-center justify-center w-full py-3 bg-white dark:bg-bdark-100'>
-              <form className='w-11/12'>
-                <input ref={comRef} type = 'text' className='pl-3 placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 rounded-full outline-none h-10 overflow-hidden w-full bg-blue-grey-50 dark:bg-bdark-200' placeholder='Write a comment' />
-                <button hidden onClick={commentOnPost}></button>
-              </form>
-            </div>
           </div>
         }
-        <div className='flex justify-around border-t border-gray-200 dark:border-bdark-200 pt-2'>
+        <div className={`flex justify-around border-t border-gray-200 dark:border-bdark-200 pt-2 ${page && 'border-b pb-1'}`}>
           <div onClick={likePost} className='flex flex-grow justify-center items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
             {hasLiked?<Filled className='text-pink-500 h-6 w-6 mr-2' /> : <HeartIcon className='text-gray-500 dark:text-gray-400 h-6 w-6 mr-2' />}
             {post.likes?.length > 0 && <p className='text-gray-500 dark:text-gray-400 cursor-pointer'>{post.likes.length}</p>}
           </div>
           <div className='h-12 border-r border-gray-200 dark:border-bdark-200'></div>
-          <div onClick={()=>setOpenComments(!openComments)} className='flex flex-grow justify-center items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
+          <div onClick={()=>{if(page){comRef.current?.scrollIntoView({behavior: "smooth"}); comRef.current.focus();}else{!openComments && comRef.current.focus(); setOpenComments(!openComments);}}} className='flex flex-grow justify-center items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-bdark-50'>
             <ChatAltIcon className='text-gray-500 dark:text-gray-400 h-6 w-6 mr-2' />
             {post.comments?.length > 0 && <p className='text-gray-500 dark:text-gray-400 cursor-pointer'>{post.comments.length}</p>}
           </div>

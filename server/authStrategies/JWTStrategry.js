@@ -11,6 +11,7 @@ opts.secretOrKey = process.env.JWT_SECRET
 passport.use(
   new Strategy(opts, function (jwt_payload, done) {
     // Check against the DB only if necessary.
+    console.log(">>>>>>>>>>>>>>>>>>>>", opts.jwtFromRequest, opts.secretOrKey, jwt_payload)
       return done(null, jwt_payload)
   })
 )

@@ -50,7 +50,7 @@
   }
 
   .side-bar{
-    @apply top-0 right-0 fixed z-50 bg-white dark:bg-bdark-100 md:h-screen minus-bnavbar shadow-md md:w-96 w-full overflow-hidden
+    @apply top-0 right-0 fixed z-60 bg-white dark:bg-bdark-100 md:h-screen minus-bnavbar shadow-md md:w-96 w-full overflow-hidden
   }
   
   .poll-choice{
@@ -62,7 +62,7 @@
   }
 
   .link{
-    @apply text-pink-500 hover:text-pink-200 duration-100 transition ease-in
+    @apply text-pink-500 hover:text-pink-200
   }
 
 }
@@ -267,8 +267,4 @@ select{
   top: 0;
   bottom: 0;
   left: 0;
-}
-
-.flex-basis-1 {
-  flex: 0 0 100%; /* flex-grow, flex-shrink, flex-basis */
 }

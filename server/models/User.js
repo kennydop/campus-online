@@ -89,6 +89,7 @@ const UserSchema = new mongoose.Schema({
     },
     posts: {
       type: Number,
+      default: 0,
     },
     preferences: {
       type: {},

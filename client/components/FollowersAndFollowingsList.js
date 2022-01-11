@@ -35,7 +35,6 @@ function FollowersAndFollowingsList({setShowFF, _followers, _followings, usernam
           if(i === arr.length-1){
             getUserProfile_LoggedIn(f, "followers")
             setLoading(false)
-            console.log(followers)
           }else{
             getUserProfile_LoggedIn(f, "followers")
           }
@@ -45,7 +44,6 @@ function FollowersAndFollowingsList({setShowFF, _followers, _followings, usernam
           if(i === arr.length-1){
             getUserProfile_NotLoggedIn(f, "followers")
             setLoading(false)
-            console.log(followings)
           }else{
             getUserProfile_NotLoggedIn(f, "followers")
           }
@@ -58,7 +56,6 @@ function FollowersAndFollowingsList({setShowFF, _followers, _followings, usernam
     if(loading && _followings.length !== 0){
       if(currentUser){
         _followings.forEach((f, i, arr)=>{
-          alert(i)
           if(i === arr.length-1){
             getUserProfile_LoggedIn(f, "followings")
             setLoading(false)
@@ -85,7 +82,7 @@ function FollowersAndFollowingsList({setShowFF, _followers, _followings, usernam
   return (
     <div className="flex flex-col w-screen apfl md:apfc md:w-96 centered bg-white dark:bg-bdark-100 md:rounded-lg shadow-md overflow-hidden z-50">
       <div className="w-full p-3 border-b dark:border-bdark-200 text-gray-500 dark:text-gray-400 flex justify-between">
-        <p className="font-semibold">{username}</p>
+        <p className="font-semibold w-11/12 truncate">{username}</p>
         <div id="close_post" onClick={()=>{setShowFF(''); setTabActive(tabActive[tabActive.length-2]==='notification' ? tabActive[tabActive.length-3] : "go back")}}>
           <XIcon className="h-6 w-6 cursor-pointer"/>
         </div>
@@ -103,7 +100,7 @@ function FollowersAndFollowingsList({setShowFF, _followers, _followings, usernam
             {
               followers.length !== 0 ?
               <>
-                {followers.map((f)=><ProfileToFollow name={f.name} username={f.username} pic={f.profilePicture} college={f.college} id={f._id} isfollowing={f?.isfollowing}/>)}
+                {followers.map((f)=><ProfileToFollow key={f._id} name={f.name} username={f.username} pic={f.profilePicture} college={f.college} id={f._id} isfollowing={f?.isfollowing}/>)}
               </>
               :
               !loading && <div className="my-6 text-center text-gray-500 dark:text-gray-400">
@@ -115,7 +112,7 @@ function FollowersAndFollowingsList({setShowFF, _followers, _followings, usernam
             {
               followings.length !== 0 ?
               <>
-                {followings.map((f)=><ProfileToFollow name={f.name} username={f.username} pic={f.profilePicture} college={f.college} id={f._id} isfollowing={f?.isfollowing}/>)}
+                {followings.map((f)=><ProfileToFollow key={f._id} name={f.name} username={f.username} pic={f.profilePicture} college={f.college} id={f._id} isfollowing={f?.isfollowing}/>)}
               </>
               :
               !loading && <div className="my-6 text-center text-gray-500 dark:text-gray-400">

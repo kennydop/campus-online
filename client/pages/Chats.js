@@ -261,12 +261,12 @@ function Chats(){
 		<div className='flex bg-blue-grey-50 dark:bg-bdark-200 minus-header justify-center items-center'>
 			<div className='flex h-full w-full lg:h-5/6 lg:w-3/5 rounded-none md:rounded-lg overflow-hidden lg:border border-pink-500'>
 				<div className={`md:w-2/5 md:left-0 h-full overflow-y-auto bg-white dark:bg-bdark-100 shadow-md transition-all ease-linear duration-200 ${openChat?'w-0':'w-screen'}`}>
-					<div className="top-0 z-50 py-3 bg-white dark:bg-bdark-100 border-b border-pink-500 mt-4 md:mt-0">
+					<div className="top-0 z-40 py-3 bg-white dark:bg-bdark-100 border-b border-pink-500 mt-4 md:mt-0">
             <div className='flex items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 px-1.5 py-1 mx-5'>
               <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
               <input id="chatSearch" onChange={search} className = "ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 w-full" type = "text" placeholder="Search"/>
             </div>
-            <div className="sticky z-50">
+            <div className="sticky z-40">
               <SearchChat hits={searchRes} clearSearch={clearSearch} setCurrentChat={setCurrentChat}/>
             </div>
           </div>

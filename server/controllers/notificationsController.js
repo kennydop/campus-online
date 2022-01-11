@@ -38,7 +38,11 @@ export async function readNotifications(id){
         notification.read = true
       }
     })
-    notificationBatch.save()
+    notificationBatch.save((error, data)=>{
+      if(error){
+        console.log(error)
+      }
+    })
   }catch(error){
     console.log(error)
   }

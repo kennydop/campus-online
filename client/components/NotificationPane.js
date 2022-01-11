@@ -26,7 +26,7 @@ function NotificationPane() {
   },[tabActive[tabActive.length-1]==='notification'])
 
   const readNotifications = () => {
-    if(tabActive[tabActive.length-1]!=='notification')return
+    if(tabActive[tabActive.length-1] !== 'notification')return
     if(unreadNotifications !== 0){
       socket.emit('readNotifications', {
         id: currentUser._id,
@@ -45,7 +45,7 @@ function NotificationPane() {
           notifications ?
             notifications.length !== 0 ?
             notifications.map((notification)=>
-              <Notification notification={notification}/>
+              <Notification key={notification._id} notification={notification}/>
             )
             :
             <div className='mt-16 mx-3 flex flex-col justify-center items-center cursor-default text-gray-500 dark:text-gray-400 space-y-3'>

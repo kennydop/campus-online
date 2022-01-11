@@ -44,11 +44,11 @@ function ProfileToFollow({name, username , pic, college, id, isfollowing, page, 
         /></Link>
       </div>
       <div className={`w-full flex flex-col items-center justify-center overflow-hidden ${il ? 'px-1' : 'px-4'}`}>
-        <Link href={`/${username}`}><p className="cursor-pointer text-sm truncate w-full text-center">{name}</p></Link>
-        <Link href={`/${username}`}><p className="cursor-pointer text-xs truncate w-full text-center">@{username}</p></Link>
-        <p className='text-xs font-extralight truncate w-full text-center'>{college}</p>
+        <Link href={`/${username}`}><p className="cursor-pointer text-sm font-semibold truncate w-full text-center">{name}</p></Link>
+        <Link href={`/${username}`}><p className="cursor-pointer text-sm truncate w-full text-center">@{username}</p></Link>
+        <p className='text-sm font-extralight truncate w-full text-center'>{college}</p>
       </div>
-      <button className={`clicky my-2 py-1.5 px-4 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-xs ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={followUser}>{buttonText}</button>
+      <button className={`clicky my-2 py-1.5 px-4 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-sm ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={followUser}>{buttonText}</button>
     </div>
     :
     <div className='flex items-center justify-between border-b dark:border-bdark-200 px-2 py-4 mb-2 text-gray-500 dark:text-gray-400 w-full'>
@@ -60,11 +60,11 @@ function ProfileToFollow({name, username , pic, college, id, isfollowing, page, 
         /></Link>
       </div>
       <div className='ml-3 flex-1 overflow-hidden'>
-        <Link href={`/${username}`}><p className="cursor-pointer text-sm truncate">{name}</p></Link>
-        <Link href={`/${username}`}><p className="cursor-pointer text-xs truncate">{username}</p></Link>
-        <p className='text-xs font-extralight truncate'>{college}</p>
+        <Link href={`/${username}`}><p className="cursor-pointer text-sm font-semibold truncate">{name}</p></Link>
+        <Link href={`/${username}`}><p className="cursor-pointer text-sm truncate">{username}</p></Link>
+        <p className='text-sm font-extralight truncate'>{college}</p>
       </div>
-      <div className={`ml-1 py-1 px-1.5 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-xs ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={followUser}>{buttonText}</div>
+      <button className={`clicky ml-1 py-1 px-1.5 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-sm ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={followUser}>{buttonText}</button>
     </div>
   )
 }

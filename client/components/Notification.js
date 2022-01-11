@@ -45,11 +45,11 @@ function Notification({notification}) {
 
   return (
     !loading ?
-    <div className='h-20 flex'>
-      <div className={`h-full w-1 border-b border-gray-300 dark:border-bdark-50 ${notification.read?'bg-gray-400':'bg-pink-500'}`}></div>
-      <div className={`overflow-hidden h-20 flex items-center justify-start border-b border-gray-300 dark:border-bdark-50 p-2 w-full text-gray-500 text-sm md:text-base ${notification.read?'bg-blue-grey-50 dark:bg-bdark-200':''}`}>
+    <div className='flex'>
+      <div className={`flex-grow w-1 border-b border-gray-300 dark:border-bdark-50 ${notification.read?'bg-gray-400':'bg-pink-500'}`}></div>
+      <div className={`overflow-hidden h-full flex items-center justify-start border-b border-gray-300 dark:border-bdark-50 p-2 w-full text-gray-500 ${notification.read?'bg-blue-grey-50 dark:bg-bdark-200':''}`}>
         {
-          (notification.type === "follow" || notification.type === "unfollow") && 
+          (notification.type === "follow" || notification.type === "unfollow") ?
           <div className="flex w-full justify-between items-center overflow-hidden h-full">
             <Link href={`/${from?.username}`}>
               <div className="flex space-x-3 items-center w-10/12 h-full cursor-pointer">
@@ -63,13 +63,11 @@ function Notification({notification}) {
                 </div>
               </div>
             </Link>
-            <button className={`clicky h-8 w-20 rounded-full shadow-md  text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl ${from?.followers.indexOf(currentUser._id) > -1 ? 'bg-white dark:bg-bdark-200 text-pink-500 border border-pink-500' : 'bg-pink-500 text-white dark:text-gray-200' }`} onClick={followUser}>{from?.followers.indexOf(currentUser._id) > -1 ? "Unfollow" : "Follow"}</button>
+            <button className={`clicky h-7 w-20 rounded-full shadow-md  text-center cursor-pointer hover:shadow-lg dark:shadow-lg dark:hover:shadow-xl ${from?.followers.indexOf(currentUser._id) > -1 ? 'bg-white dark:bg-bdark-200 text-pink-500 border border-pink-500' : 'bg-pink-500 text-white dark:text-gray-200' }`} onClick={followUser}>{from?.followers.indexOf(currentUser._id) > -1 ? "Unfollow" : "Follow"}</button>
           </div>
-        }
-        {
-          (notification.type === "postLike" || notification.type === "postComment") &&
+          :
           <Link href={`/p/${notification.post}`}>
-            <div className="flex w-full justify-between overflow-hidden cursor-pointer h-full">
+            <div className="flex w-full justify-between items-center overflow-hidden cursor-pointer h-full">
               <div className={`${notification.thumbnail ? 'w-10/12' : 'w-full'}`}>
                 <span className="truncate whitespace-pre-wrap break-all w-full">
                   <Link href={`/${from?.username}`}>

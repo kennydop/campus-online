@@ -13,7 +13,7 @@ export function PostsProvider({children}) {
   const [feedPosts, setFeedPosts] = useState()
   const [globalPosts, setGlobalPosts] = useState()
   const { currentUser } = useAuth()
-  const { refreshFeedPosts, refreshGlobalPosts, setNewPosts } = useUtils()
+  const { refreshFeedPosts, refreshGlobalPosts, setNewPosts, setFeedScroll } = useUtils()
   
   useEffect(()=>{
     async function getGlobalPosts(){

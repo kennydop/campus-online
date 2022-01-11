@@ -32,6 +32,11 @@ module.exports = {
         '1\/5xs': '.5rem',
         '2xs': '.4rem'
       },
+      zIndex: {
+        '60': '60',
+        '70': '70',
+        '80': '80',
+      }
     },
   },
   variants: {

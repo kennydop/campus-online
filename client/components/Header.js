@@ -23,11 +23,11 @@ function Header() {
   const [enterSearchMode, setEnterSearchMode] = useState(false);
   const [showAccMenu, setShowAccMenu] = useState(false);
   const [showMinAccMenu, setShowMinAccMenu] = useState(false);
-  const [searchRes, setSearchRes] = useState();
+  const [searchRes, setSearchRes] = useState([]);
   const router = useRouter();
   const accRef = useRef();
   const minAccRef = useRef();
-  const { unreadNotifications, unreadChats, newPosts, setRefreshFeedPosts, setRefreshGlobalPosts, setFeedScroll, setGlobalScroll } = useUtils();
+  const { unreadNotifications, unreadChats, newPosts, setRefreshFeedPosts, setRefreshGlobalPosts, refreshFeedPosts, refreshGlobalPosts, setFeedScroll, setGlobalScroll } = useUtils();
 
   useOnClickOutside(accRef, () =>setShowAccMenu(false))
   useOnClickOutside(minAccRef, () =>setShowMinAccMenu(false))
@@ -177,6 +177,9 @@ function Header() {
       {tabActive[tabActive.length - 1]==='updatePP' && <UpdateProfilePicture/>}
       {tabActive[tabActive.length - 1]==='updateCI' && <UpdateCoverPicture/>}
       {tabActive[tabActive.length - 1]==='delAcc' && <DeleteAccountDialog/>}
+      {(refreshFeedPosts || refreshGlobalPosts) && <div className="mt-4 z-50 fixed x-centered">
+        <div className="loader mx-auto animate-spin"></div>
+      </div>}
     </>
   )
 }
