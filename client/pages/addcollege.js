@@ -4,7 +4,7 @@ import {db} from '../firebase/firebase';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { AcademicCapIcon } from '@heroicons/react/outline';
-import NotFound from "./404"
+import NotFound from "../components/404"
 import axios from 'axios';
 
 function AddCollege({colleges}) {
@@ -60,7 +60,6 @@ function AddCollege({colleges}) {
         router.replace('/')
       }).catch((error)=>{
         setError(error.message)
-        console.log(error.message)
       })
     }else{
       setError('Please select your college');

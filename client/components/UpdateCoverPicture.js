@@ -5,9 +5,8 @@ import { useActiveTab } from "../contexts/ActiveTabContext";
 import { defaultCoverPicture } from "../images/defaults"
 import { XIcon } from "@heroicons/react/solid";
 
-function UpdateCoverPicture() {
-  const { currentUser, setCurrentUser } = useAuth();
-  const [ user, setUser ] = useState();
+function UpdateCoverPicture({refreshUser, user}) {
+  const { currentUser } = useAuth();
   const [bigFile, setBigFile] = useState(false);
   const [loading, setLoading] = useState(false);
   const [buttonText, setButtonText] = useState('Remove');
@@ -17,16 +16,6 @@ function UpdateCoverPicture() {
   const [url, setUrl] = useState();
   const { setTabActive } = useActiveTab()
 
-  useEffect(()=>{
-    async function getMyProfile(){
-      setLoading(true)
-      axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}`).then((res)=>{
-        setUser(res.data)
-        setLoading(false)
-      })
-    }
-    getMyProfile();
-  },[])
 
   const handleImageChange = (e) => {
     setError('');
@@ -58,8 +47,8 @@ function UpdateCoverPicture() {
     axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}`, 
       img, 
       { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
-        setCurrentUser((oldValues) => {return {token: oldValues.token, ...res.data}})
-        setTabActive("go back"); 
+        refreshUser();
+        setTabActive("go back");
       }).catch((error)=>{
         setError(error.message)
         setLoading(false)

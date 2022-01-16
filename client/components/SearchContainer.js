@@ -36,7 +36,7 @@ function SearchContainer({hits, clearSearch}) {
               Trending
             </div>
           {trending?.map(t=>
-          <Link key={t.word} href={`trending?word=${t.word}`}>
+          <Link key={t.word} href={`/trending?word=${t.word}`}>
             <div onClick={()=>clearSearch()} className="m-1 p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-bdark-50">
               {t.word}
             </div>

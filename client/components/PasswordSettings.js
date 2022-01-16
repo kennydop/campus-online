@@ -18,8 +18,6 @@ function PasswordSettings() {
         setError("Incorrect Old Password")
       }
       setUpdateLoading(false)
-    }).catch((error)=>{
-      console.log(error)
     })
   }
 

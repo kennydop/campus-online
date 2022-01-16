@@ -40,8 +40,6 @@ function ForgotPassword() {
         setCurrentUser(res.data)
         router.replace("/")
       }
-    }).catch((error)=>{
-      console.log(error)
     })
   }
 

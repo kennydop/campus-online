@@ -47,11 +47,11 @@ function Notification({notification}) {
     !loading ?
     <div className='flex'>
       <div className={`flex-grow w-1 border-b border-gray-300 dark:border-bdark-50 ${notification.read?'bg-gray-400':'bg-pink-500'}`}></div>
-      <div className={`overflow-hidden h-full flex items-center justify-start border-b border-gray-300 dark:border-bdark-50 p-2 w-full text-gray-500 ${notification.read?'bg-blue-grey-50 dark:bg-bdark-200':''}`}>
+      <div className={`overflow-hidden h-full flex items-center justify-start border-b border-gray-300 dark:border-bdark-50 p-2 w-full text-gray-500 dark:text-gray-400 ${notification.read?'bg-blue-grey-50 dark:bg-bdark-200':''}`}>
         {
           (notification.type === "follow" || notification.type === "unfollow") ?
           <div className="flex w-full justify-between items-center overflow-hidden h-full">
-            <Link href={`/${from?.username}`}>
+            <Link href={`/u/${from?.username}`}>
               <div className="flex space-x-3 items-center w-10/12 h-full cursor-pointer">
                 <img src={notification.thumbnail} className = "h-10 w-10 avatar object-cover rounded-full cursor-pointer"/>
                 <div className="w-full">
@@ -70,7 +70,7 @@ function Notification({notification}) {
             <div className="flex w-full justify-between items-center overflow-hidden cursor-pointer h-full">
               <div className={`${notification.thumbnail ? 'w-10/12' : 'w-full'}`}>
                 <span className="truncate whitespace-pre-wrap break-all w-full">
-                  <Link href={`/${from?.username}`}>
+                  <Link href={`/u/${from?.username}`}>
                     <span className="font-semibold">{from?.username}</span>
                   </Link>
                     <span>{` ${notification.message} `}</span>

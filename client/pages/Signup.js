@@ -31,13 +31,12 @@ function Signup() {
           router.replace('/addcollege')
         }
       }).catch((error)=>{
-        console.log(error)
+        setError(error)
         setSignUpLoading(false);
-        alert(error)
       })
     }catch(error){
+      setError(error)
       setSignUpLoading(false)
-      console.log(error)
     }
 	}
 	
@@ -64,6 +63,7 @@ function Signup() {
 						<input
 						ref={name}
             minLength="3"
+            maxLength="35"
             required={true}
 						type="text"
 						placeholder="Name"

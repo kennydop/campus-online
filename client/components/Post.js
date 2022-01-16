@@ -253,11 +253,11 @@ const Post = forwardRef(({ _post, refreshUser, page }, ref) => {
       <div className={`p-2 relative flex flex-grow flex-col ${page ? 'border-r border-gray-200 dark:border-bdark-200 ' : 'rounded-lg shadow-md bg-white dark:bg-bdark-100'}`}>
         <div className='py-1 flex border-b border-gray-200 dark:border-bdark-200 justify-between items-center'>
           <div className="flex items-center truncate">
-          {!post.isAnonymous && <Link href={`/${author?.username}`}><img className='h-9 w-9 mr-3 rounded-full object-cover cursor-pointer' src={author?.profilePicture}/></Link>}
+          {!post.isAnonymous && <Link href={`/u/${author?.username}`}><img className='h-9 w-9 mr-3 rounded-full object-cover cursor-pointer' src={author?.profilePicture}/></Link>}
             <span>
-              {!post.isAnonymous && <span className='flex justify-center items-center space-x-2 truncate'>
-                {author?.name ? <Link href={`/${author.username}`}><span className='text-gray-500 dark:text-gray-400 text-lg font-semibold truncate cursor-pointer'>{author.name}</span></Link> : <div className='w-44 h-2.5 bg-gray-100 animate-pulse'/>}
-                {author?.username ? <Link href={`/${author.username}`}><span className='text-gray-500 dark:text-gray-400 text-sm truncate cursor-pointer'>@{author.username}</span></Link> : <div className='w-36 h-2.5 bg-gray-100 animate-pulse'/>}
+              {!post.isAnonymous && <span className='flex justify-center items-center space-x-2 w-full'>
+                {author?.name ? <Link href={`/u/${author.username}`}><span className='text-gray-500 dark:text-gray-400 text-lg font-semibold truncate cursor-pointer'>{author.name}</span></Link> : <div className='w-44 h-2.5 bg-gray-100 dark:bg-bdark-50 animate-pulse'/>}
+                {author?.username ? <Link href={`/u/${author.username}`}><span className='text-gray-500 dark:text-gray-400 text-sm truncate cursor-pointer'>@{author.username}</span></Link> : <div className='w-36 h-2.5 bg-gray-100 dark:bg-bdark-50 animate-pulse'/>}
               </span>}
               {post.isAnonymous && <p className='text-gray-600 dark:text-gray-400 text-lg truncate'>Anonymous</p>}
               <TimePast date={new Date(post.createdAt)}/>

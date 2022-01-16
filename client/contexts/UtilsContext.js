@@ -22,9 +22,10 @@ export function UtilsContext({children}){
   const { currentUser } = useAuth()
   const {theme, resolvedTheme, setTheme} = useTheme()
 
+  //getting unread chats
   useEffect(()=>{
     async function getUnreadChats(){
-      if(!unreadChats && currentUser){
+      if(unreadChats.length === 0 && currentUser){
         axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/chats/unread/"+currentUser._id).then((res)=>{
           setUnreadChats(res.data)
         })
@@ -55,6 +56,7 @@ export function UtilsContext({children}){
     }
   },[currentUser])
 
+  //getting suggestions
   useEffect(()=>{
     if(currentUser){
       async function getSuggestionsForLoggedInUser(){
@@ -73,6 +75,7 @@ export function UtilsContext({children}){
     }
   },[])
 
+  //getting trending
   useEffect(()=>{
     async function getTrending(){
       axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/trending").then(res=>{

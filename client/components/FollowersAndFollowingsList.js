@@ -17,67 +17,45 @@ function FollowersAndFollowingsList({setShowFF, _followers, _followings, usernam
       if(id === currentUser._id) return
       axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${id}`, { params:{ currentUser: currentUser._id} }).then((res)=>{
         f === "followers" ? setFollowers((oldVal)=>{ return [...oldVal, res.data]}) : setFollowings((oldVal)=>{ return [...oldVal, res.data]})  
-      }).catch((error)=>{
-        console.log(error)
       })
     }
     async function getUserProfile_NotLoggedIn(id, f){
       axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${id}`).then((res)=>{
         f === "followers" ? setFollowers((oldVal)=>{ return [...oldVal, res.data]}) : setFollowings((oldVal)=>{ return [...oldVal, res.data]})
-      }).catch((error)=>{
-        console.log(error)
       })
     }
 
     if(loading && _followers.length !== 0){
       if(currentUser){
         _followers.forEach((f, i, arr)=>{
-          if(i === arr.length-1){
-            getUserProfile_LoggedIn(f, "followers")
-            setLoading(false)
-          }else{
-            getUserProfile_LoggedIn(f, "followers")
-          }
+          getUserProfile_LoggedIn(f, "followers")
         })
       }else{
         _followers.forEach((f, i, arr)=>{
-          if(i === arr.length-1){
-            getUserProfile_NotLoggedIn(f, "followers")
-            setLoading(false)
-          }else{
-            getUserProfile_NotLoggedIn(f, "followers")
-          }
+          getUserProfile_NotLoggedIn(f, "followers")
         })
       }
-    }else{
-      setLoading(false)
     }
 
     if(loading && _followings.length !== 0){
       if(currentUser){
-        _followings.forEach((f, i, arr)=>{
-          if(i === arr.length-1){
-            getUserProfile_LoggedIn(f, "followings")
-            setLoading(false)
-          }else{
-            getUserProfile_LoggedIn(f, "followings")
-          }
+        _followings.forEach((f)=>{
+          getUserProfile_LoggedIn(f, "followings")
         })
       }else{
-        _followings.forEach((f, i, arr)=>{
-          if(i === arr.length-1){
-            getUserProfile_NotLoggedIn(f, "followings")
-            setLoading(false)
-          }else{
-            getUserProfile_NotLoggedIn(f, "followings")
-          }
+        _followings.forEach((f)=>{
+          getUserProfile_NotLoggedIn(f, "followings")
         })
       }
-    }else{
-      setLoading(false)
     }
 
   },[])
+
+  useEffect(()=>{
+    if(followings?.length === _followings.length && followers.length === _followers.length){
+      setLoading(false)
+    }
+  },[followings, followers])
 
   return (
     <div className="flex flex-col w-screen apfl md:apfc md:w-96 centered bg-white dark:bg-bdark-100 md:rounded-lg shadow-md overflow-hidden z-50">

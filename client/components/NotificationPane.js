@@ -22,17 +22,18 @@ function NotificationPane() {
         })
       }
     }
-    getNotifications().then(readNotifications()).finally(setUnreadNotifications(0))
+    getNotifications()
   },[tabActive[tabActive.length-1]==='notification'])
 
-  const readNotifications = () => {
+  useEffect(()=>{
     if(tabActive[tabActive.length-1] !== 'notification')return
-    if(unreadNotifications !== 0){
+    if(unreadNotifications > 0){
       socket.emit('readNotifications', {
         id: currentUser._id,
       })
+      setUnreadNotifications(0)
     }
-  }
+  },[notifications])
 
   return (
     <div className={`side-bar ${tabActive[tabActive.length-1]==='notification'?'translate-x-0':'translate-x-full'}`}>

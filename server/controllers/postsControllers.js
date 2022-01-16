@@ -52,9 +52,9 @@ export const deletePost = async (req, res) => {
     const post = await Post.findById(req.params.id)
     if(post.media){
       if(post.type !== "video"){
-        await cloudinary.uploader.destroy(post.media.split("upload/")[1].split('.')[0]);
+        await cloudinary.uploader.destroy(post.media.split('.')[0]);
       }else{
-        await cloudinary.uploader.destroy(post.media.split("upload/")[1]);
+        await cloudinary.uploader.destroy(post.media);
       }
     }
 		await Post.findByIdAndDelete(req.params.id).then(()=>

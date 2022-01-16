@@ -2,6 +2,8 @@ import User from "../models/User.js";
 import Post from "../models/Post.js";
 import cloudinary from "../utils/cloudinary.js";
 import College from "../models/College.js";
+import Notification from "../models/Notification.js";
+import Chat from "../models/Chat.js";
 
 const bgColors = ["000D6B", "125C13", "3E065F", "082032", "FF414D"]
 
@@ -59,7 +61,8 @@ export const updateUserInfo = async (req, res) => {
     }
     await User.findByIdAndUpdate(req.params.id, {$set: info});
     const newUser = await User.findById(req.params.id)
-    res.status(200).json(newUser);
+    const userToSend = { _id: newUser._id, username: newUser.username, name: newUser.name, email: newUser.email, college: newUser.college, profilePicture: newUser.profilePicture, preferences: newUser.preferences }
+    res.status(200).json(userToSend);
   } catch (error) {
     console.log(error)
     return res.status(500).json(error);
@@ -69,16 +72,24 @@ export const updateUserInfo = async (req, res) => {
 // delete a user
 export const deleteUser = async (req, res) => {
   try {
+    const user = await User.findById(req.params.id)
     await User.updateMany({followers: req.params.id}, 
+      { $pull: { followers: req.params.id } }, 
+      { multi: true })
+    await User.updateMany({followings: req.params.id}, 
       { $pull: { followers: req.params.id } }, 
       { multi: true })
     await Post.updateMany({likes: req.params.id}, 
       { $pull: { likes: req.params.id } }, 
       { multi: true })
-    await Post.updateMany({"comments.userId": req.params.id}, 
-      { $pull: { comments: {userId: req.params.id }} }, 
+    await Post.updateMany({"comments.authorId": req.params.id},
+      { $pull: { comments: {authorId: req.params.id }} }, 
       { multi: true })
+    await Notification.deleteOne({userId: req.params.id})
+    await Chat.deleteOne({members: req.params.id})
+    user.college && await College.findOneAndUpdate({name: user.college}, {$inc: {users: -1}}, {new: true})
     // await Story.findOneAndDelete({userId: req.params.id})
+    await Post.deleteMany({authorId: req.params.id})
     await User.findByIdAndDelete(req.params.id);
     res.status(200).json("Account has been deleted");
   } catch (error) {
@@ -90,14 +101,15 @@ export const deleteUser = async (req, res) => {
 // get a user
 export const getAUser = async (req, res) => {
   try {
-    var user = await User.findOne({username: req.params.id});
-    if (!user){
-      user = await User.findById(req.params.id)
+    var user;
+    if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      user = await User.findById(req.params.id);
+    }else{
+      user = await User.findOne({username: req.params.id});
     }
     if(req.query.currentUser){
-      console.log(req.query.currentUser)
-      const following = await user.followers.includes(req.query.currentUser)
-      const {refreshToken, updatedAt, __v, ...other} = user._doc
+      const following = await user?.followers.includes(req.query.currentUser)
+      const {refreshToken, updatedAt, __v, ...other} = user?._doc
       const uts = {...other, isfollowing: following}
       res.status(200).json(uts)
     }else{

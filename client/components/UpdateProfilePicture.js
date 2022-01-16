@@ -4,7 +4,7 @@ import axios from "axios";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { XIcon } from "@heroicons/react/solid";
 
-function UpdateProfilePicture() {
+function UpdateProfilePicture({refreshUser}) {
   const { currentUser, setCurrentUser } = useAuth();
   const [bigFile, setBigFile] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,6 +47,7 @@ function UpdateProfilePicture() {
       img, 
       { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
         setCurrentUser((oldValues) => {return {token: oldValues.token, ...res.data}})
+        refreshUser();
         setTabActive("go back"); 
       }).catch((error)=>{
         setError(error.message)

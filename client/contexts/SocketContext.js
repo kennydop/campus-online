@@ -21,13 +21,12 @@ export function SocketProvider({children}) {
   const [recievedPost, setRecievedPost] = useState()
   const { unreadChats, setUnreadNotifications, setUnreadChats, setRefreshFeedPosts, setNewPosts } = useUtils();
   const { tabActive } = useActiveTab()
+  const sound = new Audio('/sounds/insight-578.mp3')
 
   useEffect(() => {
     async function getMyProfile(){
       axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}`).then((res)=>{
         setUser(res.data)
-      }).catch((error)=>{
-        console.log(error)
       })
     }
     currentUser && getMyProfile()
@@ -60,10 +59,13 @@ export function SocketProvider({children}) {
   }, [online]);
 
   useEffect(() => {
-    if(recievedMessage && tabActive[tabActive.length-1] !== "chat"){
-      var targetId = unreadChats.findIndex(c=> c === recievedMessage.from)
-      if(targetId === -1){
-        setUnreadChats((oldVal)=> {return [...oldVal, recievedMessage.from]})
+    if(recievedMessage){
+      sound.play()
+      if(tabActive[tabActive.length-1] !== "chat"){
+        var targetId = unreadChats.findIndex(c=> c === recievedMessage.from)
+        if(targetId === -1){
+          setUnreadChats((oldVal)=> {return [...oldVal, recievedMessage.from]})
+        }
       }
     }
   },[recievedMessage])

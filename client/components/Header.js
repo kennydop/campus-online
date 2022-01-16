@@ -10,8 +10,6 @@ import { useActiveTab } from "../contexts/ActiveTabContext";
 import Link from "next/link";
 import PostDialog from "./PostDialog";
 import { useOnClickOutside } from "./Hooks";
-import UpdateProfilePicture from "./UpdateProfilePicture";
-import UpdateCoverPicture from "./UpdateCoverPicture"
 import DeleteAccountDialog from "./DeleteAccountDialog";
 import SearchContainer from "./SearchContainer";
 import axios from "axios";
@@ -48,7 +46,7 @@ function Header() {
       window.scrollTo({top: 0, behavior: 'smooth'})
       newPosts > 0 && setRefreshFeedPosts(true)
     }else{
-      router.pathname === '/global' && setGlobalScroll(window.scrollY)
+      memorizeScrollPosition()
       router.push('/feed');
     }
     setTabActive('home')
@@ -58,10 +56,18 @@ function Header() {
     if(typeof window === 'object' && router.pathname === '/global'){
       window.scrollTo({top: 0, behavior: 'smooth'})
     }else{
-      router.pathname === '/feed' && setFeedScroll(window.scrollY)
+      memorizeScrollPosition()
       router.push('/global');
     }
     setTabActive('global')
+  }
+
+  function memorizeScrollPosition(){
+    if(router.pathname === '/feed'){
+      setFeedScroll(window.scrollY)
+    }else if(router.pathname === '/global'){
+      setGlobalScroll(window.scrollY)
+    }
   }
 
   async function search(e){
@@ -91,13 +97,13 @@ function Header() {
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer text-center ${tabActive[tabActive.length-1]==='profile' ? 'border-2 border-pink-500': ''}`}
               src = {currentUser.profilePicture}/>
               {showMinAccMenu && <div ref={minAccRef} className="absolute w-48 bg-white dark:bg-bdark-100 border dark:border-bdark-200 shadow-all dark:shadow-all-lg top-11 rounded-lg overflow-hidden">
-              <Link href={`/${currentUser.username}`}>
-                <div onClick={()=> {setTabActive('profile'); setShowMinAccMenu(false)}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
+              <Link href={`/u/${currentUser.username}`}>
+                <div onClick={()=> {memorizeScrollPosition(); setTabActive('profile'); setShowMinAccMenu(false)}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                   <UserCircleIcon className="h-5 w-5"/>
                   <p>Profile</p>
                 </div>
               </Link>
-              <div onClick={()=>{setTabActive('settings'); setShowMinAccMenu(false); router.push('/settings')}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
+              <div onClick={()=>{memorizeScrollPosition(); setTabActive('settings'); setShowMinAccMenu(false); router.push('/settings')}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                 <CogIcon className="h-5 w-5"/>
                 <p>Settings</p>
               </div>
@@ -135,21 +141,21 @@ function Header() {
         <div className = "hidden md:flex md:items-center md:justify-end md:mr-8 lg:mr-16">
           <div title="home" onClick = {handleHome}><HeaderIcon active = {tabActive[tabActive.length-1] === 'home'?true:undefined} Icon = {HomeIcon} unread={newPosts !==0 && newPosts}/></div>
           <div title="global" onClick = {handleGlobal}><HeaderIcon active = {tabActive[tabActive.length-1] === 'global'?true:undefined} Icon = {GlobeAltIcon}/></div>
-          <div title="chat" onClick = {()=>{setTabActive('chat'); router.push('/chats')}}><HeaderIcon active = {tabActive[tabActive.length-1] === 'chat'?true:undefined} Icon = {ChatAlt2Icon} unread={unreadChats?.length !== 0 && unreadChats?.length }/></div>
-          <div title="make a post" onClick = {()=>{setTabActive('post')}}><HeaderIcon active = {tabActive[tabActive.length-1].slice(0, 4) === 'post'?true:undefined} Icon = {PlusCircleIcon}/></div>
-          <div title="notifications" onClick = {()=>{setTabActive('notification')}}><HeaderIcon active = {tabActive[tabActive.length-1] === 'notification'?true:undefined} Icon = {BellIcon} unread={unreadNotifications !== 0 && unreadNotifications }/></div>
+          <div title="chat" onClick = {()=>{memorizeScrollPosition(); setTabActive('chat'); router.push('/chats')}}><HeaderIcon active = {tabActive[tabActive.length-1] === 'chat'?true:undefined} Icon = {ChatAlt2Icon} unread={unreadChats?.length !== 0 && unreadChats?.length }/></div>
+          <div title="make a post" onClick = {()=>{memorizeScrollPosition(); setTabActive('post')}}><HeaderIcon active = {tabActive[tabActive.length-1].slice(0, 4) === 'post'?true:undefined} Icon = {PlusCircleIcon}/></div>
+          <div title="notifications" onClick = {()=>{memorizeScrollPosition(); setTabActive('notification')}}><HeaderIcon active = {tabActive[tabActive.length-1] === 'notification'?true:undefined} Icon = {BellIcon} unread={unreadNotifications !== 0 && unreadNotifications }/></div>
           <div className = "hidden md:block text-center pl-3 relative">
               <img title="account" onClick = {()=>setShowAccMenu(true)}
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer ${tabActive[tabActive.length - 1]==='profile' ? 'border-2 border-pink-500': ''}`}
               src={currentUser.profilePicture}/>
             {showAccMenu && <div ref={accRef} className="absolute w-40 bg-white dark:bg-bdark-100 border dark:border-bdark-200 shadow-all dark:shadow-all-lg -right-5 top-8 rounded-lg overflow-hidden">
-              <Link href={`/${currentUser.username}`}>
-                <div onClick={()=> {setTabActive('profile'); setShowAccMenu(false)}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
+              <Link href={`/u/${currentUser.username}`}>
+                <div onClick={()=> {memorizeScrollPosition(); setTabActive('profile'); setShowAccMenu(false)}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                   <UserCircleIcon className="h-5 w-5"/>
                   <p>Profile</p>
                 </div>
               </Link>
-              <div onClick={()=>{setTabActive('settings'); setShowAccMenu(false); router.push('/settings')}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
+              <div onClick={()=>{memorizeScrollPosition(); setTabActive('settings'); setShowAccMenu(false); router.push('/settings')}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                 <CogIcon className="h-5 w-5"/>
                 <p>Settings</p>
               </div>
@@ -174,8 +180,6 @@ function Header() {
       {tabActive[tabActive.length - 1].slice(0,4) === "post" && <div>
         <PostDialog/>
       </div>}
-      {tabActive[tabActive.length - 1]==='updatePP' && <UpdateProfilePicture/>}
-      {tabActive[tabActive.length - 1]==='updateCI' && <UpdateCoverPicture/>}
       {tabActive[tabActive.length - 1]==='delAcc' && <DeleteAccountDialog/>}
       {(refreshFeedPosts || refreshGlobalPosts) && <div className="mt-4 z-50 fixed x-centered">
         <div className="loader mx-auto animate-spin"></div>

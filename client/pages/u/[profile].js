@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import ProfileCard from '../components/ProfileCard';
-import MyPosts from "../components/MyPosts";
-import About from "../components/About";
-import { ProfileLayout } from '../Layouts/Layouts';
-import { useActiveTab } from "../contexts/ActiveTabContext";
+import ProfileCard from '../../components/ProfileCard';
+import MyPosts from "../../components/MyPosts";
+import About from "../../components/About";
+import { ProfileLayout } from '../../Layouts/Layouts';
+import { useActiveTab } from "../../contexts/ActiveTabContext";
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/router";
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
-import NotFound from './404';
-import { PostsProvider } from '../contexts/PostsContext';
+import NotFound from '../../components/404';
+import { PostsProvider } from '../../contexts/PostsContext';
 
 function Profile() {
   const { setTabActive } = useActiveTab()
@@ -28,7 +28,6 @@ function Profile() {
         setAdmin(true);
       }).catch((error)=>{
         setNotFound(true)
-        console.log(error)
       })
     }
     async function getUserProfile_LoggedIn(){
@@ -36,7 +35,6 @@ function Profile() {
         setUser(res.data)
       }).catch((error)=>{
         setNotFound(true)
-        console.log(error)
       })
     }
 
@@ -46,7 +44,6 @@ function Profile() {
         setUser(res.data)
         }).catch((error)=>{
           setNotFound(true)
-          console.log(error)
         })
       }
     }
@@ -73,17 +70,16 @@ function Profile() {
       setUser(res.data)
     }).catch((error)=>{
       setNotFound(true)
-      console.log(error)
     })
   }
 
   return (
     notFound ?
-      <NotFound/>
+      <NotFound type="user"/>
       :
       user ?
       <PostsProvider>
-        <ProfileCard admin={admin} user={user} loggedIn={loggedIn} refreshUser={refreshUser}/>
+        <ProfileCard admin={admin} _user={user} loggedIn={loggedIn} refreshUser={refreshUser}/>
         <About admin={admin} user={user}/>
         <MyPosts admin={admin} user={user} refreshUser={refreshUser}/>
         <div className='pt-20'></div>

@@ -1,6 +1,6 @@
 import { PencilIcon } from "@heroicons/react/outline"
 import axios from "axios";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useAuth } from "../contexts/AuthContext"
 
@@ -32,6 +32,12 @@ function AccountSettings({colleges}) {
     getUser()
   }, [tabActive])
 
+  useEffect(() => {
+    if(error){
+      document.getElementById('vE').scrollIntoView()
+    }
+  },[error])
+
   function handleValueChange(e){
     if(e.target.value === ""){
       if(e.target.id === "relationship"){
@@ -42,6 +48,16 @@ function AccountSettings({colleges}) {
         _setUser(oldval=>{const {gender,...other } = oldval;  return other})
       }else if(e.target.id === "college"){
         _setUser(oldval=>{const {college,...other } = oldval;  return other})
+      }else if(e.target.id === "name"){
+        _setUser(oldval=>{const {name,...other } = oldval;  return other})
+      }else if(e.target.id === "username"){
+        _setUser(oldval=>{const {username,...other } = oldval;  return other})
+      }else if(e.target.id === "email"){
+        _setUser(oldval=>{const {email,...other } = oldval;  return other})
+      }else if(e.target.id === "bio"){
+        _setUser(oldval=>{const {bio,...other } = oldval;  return other})
+      }else if(e.target.id === "birthday"){
+        _setUser(oldval=>{const {birthday,...other } = oldval;  return other})
       }
     }else{
       if(e.target.id === "relationship"){
@@ -52,6 +68,16 @@ function AccountSettings({colleges}) {
         _setUser(oldval=>{const {gender,...other } = oldval;  return {gender: e.target.value,...other }})
       }else if(e.target.id === "college"){
         _setUser(oldval=>{const {college,...other } = oldval;  return {college: e.target.value,...other }})
+      }else if(e.target.id === "name"){
+        _setUser(oldval=>{const {name,...other } = oldval;  return {name: e.target.value,...other }})
+      }else if(e.target.id === "username"){
+        _setUser(oldval=>{const {username,...other } = oldval;  return {username: e.target.value,...other }})
+      }else if(e.target.id === "email"){
+        _setUser(oldval=>{const {email,...other } = oldval;  return {email: e.target.value,...other }})
+      }else if(e.target.id === "bio"){
+        _setUser(oldval=>{const {bio,...other } = oldval;  return {bio: e.target.value,...other }})
+      }else if(e.target.id === "birthday"){
+        _setUser(oldval=>{const {birthday,...other } = oldval;  return {birthday: e.target.value,...other }})
       }
     }
   }
@@ -76,8 +102,8 @@ function AccountSettings({colleges}) {
     if(update.description){
       var str = update.description.trim()
       var wordCount = str.match(/(\w+)/g).length;
-      if(wordCount>60){
-        setError("Bio Too Long")
+      if(wordCount>80){
+        setError("Bio Too Long; must not exceed 80 characters")
         setUpdateLoading(false)
         return
       }
@@ -97,6 +123,7 @@ function AccountSettings({colleges}) {
         setUpdateLoading(false)
       }else{
         setCurrentUser((oldValues) => {return {token: oldValues.token, ...res.data}})
+        setError("Successfully updated your profile")
         setUpdateLoading(false)
       }
     })
@@ -105,7 +132,7 @@ function AccountSettings({colleges}) {
   return (
     <div className="w-full bg-white dark:bg-bdark-100 rounded-b-lg md:rounded-r-lg md:rounded-bl-lg flex flex-col justify-center p-3 shadow-md">
       <div className='relative my-3 fit-content mx-auto'>
-        <img className = "h-28 w-28 lg:h-36 lg:w-36 object-cover rounded-full border-2 border-gray-400 dark:border-bdark-50 cursor-default" 
+        <img id='vE' className = "h-28 w-28 lg:h-36 lg:w-36 object-cover rounded-full border-2 border-gray-400 dark:border-bdark-50 cursor-default" 
           src = {currentUser.profilePicture.startsWith("https://pbs.twimg.com/profile_images") ? currentUser.profilePicture.replace("normal", "400x400") : (currentUser.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image/upload/") ? currentUser.profilePicture.replace("w_100", "w_400") : currentUser.profilePicture)}/>
         <div onClick={()=>setTabActive('updatePP')} className='absolute right-4 bottom-2 py-2 px-2 bg-gray-500 dark:bg-bdark-200 bg-opacity-90 rounded-full cursor-pointer transition hover:scale-105'>
           <PencilIcon className='h-3 text-white dark:text-gray-400'/>
@@ -120,8 +147,10 @@ function AccountSettings({colleges}) {
             <div className="flex flex-col m-3">
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Name</p>
               <input
+              onChange={handleValueChange}
               id="name"
               minLength="3"
+              maxLength="35"
               type="text"
               autoComplete="name"
               title="name"
@@ -132,8 +161,10 @@ function AccountSettings({colleges}) {
             <div className="flex flex-col m-3">
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Username</p>
               <input
+              onChange={handleValueChange}
               id="username"
               minLength="3"
+              maxLength="30"
               type="text"
               pattern="^[A-Za-z0-9_]{3,15}$"
               autoComplete="new name"
@@ -145,6 +176,7 @@ function AccountSettings({colleges}) {
             <div className="flex flex-col xl:col-span-2 m-3">
             <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Email</p>
               <input
+              onChange={handleValueChange}
               id="email"
               minLength="3"
               type="text"
@@ -158,6 +190,7 @@ function AccountSettings({colleges}) {
             <div className="flex flex-col m-3">
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Birthday</p>
               <input
+              onChange={handleValueChange}
               id="birthday"
               type="date"
               autoComplete="date"
@@ -198,21 +231,13 @@ function AccountSettings({colleges}) {
                 <option>Married</option>
               </select>
             </div>
-            <div className="flex flex-col m-3">
-              <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Programme of Study</p>
-              <select className="infofield-edit">
-              <option value="" disabled selected hidden></option>
-                <option>TBD</option>
-                <option>TBD</option>
-              </select>
-            </div>
           </div>
           <div className="flex flex-col m-3">
             <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Bio</p>
-            <textarea id="bio" defaultValue={user?.description} className="h-40 p-3 rounded-lg outline-none no-ta-resize bg-blue-grey-50 dark:bg-bdark-200 text-gray-500 dark:text-gray-400 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-1 ring-pink-500"/>
+            <textarea id="bio" defaultValue={user?.description} onChange={handleValueChange} className="h-40 p-3 rounded-lg outline-none no-ta-resize bg-blue-grey-50 dark:bg-bdark-200 text-gray-500 dark:text-gray-400 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-1 ring-pink-500"/>
           </div>
           <div className="flex justify-between items-center m-3">
-            <button onClick={()=>setTabActive('delAcc')} className="clicky text-red-600 cursor-pointer outline-none">Delete Account</button>
+            <button type='button' onClick={()=>setTabActive('delAcc')} className="clicky text-red-600 cursor-pointer outline-none">Delete Account</button>
             <button disabled={updateLoading || JSON.stringify(user) === JSON.stringify(_user)} className="infobutton-edit" type="submit">
               {updateLoading ? <div className="loader mx-auto animate-spin"></div> : <>Confirm</>}
             </button>

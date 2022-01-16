@@ -10,10 +10,14 @@ import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useSocket } from "../contexts/SocketContext";
 import FollowersAndFollowingsList from "./FollowersAndFollowingsList";
+import UpdateCoverPicture from "./UpdateCoverPicture";
+import UpdateProfilePicture from "./UpdateProfilePicture";
 
-function ProfileCard({ admin, user, loggedIn, refreshUser }) {
-  const [ followBtnText, setFollowBtnText ] = useState(user.isfollowing ?'Unfollow' : 'Follow')
+function ProfileCard({ admin, _user, loggedIn, refreshUser }) {
+  const [ user, setUser ] = useState()
+  const [ followBtnText, setFollowBtnText ] = useState(_user?.isfollowing ?'Unfollow' : 'Follow')
   const [ showFF, setShowFF ] = useState()
+  const [ pPic, setPPic ] = useState()
   const { tabActive, setTabActive } = useActiveTab()
   const { currentUser } = useAuth()
   const { socket } = useSocket()
@@ -45,8 +49,22 @@ function ProfileCard({ admin, user, loggedIn, refreshUser }) {
     })
   }
 
+  useEffect(() => {
+    setUser(_user)
+  }, [_user])
+
   useEffect(()=>{
-    user.isfollowing ? setFollowBtnText("Unfollow") : setFollowBtnText("Follow")
+    if(user){
+      user.isfollowing ? setFollowBtnText("Unfollow") : setFollowBtnText("Follow")
+      console.log("running")
+      if(user.profilePicture.startsWith("https://pbs.twimg.com/profile_images")){
+        setPPic(user.profilePicture.replace("normal", "400x400"))
+      }else if(user.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image/upload/")){
+        setPPic(user.profilePicture.replace("w_200", "w_400"))
+      }else{
+        setPPic(user.profilePicture)
+      }
+    }
   }, [user])
 
   return (
@@ -60,19 +78,19 @@ function ProfileCard({ admin, user, loggedIn, refreshUser }) {
         <div className='relative w-full dark:bg-bdark-100 flex flex-col pb-2'>
           <div className='flex flex-col'>
             <div className = 'lg:ml-56 mt-8 lg:mt-1 cursor-default flex flex-col items-center lg:items-start'>
-              <div ><p className = 'text-gray-500 dark:text-gray-400 text-xl font-medium'>{user.name}</p></div>
-              <div ><p className = 'text-gray-500 dark:text-gray-400 text-xs font-light'>{'@'+ user.username}</p></div>
-              <div ><p className = 'text-gray-500 dark:text-gray-400 text-xs font-light'>{user.college}</p></div>
+              <div ><p className = 'text-gray-500 dark:text-gray-400 text-xl font-medium'>{user?.name}</p></div>
+              <div ><p className = 'text-gray-500 dark:text-gray-400 text-xs font-light'>{'@'+ user?.username}</p></div>
+              <div ><p className = 'text-gray-500 dark:text-gray-400 text-xs font-light'>{user?.college}</p></div>
             </div>
             <div className='flex space-x-5 mx-auto lg:ml-56'>
-              <div onClick={()=>{setShowFF('followers'); setTabActive('fflist')}} className = 'text-center text-gray-500 dark:text-gray-400 font-light cursor-pointer'>{user.followers ?( user.followers.length === 1 ? "1 Follower" : user.followers.length + " Followers")  : "0 Followers"}</div>
-              <div onClick={()=>{setShowFF('followings'); setTabActive('fflist')}} className = 'text-center text-gray-500 dark:text-gray-400 font-light cursor-pointer'>{user.followings ? user.followings.length : "0"} Followings</div>
+              <div onClick={()=>{setShowFF('followers'); setTabActive('fflist')}} className = 'text-center text-gray-500 dark:text-gray-400 font-light cursor-pointer'>{user?.followers ?( user.followers.length === 1 ? "1 Follower" : user.followers.length + " Followers")  : "0 Followers"}</div>
+              <div onClick={()=>{setShowFF('followings'); setTabActive('fflist')}} className = 'text-center text-gray-500 dark:text-gray-400 font-light cursor-pointer'>{user?.followings ? user.followings.length : "0"} Followings</div>
             </div>
           </div>
           <div className='absolute -top-20 left-1/2 -ml-14 lg:-top-20 lg:left-32'>
             <div className='relative'>
               <img className = "h-28 w-28 lg:h-36 lg:w-36 object-cover rounded-full border-4 border-white dark:border-bdark-100" 
-                src = {admin ? (currentUser.profilePicture.startsWith("https://pbs.twimg.com/profile_images") ? currentUser.profilePicture.replace("normal", "400x400") : (currentUser.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image/upload/") ? currentUser.profilePicture.replace("w_100", "w_400") : currentUser.profilePicture)) : (user.profilePicture.startsWith("https://pbs.twimg.com/profile_images") ? user.profilePicture.replace("normal", "400x400") : (user.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image/upload/") ? user.profilePicture.replace("w_200", "w_400") : user.profilePicture))}/>
+                src = {pPic}/>
               {admin && <div onClick={()=>setTabActive('updatePP')} className='absolute right-4 bottom-2 py-2 px-2 bg-gray-500 dark:bg-bdark-200 bg-opacity-90 rounded-full cursor-pointer transition hover:scale-105'><PencilIcon className='h-3 text-white dark:text-gray-400'/></div>}
             </div>
           </div>
@@ -89,6 +107,8 @@ function ProfileCard({ admin, user, loggedIn, refreshUser }) {
         </div>
     </div>
     {(showFF && tabActive[tabActive.length - 1] === 'fflist') && <FollowersAndFollowingsList setShowFF={setShowFF} _followers={user.followers} _followings={user.followings} username={user.username} showFF={showFF}/>}
+    {tabActive[tabActive.length - 1]==='updatePP' && <UpdateProfilePicture refreshUser={refreshUser}/>}
+    {tabActive[tabActive.length - 1]==='updateCI' && <UpdateCoverPicture refreshUser={refreshUser} user={admin && user}/>}
     </>
   )
 }

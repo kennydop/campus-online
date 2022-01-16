@@ -6,9 +6,6 @@ import { useAuth } from "../contexts/AuthContext";
 
 function Story({id, userId, name, src, type, description, likes}) {
     const {currentUser} = useAuth()
-    if(name.length > 8){
-        name = name.substring(0, 8) + '...';
-    }
     return (
         <div className='py-2 text-center cursor-pointer inline-block overflow-visible'>
             {src && 

@@ -8,8 +8,7 @@ export const COOKIE_OPTIONS = {
   // secure cookies do not work correctly (in postman)
   secure: !dev,
   signed: true,
-  maxAge: (60 * 60 * 24 * 30) * 1000,
-  // sameSite: "none",
+  maxAge: 60 * 60 * 24 * 30 * 1000,
 }
 
 export const getToken = (user) => {

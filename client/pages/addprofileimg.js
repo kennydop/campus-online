@@ -4,7 +4,7 @@ import { useState } from "react";
 import {useRouter} from 'next/router';
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
-import NotFound from "./404"
+import NotFound from "../components/404"
 
 function AddProfileImg() { 
   const [imgPreview, setImgPreview] = useState(null);

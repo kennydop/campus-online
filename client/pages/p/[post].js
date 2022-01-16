@@ -1,12 +1,15 @@
 import { SiteLayout } from "../../Layouts/Layouts"
 import axios from 'axios'
-import {NotFound} from "../404"
+import {NotFound} from "../../components/404"
 import Post from "../../components/Post"
 import ProfileToFollow from "../../components/ProfileToFollow"
 import { useEffect, useState } from "react"
+import { useActiveTab } from "../../contexts/ActiveTabContext"
 
 function PostPage({_post}) {
   const [author, setAuthor] = useState()
+  const { setTabActive } = useActiveTab()
+  
   useEffect(() => {
     async function getAuthor(){
       axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/"+_post.authorId).then((res)=>{
@@ -14,6 +17,7 @@ function PostPage({_post}) {
       })
     }
     (!_post.isAnonymous && !author) && getAuthor()
+    setTabActive('pagepost');
   }, [])
 
   return (
@@ -24,13 +28,13 @@ function PostPage({_post}) {
       <div className="hidden md:block md:w-4/12">
         <div className="w-full sticky top-16">
           {author && <ProfileToFollow id={author?._id} username={author?.username} name={author?.name} pic={author?.profilePicture} college={author?.college}/>}
-          {_post.isAnonymous && <span className="text-gray-500 dark:text-gray-400 flex items-center justify-center py-8 border-b border-gray-200 dark:border-bdark-200">This post was anonymously made</span>}
+          {_post.isAnonymous && <span className="text-gray-500 dark:text-gray-400 flex items-center justify-center py-8 border-b border-gray-200 dark:border-bdark-200">This was posted anonymously</span>}
         </div>
       </div>
     </div>
     </>
     :
-    <NotFound/>
+    <NotFound type="post"/>
   )
 }
 
