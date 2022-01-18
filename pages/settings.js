@@ -50,7 +50,9 @@ Settings.getLayout = function getLayout(page) {
 }
 
 export async function getStaticProps() {
-  const colleges = await (await axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/colleges")).data
+  const colleges = await axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/colleges").then((res)=>{
+    return res.data
+  })
   
   return {
     props: {
