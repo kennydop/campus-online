@@ -1,4 +1,4 @@
-import { LockClosedIcon, MailIcon, UserIcon } from "@heroicons/react/outline";
+import { LockClosedIcon, UserIcon } from "@heroicons/react/outline";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
