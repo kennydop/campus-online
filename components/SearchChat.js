@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useRef } from "react"
 import { useAuth } from "../contexts/AuthContext"
 import { useOnClickOutside } from "./Hooks"
@@ -15,6 +16,7 @@ function SearchChat({hits, clearSearch, setCurrentChat}) {
           <div key={hit._id} onClick={()=>{clearSearch(); setCurrentChat(null, hit._id, {username: hit.username, lastSeen: hit.lastSeen})}} className="flex m-1 p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-bdark-50">
             <div className='max-h-9 w-9 rounded-full overflow-hidden'>
               <img
+                alt='profile picture'
                 className='object-cover rounded-full cursor-pointer'
                 src={hit.profilePicture}/>
             </div>

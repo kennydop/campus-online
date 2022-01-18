@@ -17,7 +17,7 @@ function ForgotPassword() {
     else if(router?.query.error==="1103"){
       setMsg({error: true, msg: "Invalid Link"})
     }
-  },[router.isReady])
+  },[router.isReady, router.query.error])
 
   async function sendEmailAddress(e){
     e.preventDefault()

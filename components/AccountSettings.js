@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { PencilIcon } from "@heroicons/react/outline"
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -132,7 +133,7 @@ function AccountSettings({colleges}) {
   return (
     <div className="w-full bg-white dark:bg-bdark-100 rounded-b-lg md:rounded-r-lg md:rounded-bl-lg flex flex-col justify-center p-3 shadow-md">
       <div className='relative my-3 fit-content mx-auto'>
-        <img id='vE' className = "h-28 w-28 lg:h-36 lg:w-36 object-cover rounded-full border-2 border-gray-400 dark:border-bdark-50 cursor-default" 
+        <img id='vE' alt='profile picture' className = "h-28 w-28 lg:h-36 lg:w-36 object-cover rounded-full border-2 border-gray-400 dark:border-bdark-50 cursor-default" 
           src = {currentUser.profilePicture.startsWith("https://pbs.twimg.com/profile_images") ? currentUser.profilePicture.replace("normal", "400x400") : (currentUser.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image/upload/") ? currentUser.profilePicture.replace("w_100", "w_400") : currentUser.profilePicture)}/>
         <div onClick={()=>setTabActive('updatePP')} className='absolute right-4 bottom-2 py-2 px-2 bg-gray-500 dark:bg-bdark-200 bg-opacity-90 rounded-full cursor-pointer transition hover:scale-105'>
           <PencilIcon className='h-3 text-white dark:text-gray-400'/>

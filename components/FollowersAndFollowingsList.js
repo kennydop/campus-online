@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { XIcon } from "@heroicons/react/outline";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -49,7 +50,7 @@ function FollowersAndFollowingsList({setShowFF, _followers, _followings, usernam
       }
     }
 
-  },[])
+  },[_followers, _followings])
 
   useEffect(()=>{
     if(followings?.length === _followings.length && followers.length === _followers.length){

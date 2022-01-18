@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 import ProfileToFollow from "../components/ProfileToFollow"
 import Link from "next/link"
 import { useUtils } from "../contexts/UtilsContext";

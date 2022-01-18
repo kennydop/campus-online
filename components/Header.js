@@ -97,7 +97,7 @@ function Header() {
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer text-center ${tabActive[tabActive.length-1]==='profile' ? 'border-2 border-pink-500': ''}`}
               src = {currentUser.profilePicture}/>
               {showMinAccMenu && <div ref={minAccRef} className="absolute w-48 bg-white dark:bg-bdark-100 border dark:border-bdark-200 shadow-all dark:shadow-all-lg top-11 rounded-lg overflow-hidden">
-              <Link href={`/u/${currentUser.username}`}>
+              <Link href={`/u/${currentUser.username}`} passHref>
                 <div onClick={()=> {memorizeScrollPosition(); setTabActive('profile'); setShowMinAccMenu(false)}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                   <UserCircleIcon className="h-5 w-5"/>
                   <p>Profile</p>
@@ -149,7 +149,7 @@ function Header() {
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer ${tabActive[tabActive.length - 1]==='profile' ? 'border-2 border-pink-500': ''}`}
               src={currentUser.profilePicture}/>
             {showAccMenu && <div ref={accRef} className="absolute w-40 bg-white dark:bg-bdark-100 border dark:border-bdark-200 shadow-all dark:shadow-all-lg -right-5 top-8 rounded-lg overflow-hidden">
-              <Link href={`/u/${currentUser.username}`}>
+              <Link href={`/u/${currentUser.username}`} passHref>
                 <div onClick={()=> {memorizeScrollPosition(); setTabActive('profile'); setShowAccMenu(false)}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                   <UserCircleIcon className="h-5 w-5"/>
                   <p>Profile</p>

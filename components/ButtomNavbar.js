@@ -9,7 +9,7 @@ function ButtomNavbar() {
   const { tabActive, setTabActive } = useActiveTab()
   const router = useRouter();
   const { currentUser } = useAuth();
-  const { unreadNotifications, setUnreadNotifications, unreadChats, newPosts, setRefreshFeedPosts, setRefreshGlobalPosts, setFeedScroll, setGlobalScroll } = useUtils();
+  const { unreadNotifications, unreadChats, newPosts, setRefreshFeedPosts, setFeedScroll, setGlobalScroll } = useUtils();
 
   function handleHome(){
     if(typeof window === 'object' && router.pathname === '/feed'){

@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useRouter} from 'next/router';
-import {db} from '../firebase/firebase';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { AcademicCapIcon } from '@heroicons/react/outline';

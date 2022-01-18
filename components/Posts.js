@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Post from './Post';
 import FlipMove from 'react-flip-move';
 import PostPlaceholder from './PostPlaceholder';

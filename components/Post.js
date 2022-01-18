@@ -253,11 +253,11 @@ const Post = forwardRef(({ _post, refreshUser, page }, ref) => {
       <div className={`p-2 relative flex flex-grow flex-col ${page ? 'border-r border-gray-200 dark:border-bdark-200 ' : 'rounded-lg shadow-md bg-white dark:bg-bdark-100'}`}>
         <div className='py-1 flex border-b border-gray-200 dark:border-bdark-200 justify-between items-center'>
           <div className="flex items-center truncate">
-          {!post.isAnonymous && <Link href={`/u/${author?.username}`}><img className='h-9 w-9 mr-3 rounded-full object-cover cursor-pointer' src={author?.profilePicture}/></Link>}
+          {!post.isAnonymous && <Link href={`/u/${author?.username}`} passHref><img className='h-9 w-9 mr-3 rounded-full object-cover cursor-pointer' src={author?.profilePicture}/></Link>}
             <span>
               {!post.isAnonymous && <span className='flex justify-center items-center space-x-2 w-full'>
-                {author?.name ? <Link href={`/u/${author.username}`}><span className='text-gray-500 dark:text-gray-400 text-lg font-semibold truncate cursor-pointer'>{author.name}</span></Link> : <div className='w-44 h-2.5 bg-gray-100 dark:bg-bdark-50 animate-pulse'/>}
-                {author?.username ? <Link href={`/u/${author.username}`}><span className='text-gray-500 dark:text-gray-400 text-sm truncate cursor-pointer'>@{author.username}</span></Link> : <div className='w-36 h-2.5 bg-gray-100 dark:bg-bdark-50 animate-pulse'/>}
+                {author?.name ? <Link href={`/u/${author.username}`} passHref><span className='text-gray-500 dark:text-gray-400 text-lg font-semibold truncate cursor-pointer'>{author.name}</span></Link> : <div className='w-44 h-2.5 bg-gray-100 dark:bg-bdark-50 animate-pulse'/>}
+                {author?.username ? <Link href={`/u/${author.username}`} passHref><span className='text-gray-500 dark:text-gray-400 text-sm truncate cursor-pointer'>@{author.username}</span></Link> : <div className='w-36 h-2.5 bg-gray-100 dark:bg-bdark-50 animate-pulse'/>}
               </span>}
               {post.isAnonymous && <p className='text-gray-600 dark:text-gray-400 text-lg truncate'>Anonymous</p>}
               <TimePast date={new Date(post.createdAt)}/>
@@ -266,7 +266,7 @@ const Post = forwardRef(({ _post, refreshUser, page }, ref) => {
           <div onClick={()=>setOpenOptions(true)}><DotsVerticalIcon className="h-5 text-gray-500 dark:text-gray-400 cursor-pointer"/></div>
           <div ref={moreRef} className={`absolute right-3 top-6 z-10 bg-white dark:bg-bdark-100 rounded-lg shadow-all overflow-hidden ${openOptions ? "w-40 transition-all duration-300" : "w-0 h-0 hidden"}`}>
             {(post.authorId !== currentUser?._id && !post.isAnonymous) && <div onClick={followUser} className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-blue-grey-50 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">{author?.followers.indexOf(currentUser._id) > -1 ? "Unfollow" : "Follow"}</div>}
-            {!page && <Link href={`/p/${post._id}`}><div onClick={()=>setOpenOptions(false)} className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-blue-grey-50 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">Go To Post</div></Link>}
+            {!page && <Link href={`/p/${post._id}`} passHref><div onClick={()=>setOpenOptions(false)} className="w-full text-center py-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-blue-grey-50 dark:hover:bg-bdark-200 border-b border-gray-200 dark:border-bdark-200">Go To Post</div></Link>}
             {post.authorId === currentUser?._id && <div onClick={deletePosts} className="w-full text-center py-2 text-red-500 cursor-pointer hover:bg-blue-grey-50 dark:hover:bg-bdark-200">Delete Post</div>}
           </div>
         </div>
@@ -340,7 +340,7 @@ const Post = forwardRef(({ _post, refreshUser, page }, ref) => {
               <div className='border-t border-gray-200 dark:border-bdark-200 py-1'>
               {!page && <div className="flex justify-between items-center mb-1">
                 <div className="text-gray-500 dark:text-gray-400 font-semibold">Comments</div>
-                <Link href={`/p/${post._id}`}><div className="text-pink-500 text-sm cursor-pointer">See all comments</div></Link>
+                <Link href={`/p/${post._id}`} passHref><div className="text-pink-500 text-sm cursor-pointer">See all comments</div></Link>
               </div>}
                 {
                   shownComments.map((comment)=>
