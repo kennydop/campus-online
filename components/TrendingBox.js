@@ -9,6 +9,7 @@ function TrendingBox() {
         <p>Trending</p>
       </div>
       {trending ?
+       trending.length > 0 ?
       <div>
         {trending?.map((t)=>
         <Link href={`/trending?word=${t.word}`} key={t.word} passHref>
@@ -17,6 +18,10 @@ function TrendingBox() {
           </div>
         </Link>
         )}
+      </div>
+      :
+      <div className="h-72 w-full text-gray-500 dark:text-gray-400 flex justify-center items-center">
+        Not Enough Data
       </div>
       :
       <div className="h-72 w-full"/>
