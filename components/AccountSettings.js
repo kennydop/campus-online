@@ -142,7 +142,7 @@ function AccountSettings({colleges}) {
       <div className="flex items-center justify-center my-4">
         <form className="flex flex-col space-y-5 m-2 wsc md:w-fit-content" autoComplete='on' onSubmit={updateProfile}>
           <div className="flex items-center justify-center">
-            {error && <p className = "longer-errorMsg" id = "injectError">{error}</p>}
+            {error && <p className = {`longer-errorMsg ${error.startsWith("Successfully") && 'text-green-500'}`} id = "injectError">{error}</p>}
           </div>
           <div className="grid xl:grid-cols-2 grid-cols-1">
             <div className="flex flex-col m-3">
