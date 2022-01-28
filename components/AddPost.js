@@ -15,7 +15,7 @@ function AddPost() {
         <div className='flex space-x-4 items-center mb-3 ml-2'>
           <Link href={`/u/${currentUser.username}`} passHref><img className='cursor-pointer rounded-full object-cover h-11 w-11' src={currentUser.profilePicture}/></Link>
             <div className='flex flex-1 text-gray-400 dark:text-gray-500 h-10 p-2 cursor-text bg-blue-grey-50 dark:bg-bdark-200 rounded-full truncate' onClick={()=>setTabActive("post")}>
-              What&apo;ss up, {currentUser.username}?
+              What&apos;s up, {currentUser.username}?
             </div>
         </div>
         <div className='flex justify-evenly pt-2 border-t dark:border-bdark-200'>
