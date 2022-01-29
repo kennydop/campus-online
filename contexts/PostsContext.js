@@ -34,7 +34,7 @@ export function PostsProvider({children}) {
     }
     refreshFeedPosts && setFeedScroll(0)
     currentUser && getFeedPosts()
-  },[refreshFeedPosts === true])
+  },[refreshFeedPosts === true, currentUser])
 
   function deletePost(id){
     setFeedPosts((oldVal)=>{
