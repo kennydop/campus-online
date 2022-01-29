@@ -73,7 +73,7 @@ export function UtilsContext({children}){
       }
       getSuggestionsForNotLoggedInUser()
     }
-  },[])
+  },[currentUser])
 
   //getting trending
   useEffect(()=>{
