@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
 	}
 
   const verifyUser = useCallback(() => {
-    axios.put("http://localhost:5000/api/auth/refreshtoken", {}, {withCredentials: true, credentials: 'include'}).then(async (res)=>{
+    axios.put(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/auth/refreshtoken", {}, {withCredentials: true, credentials: 'include'}).then(async (res)=>{
       setCurrentUser(res.data)
       if(!uprotectedRoutes.includes(router.pathname)){
         if(res.data.token){
