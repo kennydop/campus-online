@@ -28,7 +28,7 @@ function Signup() {
           setError(res.data.message)
         }else{
           setCurrentUser(res.data)
-          router.replace('/addcollege')
+          router.replace('/')
         }
       }).catch((error)=>{
         setError(error)
