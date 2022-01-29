@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
 
 	function logout() {
     router.replace("/login")
-    axios.get((process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/auth/logout", { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'})
+    axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/auth/logout", { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'})
 	}
 
   const verifyUser = useCallback(() => {
