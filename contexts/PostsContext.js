@@ -23,7 +23,7 @@ export function PostsProvider({children}) {
     }
     refreshGlobalPosts && setGlobalScroll(0)
     currentUser && getGlobalPosts()
-  },[refreshGlobalPosts === true])
+  },[refreshGlobalPosts === true, currentUser])
 
   useEffect(()=>{
     async function getFeedPosts(){
