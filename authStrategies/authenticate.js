@@ -9,6 +9,7 @@ export const COOKIE_OPTIONS = {
   secure: true,
   signed: true,
   maxAge: 60 * 60 * 24 * 30 * 1000,
+  sameSite: "none"
 }
 
 export const getToken = (user) => {
