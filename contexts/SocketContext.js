@@ -36,7 +36,7 @@ export function SocketProvider({children}) {
   useEffect(()=>{
     async function userIsOnline(){
       if(!online && currentUser){
-        socket.current = io({process.env.NEXT_PUBLIC_SERVER_BASE_URL, {withCredentials: true})
+        socket.current = io(process.env.NEXT_PUBLIC_SERVER_BASE_URL, {withCredentials: true})
         socket.current.emit("addUser", currentUser._id)
       }
     }
