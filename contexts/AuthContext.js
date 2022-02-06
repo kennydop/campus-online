@@ -9,7 +9,7 @@ export function useAuth() {
 	return useContext(AuthContext)
 }
 
-const uprotectedRoutes = ['/login', '/signup', '/forgotpassword', '/', '/u/[profile]', '/p/[post]']
+const unprotectedRoutes = ['/login', '/signup', '/forgotpassword', '/', '/u/[profile]', '/p/[post]']
 
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState()
@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
   const verifyUser = useCallback(() => {
     axios.put(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/auth/refreshtoken", {}, {withCredentials: true, credentials: 'include'}).then(async (res)=>{
       setCurrentUser(res.data)
-      if(!uprotectedRoutes.includes(router.pathname)){
+      if(!unprotectedRoutes.includes(router.pathname)){
         if(res.data.token){
           setLoading(false)
         }else{
@@ -39,7 +39,7 @@ export function AuthProvider({ children }) {
         setLoading(false)
       }
     }).catch(async (error)=>{
-      if(!uprotectedRoutes.includes(router.pathname)){
+      if(!unprotectedRoutes.includes(router.pathname)){
         setLoading(true)
         await router.replace({
           pathname: '/login',

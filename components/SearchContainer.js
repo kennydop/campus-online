@@ -17,7 +17,7 @@ function SearchContainer({hits, clearSearch}) {
       {hits?.length !== 0 ?
         hits?.map(hit => 
           hit._id !== currentUser?._id &&
-          <Link key={hit._id} href={`/${hit.username}`} passHref>
+          <Link key={hit._id} href={`/u/${hit.username}`} passHref>
           <div onClick={()=>clearSearch()} className="flex m-1 p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-bdark-50">
             <div className='max-h-9 w-9 rounded-full overflow-hidden'>
               <img

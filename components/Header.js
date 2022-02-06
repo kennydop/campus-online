@@ -121,7 +121,7 @@ function Header() {
             <div onClick={()=>{setEnterSearchMode(true)}} className={`flex md:hidden rounded-full bg-blue-grey-50 dark:bg-bdark-200 p-1.5 transition duration-300 ease ${enterSearchMode? 'absolute w-11/12 items-start':'items-center'}`}>
               <form className="flex items-center" onSubmit={(e)=>{e.preventDefault(); setEnterSearchMode(false); router.push(`/trending?word=${e.target.elements.minSearch.value}`)}}>
                 <SearchIcon className = "h-5 cursor-pointer text-gray-500 dark:text-gray-400"/>
-                <input id="minSearch" onChange={search} className = {`md:hidden ml-2 bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 w-full h-full ${enterSearchMode?'inline-flex':'hidden'}`} type = "text" placeholder="Search"/>
+                <input id="minSearch" type="search" onChange={search} className = {`md:hidden ml-2 bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 w-full h-full ${enterSearchMode?'inline-flex':'hidden'}`} type = "text" placeholder="Search"/>
                 <button hidden type="submit"></button>
               </form>
             </div>
@@ -131,7 +131,7 @@ function Header() {
           <div onClick={()=>{setEnterSearchMode(true)}} className = "flex items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 px-1.5 py-1 focus:shadow-md">
             <form className="flex items-center" onSubmit={(e)=>{e.preventDefault(); setEnterSearchMode(false); router.push(`/trending?word=${e.target.elements.jsearch.value}`)}}>
               <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
-              <input id="jsearch" onChange={search} className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400" type = "text" placeholder="Search"/>
+              <input id="jsearch" type="search" onChange={search} className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400" type = "text" placeholder="Search"/>
               <button hidden type="submit"></button>
             </form>
           </div>

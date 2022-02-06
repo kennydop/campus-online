@@ -17,7 +17,7 @@ export function UtilsContext({children}){
   const [refreshGlobalPosts, setRefreshGlobalPosts] = useState()
   const [feedScroll, setFeedScroll] = useState()
   const [globalScroll, setGlobalScroll] = useState()
-  const [suggestions, setSuggestions] = useState()
+  const [suggestions, setSuggestions] = useState([])
   const [trending, setTrending] = useState()
   const { currentUser } = useAuth()
   const {theme, resolvedTheme, setTheme} = useTheme()
@@ -85,6 +85,20 @@ export function UtilsContext({children}){
     getTrending()
   },[])
 
+  const setFollowedSuggestion = (id)=>{
+    suggestions.map(s=>{
+      if(s._id !== id)return
+      s.isfollowing = true;
+    })
+  }
+  
+  const setUnfollowedSuggestion = (id)=>{
+    suggestions.map(s=>{
+      if(s._id !== id)return
+      s.isfollowing = false;
+    })
+  }
+
   const value = {
     unreadChats,
     unreadNotifications,
@@ -101,7 +115,9 @@ export function UtilsContext({children}){
     setRefreshFeedPosts,
     setRefreshGlobalPosts,
     setFeedScroll,
-    setGlobalScroll
+    setGlobalScroll,
+    setFollowedSuggestion,
+    setUnfollowedSuggestion
   }
   
   return(

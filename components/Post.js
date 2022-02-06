@@ -249,7 +249,7 @@ const Post = forwardRef(({ _post, refreshUser, page }, ref) => {
 
 
   return (
-    <div id={post?._id} ref={ref} className={`${page ? 'w-screen md:w-8/12' : 'w-screen p-1.5 md:w-102'}`}>
+    <div id={post?._id} ref={ref} className={`${page ? 'w-screen md:w-8/12 min-h-screen' : 'w-screen p-1.5 md:w-102'}`}>
       <div className={`p-2 relative flex flex-grow flex-col ${page ? 'border-r border-gray-200 dark:border-bdark-200 ' : 'rounded-lg shadow-md bg-white dark:bg-bdark-100'}`}>
         <div className='py-1 flex border-b border-gray-200 dark:border-bdark-200 justify-between items-center'>
           <div className="flex items-center truncate">

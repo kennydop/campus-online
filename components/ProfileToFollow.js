@@ -6,24 +6,29 @@ import { useState } from 'react'
 import Link from "next/link"
 import { useAuth } from '../contexts/AuthContext'
 import { useSocket } from '../contexts/SocketContext';
+import { useUtils } from '../contexts/UtilsContext';
 
-function ProfileToFollow({name, username , pic, college, id, isfollowing, page, il}) {
+function
+ProfileToFollow({name, username , pic, college, id, isfollowing, page, il}) {
   const { currentUser } = useAuth();
   const [buttonText, setButtonText] = useState(isfollowing ? 'Unfollow' : 'Follow')
   const { socket } = useSocket()
+  const { setFollowedSuggestion, setUnfollowedSuggestion } = useUtils()
 
   function followUser(){
     setButtonText(buttonText==="Follow"?"Unfollow":"Follow")
     axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${id}/follow`, {userId: currentUser._id}).then((res)=>{
     if(res.data === "user has been followed"){
-        setButtonText('Unfollow')
+        setButtonText('Unfollow');
+        setFollowedSuggestion(id);
         socket.emit('sendNotification', {
           from: currentUser._id,
           to: id,
           type: "follow",
         })
       }else if(res.data === "user has been unfollowed"){
-        setButtonText('Follow')
+        setButtonText('Follow');
+        setUnfollowedSuggestion(id);
         socket.emit('sendNotification', {
           from: currentUser._id,
           to: id,
