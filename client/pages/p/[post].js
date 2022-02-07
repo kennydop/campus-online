@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { SiteLayout } from "../../Layouts/Layouts"
 import axios from 'axios'
 import {NotFound} from "../../components/404"

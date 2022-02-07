@@ -1,4 +1,4 @@
-import { LockClosedIcon, MailIcon, UserIcon } from "@heroicons/react/outline";
+import { LockClosedIcon, UserIcon } from "@heroicons/react/outline";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -17,7 +17,7 @@ function ForgotPassword() {
     else if(router?.query.error==="1103"){
       setMsg({error: true, msg: "Invalid Link"})
     }
-  },[router.isReady])
+  },[router.isReady, router.query.error])
 
   async function sendEmailAddress(e){
     e.preventDefault()

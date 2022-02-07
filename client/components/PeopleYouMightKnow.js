@@ -14,7 +14,7 @@ function PeopleYouMightKnow() {
         <p>Quick follow</p>
       </div>
       { suggestions?
-        suggestions.slice(0, 4).map((suggestion)=> <ProfileToFollow key={suggestion._id} id={suggestion._id} username={suggestion.username} name={suggestion.name} pic={suggestion.profilePicture} college={suggestion.college}/>)
+        suggestions.slice(0, 4).map((suggestion)=> <ProfileToFollow key={suggestion._id} id={suggestion._id} username={suggestion.username} name={suggestion.name} pic={suggestion.profilePicture} college={suggestion.college} isfollowing={suggestion.isfollowing}/>)
         :
         <QuickFollowPlaceholder/>
       }

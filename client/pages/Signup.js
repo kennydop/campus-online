@@ -28,7 +28,7 @@ function Signup() {
           setError(res.data.message)
         }else{
           setCurrentUser(res.data)
-          router.replace('/addcollege')
+          router.replace('/')
         }
       }).catch((error)=>{
         setError(error)
@@ -111,7 +111,6 @@ function Signup() {
 						placeholder="Create Password"
 						autoComplete="new-password"
 						className="infofield"
-            title="password"
             />
 					</div>
 					<p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Already have an account? <a className = "text-pink-500 hover:font-bold transition-all duration-150 cursor-pointer" onClick={()=>{router.push('/login')}}>Login</a></p>

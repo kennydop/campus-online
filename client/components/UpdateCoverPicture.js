@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
@@ -62,6 +63,7 @@ function UpdateCoverPicture({refreshUser, user}) {
           <img 
           src={imgPreview ? imgPreview : (user?.coverPicture ? user.coverPicture : defaultCoverPicture)}
           className = "object-cover w-full"
+          alt="cover picture"
           />
         </div>
         <label className = "text-pink-500 hover:font-bold cursor-pointer my-3">

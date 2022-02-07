@@ -97,7 +97,7 @@ function Header() {
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer text-center ${tabActive[tabActive.length-1]==='profile' ? 'border-2 border-pink-500': ''}`}
               src = {currentUser.profilePicture}/>
               {showMinAccMenu && <div ref={minAccRef} className="absolute w-48 bg-white dark:bg-bdark-100 border dark:border-bdark-200 shadow-all dark:shadow-all-lg top-11 rounded-lg overflow-hidden">
-              <Link href={`/u/${currentUser.username}`}>
+              <Link href={`/u/${currentUser.username}`} passHref>
                 <div onClick={()=> {memorizeScrollPosition(); setTabActive('profile'); setShowMinAccMenu(false)}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                   <UserCircleIcon className="h-5 w-5"/>
                   <p>Profile</p>
@@ -121,7 +121,7 @@ function Header() {
             <div onClick={()=>{setEnterSearchMode(true)}} className={`flex md:hidden rounded-full bg-blue-grey-50 dark:bg-bdark-200 p-1.5 transition duration-300 ease ${enterSearchMode? 'absolute w-11/12 items-start':'items-center'}`}>
               <form className="flex items-center" onSubmit={(e)=>{e.preventDefault(); setEnterSearchMode(false); router.push(`/trending?word=${e.target.elements.minSearch.value}`)}}>
                 <SearchIcon className = "h-5 cursor-pointer text-gray-500 dark:text-gray-400"/>
-                <input id="minSearch" onChange={search} className = {`md:hidden ml-2 bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 w-full h-full ${enterSearchMode?'inline-flex':'hidden'}`} type = "text" placeholder="Search"/>
+                <input id="minSearch" type="search" onChange={search} className = {`md:hidden ml-2 bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 w-full h-full ${enterSearchMode?'inline-flex':'hidden'}`} type = "text" placeholder="Search"/>
                 <button hidden type="submit"></button>
               </form>
             </div>
@@ -131,7 +131,7 @@ function Header() {
           <div onClick={()=>{setEnterSearchMode(true)}} className = "flex items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 px-1.5 py-1 focus:shadow-md">
             <form className="flex items-center" onSubmit={(e)=>{e.preventDefault(); setEnterSearchMode(false); router.push(`/trending?word=${e.target.elements.jsearch.value}`)}}>
               <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
-              <input id="jsearch" onChange={search} className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400" type = "text" placeholder="Search"/>
+              <input id="jsearch" type="search" onChange={search} className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400" type = "text" placeholder="Search"/>
               <button hidden type="submit"></button>
             </form>
           </div>
@@ -149,7 +149,7 @@ function Header() {
               className = {`h-7 w-7 avatar object-cover rounded-full cursor-pointer ${tabActive[tabActive.length - 1]==='profile' ? 'border-2 border-pink-500': ''}`}
               src={currentUser.profilePicture}/>
             {showAccMenu && <div ref={accRef} className="absolute w-40 bg-white dark:bg-bdark-100 border dark:border-bdark-200 shadow-all dark:shadow-all-lg -right-5 top-8 rounded-lg overflow-hidden">
-              <Link href={`/u/${currentUser.username}`}>
+              <Link href={`/u/${currentUser.username}`} passHref>
                 <div onClick={()=> {memorizeScrollPosition(); setTabActive('profile'); setShowAccMenu(false)}} className="flex items-center cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-bdark-50 p-2 space-x-2">
                   <UserCircleIcon className="h-5 w-5"/>
                   <p>Profile</p>

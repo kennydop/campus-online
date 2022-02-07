@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ArrowLeftIcon } from '@heroicons/react/solid'
 import Notification from './Notification'
 import { useAuth } from '../contexts/AuthContext';

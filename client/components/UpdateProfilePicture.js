@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
@@ -60,6 +61,7 @@ function UpdateProfilePicture({refreshUser}) {
       <div onClick={()=>{setTabActive('go back')}} className="absolute top-3 right-3 cursor-pointer"><XIcon className="h-5 text-red-500"/></div>
       <div className = "mb-3 h-36 w-36 border-2 dark:border-gray-400 border-gray-500 rounded-full relative overflow-hidden">
           <img 
+          alt="profile picture"
           src={imgPreview ? imgPreview : currentUser.profilePicture}
           className = "object-cover h-36 w-36"
           />

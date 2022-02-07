@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable jsx-a11y/alt-text */
 import axios from "axios"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -51,7 +53,7 @@ function Notification({notification}) {
         {
           (notification.type === "follow" || notification.type === "unfollow") ?
           <div className="flex w-full justify-between items-center overflow-hidden h-full">
-            <Link href={`/u/${from?.username}`}>
+            <Link href={`/u/${from?.username}`} passHref>
               <div className="flex space-x-3 items-center w-10/12 h-full cursor-pointer">
                 <img src={notification.thumbnail} className = "h-10 w-10 avatar object-cover rounded-full cursor-pointer"/>
                 <div className="w-full">
@@ -77,7 +79,7 @@ function Notification({notification}) {
                     <TimePast date={new Date(notification.createdAt)}/>
                 </span>
               </div>
-              {notification.thumbnail && <Link href={`/p/${notification.post}`}><img src={notification.thumbnail} className = "w-12 h-12 object-cover cursor-pointer rounded-sm hover:opacity-50"/></Link>}
+              {notification.thumbnail && <Link href={`/p/${notification.post}`} passHref><img src={notification.thumbnail} className = "w-12 h-12 object-cover cursor-pointer rounded-sm hover:opacity-50"/></Link>}
             </div>
           </Link>
         }

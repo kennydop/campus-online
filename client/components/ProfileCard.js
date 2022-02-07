@@ -24,7 +24,7 @@ function ProfileCard({ admin, _user, loggedIn, refreshUser }) {
   
   function followUser(){
     if(!loggedIn){
-      router.replace('/login?returnUrl=/'+user._id)
+      router.push('/login?returnUrl=/'+user._id)
       return
     }
     if(followBtnText==="...") return

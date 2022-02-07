@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useRouter} from 'next/router';
-import {db} from '../firebase/firebase';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { AcademicCapIcon } from '@heroicons/react/outline';
@@ -56,7 +55,6 @@ function AddCollege({colleges}) {
       }
       axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}`, { college }, { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
         setCurrentUser((oldValues) => {return {token: oldValues.token, ...res.data}})
-        // currentUser.profilePicture ? router.replace('/feed') : router.replace('/addprofileimg')
         router.replace('/')
       }).catch((error)=>{
         setError(error.message)
@@ -68,7 +66,7 @@ function AddCollege({colleges}) {
   }
 
   return (
-    !currentUser.college ?
+    !currentUser?.college ?
     <div className = "h-screen flex flex-col items-center justify-center bg-white dark:bg-bdark-100">
       <div className = "mb-10"><h1 className = "text-lg font-bold text-gray-500 dark:text-gray-400">Finish Setting up your Account</h1></div>
         {error&&<p className='errorMsg'>{error}</p>}
@@ -90,7 +88,9 @@ function AddCollege({colleges}) {
 }
 
 export async function getStaticProps() {
-  const colleges = await (await axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/colleges")).data
+  const colleges = await axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/colleges").then((res)=>{
+    return res.data
+  })
   
   return {
     props: {

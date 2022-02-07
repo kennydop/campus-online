@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useEffect, useRef, useState } from 'react';
 import Story from './Story';
 import { ChevronLeftIcon, ChevronRightIcon} from '@heroicons/react/solid';
@@ -44,7 +45,7 @@ function Stories({userId}) {
             </div>
         </div>:
         <div className='relative h-15 w-15'> 
-          <img className='object-cover rounded-full h-14 w-14'
+          <img alt='profile picture' className='object-cover rounded-full h-14 w-14'
             src={currentUser.profilePicture}/>
           <div className='absolute right-0 top-0 rounded-full p-0.5 bg-pink-500 border-2 border-blue-grey-50 dark:border-bdark-200'>
             <PlusIcon className='text-blue-grey-50 w-3 h-3'/>

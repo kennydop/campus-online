@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { PhotographIcon, XIcon, TagIcon, ChartBarIcon, ArrowLeftIcon, PlusIcon, PencilIcon } from "@heroicons/react/outline"
 import { useActiveTab } from "../contexts/ActiveTabContext"
 import { useState, useEffect, useRef } from "react"
@@ -207,7 +209,7 @@ function PostDialog() {
       {(type==='video'||type==='image'||type==='text') && <div className="p-3">
         {error && <p className='longer-errorMsg'>{error}</p>}
         <div className="flex">
-          <img className='rounded-full object-cover h-11 w-11' src={currentUser.profilePicture}/>
+          <img alt='profile picture' className='rounded-full object-cover h-11 w-11' src={currentUser.profilePicture}/>
           <textarea id='_p' ref={postRef} name="post message" className="ml-3 no-ta-resize outline-none w-full bg-transparent text-gray-500 dark:text-gray-400 placeholder-gray-400 dark:placeholder-gray-500" placeholder="What's up?"/>
         </div>
         {loading ?

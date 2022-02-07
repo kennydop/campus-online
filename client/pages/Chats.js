@@ -58,7 +58,7 @@ function Chats(){
         setNotFound(true)
       )
       await axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/chats?user=${currentUser._id}&reciever=${router.query.id}`).then((res)=>{
-        setDirectChat(res.data)
+	setDirectChat(res.data === null ? {} : res.data)
       }).catch(e=>
         setNotFound(true)
       )
@@ -292,7 +292,7 @@ function Chats(){
           <div className={`sticky top-0 z-50 py-2 bg-white dark:bg-bdark-100 border-b border-pink-500 flex items-center justify-between ${openChat?'block':'hidden'}`}>
             <div className='block md:hidden z-50' onClick={()=>setOpenChat(false)}><ArrowLeftIcon className='cursor-pointer h-5 ml-3 text-center mx-auto text-gray-500 dark:text-gray-400'/></div>
             <div className='flex flex-col items-center justify-center mx-auto text-gray-500 -ml-5 flex-1'>
-              <Link href={`/u/${reciever}`}><p className='fit-content cursor-pointer text-center w-44 truncate'>{reciever.username}</p></Link>
+              <Link href={`/u/${reciever.username}`}><p className='fit-content cursor-pointer text-center w-44 truncate'>{reciever.username}</p></Link>
               <TimePast lastSeen={reciever.lastSeen} />
             </div>
           </div>
