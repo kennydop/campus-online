@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import { AtSymbolIcon, LockClosedIcon } from "@heroicons/react/outline";
+import { UserIcon, LockClosedIcon } from "@heroicons/react/outline";
 import AuthLeft from '../components/AuthLeft'
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
