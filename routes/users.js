@@ -11,7 +11,7 @@ router.get("/currentUser", verifyUser, (req, res) => {res.send(req.user)})
 router.put("/:id", verifyUser, updateUserInfo);
 
 //delete user
-router.delete("/:id", verifyUser, deleteUser);
+router.delete("/:id", deleteUser);
 
 //get a user
 router.get("/:id", getAUser);

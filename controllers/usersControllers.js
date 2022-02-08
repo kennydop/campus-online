@@ -81,7 +81,7 @@ export const deleteUser = async (req, res) => {
       { $pull: { followers: req.params.id } }, 
       { multi: true })
     await User.updateMany({followings: req.params.id}, 
-      { $pull: { followers: req.params.id } }, 
+      { $pull: { followings: req.params.id } }, 
       { multi: true })
     await Post.updateMany({likes: req.params.id}, 
       { $pull: { likes: req.params.id } }, 
