@@ -10,7 +10,7 @@ const bgColors = ["000D6B", "125C13", "3E065F", "082032", "FF414D"]
 // update user info
 export const updateUserInfo = async (req, res) => {
   var newPP = ''
-  var info = {}
+  var info = req.body
   try {
     const user = await User.findById(req.params.id)
     if(req.body.college){
@@ -28,8 +28,8 @@ export const updateUserInfo = async (req, res) => {
         await cloudinary.uploader.destroy(user.coverPicture.split("upload/")[1].split('.')[0]);
       }
       newPP = "https://res.cloudinary.com/kennydop/image/upload/"+uploadResponse.public_id+"."+uploadResponse.format
-      const {coverPicture, ...other} = req.body
-      info = {...other, coverPicture: newPP}
+      // const {coverPicture, ...other} = req.body
+      info.coverPicture = newPP
     }else if(req.body.profilePicture && !req.body.profilePicture.startsWith("https://ui-avatars.com/api/?name=")){
       const uploadResponse = await cloudinary.uploader.upload(req.body.profilePicture, {
         upload_preset: 'co_profilepics', resource_type: "image"
@@ -38,12 +38,11 @@ export const updateUserInfo = async (req, res) => {
         await cloudinary.uploader.destroy(user.profilePicture.split("w_200/")[1].split('.')[0]);
       }
       newPP = "https://res.cloudinary.com/kennydop/image/upload/ar_1:1,c_fill,g_auto:faces,w_200/"+uploadResponse.public_id+"."+uploadResponse.format
-      const {profilePicture, ...other} = req.body
-      info = {...other, profilePicture: newPP}
+      info.profilePicture = newPP
     }else if(req.body.name && !req.body.profilePicture){
       if(user.profilePicture.startsWith("https://ui-avatars.com/api/?name=")){
         newPP = `https://ui-avatars.com/api/?name=${encodeURIComponent((req.body.name))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`
-        info = {...req.body, profilePicture: newPP}
+        info.profilePicture = newPP
       }
     }else{
       if(req.body.removePP){
@@ -51,12 +50,10 @@ export const updateUserInfo = async (req, res) => {
           await cloudinary.uploader.destroy(user.profilePicture.split("w_200/")[1].split('.')[0]);
         }
         newPP = `https://ui-avatars.com/api/?name=${encodeURIComponent((user.name))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`
-        info = {profilePicture: newPP}
+        info.profilePicture = newPP
       }else if(req.body.removeCP){
         await cloudinary.uploader.destroy(user.coverPicture.split("upload/")[1].split('.')[0]);
-        info = {coverPicture: ""}
-      }else{
-        info = req.body
+        info.coverPicture = ""
       }
     }
     await User.findByIdAndUpdate(req.params.id, {$set: info});
@@ -64,8 +61,15 @@ export const updateUserInfo = async (req, res) => {
     const userToSend = { _id: newUser._id, username: newUser.username, name: newUser.name, email: newUser.email, college: newUser.college, profilePicture: newUser.profilePicture, preferences: newUser.preferences }
     res.status(200).json(userToSend);
   } catch (error) {
-    console.log(error)
-    return res.status(500).json(error);
+    console.log(error);
+    var err = {};
+    if(error.keyValue.username){
+      err.message = "Username already exists";
+    }
+    if(error.keyValue.email){
+      err.message = "Email already exists";
+    }
+    return res.status(200).json(err);
   }
 }
 

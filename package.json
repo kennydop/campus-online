@@ -1,31 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "campus-online",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@heroicons/react": "^1.0.2",
-    "axios": "^0.24.0",
-    "next": "^11.1.2",
-    "next-themes": "0.0.15",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "react-flip-move": "^3.0.4",
-    "socket.io-client": "^4.4.0"
-  },
-  "devDependencies": {
-    "autoprefixer": "^10.3.1",
-    "eslint": "7.31.0",
-    "eslint-config-next": "11.0.1",
-    "postcss": "^8.3.6",
-    "tailwindcss": "^2.2.7"
-=======
   "name": "server",
   "version": "1.0.0",
   "description": "",
@@ -60,6 +33,5 @@
   "devDependencies": {
     "morgan": "^1.10.0",
     "nodemon": "^2.0.14"
->>>>>>> f1f5a99d1a769bc4eab6684067dd8232d676513e
   }
 }
