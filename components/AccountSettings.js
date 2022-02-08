@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useAuth } from "../contexts/AuthContext"
+import UpdateProfilePicture from "./UpdateProfilePicture";
 
 function AccountSettings({colleges}) {
   const { currentUser, setCurrentUser } = useAuth()
@@ -131,6 +132,7 @@ function AccountSettings({colleges}) {
   }
 
   return (
+    <>
     <div className="w-full bg-white dark:bg-bdark-100 rounded-b-lg md:rounded-r-lg md:rounded-bl-lg flex flex-col justify-center p-3 shadow-md">
       <div className='relative my-3 fit-content mx-auto'>
         <img id='vE' alt='profile picture' className = "h-28 w-28 lg:h-36 lg:w-36 object-cover rounded-full border-2 border-gray-400 dark:border-bdark-50 cursor-default" 
@@ -246,6 +248,8 @@ function AccountSettings({colleges}) {
         </form>
       </div>
     </div>
+    {tabActive[tabActive.length - 1]==='updatePP' && <UpdateProfilePicture/>}
+    </>
   )
 }
 

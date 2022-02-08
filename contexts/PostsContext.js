@@ -52,11 +52,25 @@ export function PostsProvider({children}) {
     })
   }
 
+  function updatePost(post){
+    setFeedPosts((oldVal)=>{
+      const i = oldVal.findIndex(p=>p._id === post._id)
+      oldVal[i]=post
+      return [...oldVal]
+    })
+    setGlobalPosts((oldVal)=>{
+      const i = oldVal.findIndex(p=>p._id === post._id)
+      oldVal[i]=post
+      return [...oldVal]
+    })
+  }
+
   const value={
     feedPosts,
     globalPosts,
     deletePost,
-    unfollowUser
+    unfollowUser,
+    updatePost
   }
   return (
     <PostsContext.Provider value={value}>
