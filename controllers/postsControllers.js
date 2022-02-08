@@ -94,23 +94,9 @@ export const getAPost = async (req, res) => {
 export const getFeedPosts = async (req, res) => {
 	try {
 		const currentUser = await User.findById(req.params.id);
-		const userPosts = await Post.find({ authorId: currentUser._id });
-		const friendPosts = await Promise.all(
-			currentUser.followings.map((friendId) => {
-				return Post.find({ authorId: friendId });
-			})
-		);
-		const localPosts = await Post.find({$and: [{college: currentUser.college}, {authorId: {$nin: [...currentUser.followings, currentUser._id]}}]})
-		const allPosts = [...userPosts, ...localPosts]
-    friendPosts.map((posts)=>{
-      if (posts.length !== 0){
-        posts.map((post)=>{
-          allPosts.push(post)
-        })
-      }
-    })
-    allPosts.sort((a,b) => (new Date(a.createdAt) < new Date(b.createdAt)) ? 1 : ((new Date(b.createdAt) < new Date(a.createdAt)) ? -1 : 0))
-    res.status(200).json(allPosts)
+    const allPosts = await Post.find({}).sort({ createdAt: -1 });
+    const feedPosts = allPosts.filter(post => post.authorId === currentUser._id || currentUser.followings.includes(post.authorId)|| post.college === currentUser.college)
+    res.status(200).json(feedPosts)
 	} catch (error) {
 		res.status(500).json(error);
 		console.log(error)
