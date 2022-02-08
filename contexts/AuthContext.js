@@ -70,8 +70,11 @@ export function AuthProvider({ children }) {
 		<AuthContext.Provider value={value}>
 		{loading ? 
       <div className="flex h-screen w-screen items-center justify-center">
+      <div>
         {co_loading}
+        <div className="co-loader mt-1 fit-content mx-auto"><span></span><span></span><span></span></div>
       </div>
+    </div>
     :
     children}
 		</AuthContext.Provider>
