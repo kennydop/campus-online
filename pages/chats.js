@@ -258,7 +258,7 @@ function Chats(){
 
 	return(
     !notFound ?
-		<div className='flex bg-blue-grey-50 dark:bg-bdark-200 minus-header justify-center items-center'>
+		<div className={`flex bg-blue-grey-50 dark:bg-bdark-200 justify-center items-center ${openChat?'h-screen':'minus-header'}`}>
 			<div className='flex h-full w-full lg:h-5/6 lg:w-3/5 rounded-none md:rounded-lg overflow-hidden lg:border border-pink-500'>
 				<div className={`md:w-2/5 md:left-0 h-full overflow-y-auto bg-white dark:bg-bdark-100 shadow-md transition-all ease-linear duration-200 ${openChat?'w-0':'w-screen'}`}>
 					<div className="top-0 z-40 py-3 bg-white dark:bg-bdark-100 border-b border-pink-500 mt-4 md:mt-0">

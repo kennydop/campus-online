@@ -89,7 +89,7 @@ function Header() {
 
   return (
     <>
-      <div className = "md:flex sticky inset-x-0 top-0 z-50 bg-white dark:bg-bdark-100 justify-center items-center p-2 md:p-2.5 md:px-15 px-2 shadow-md">
+      <div className = {`md:flex sticky inset-x-0 top-0 z-50 bg-white dark:bg-bdark-100 justify-center items-center p-2 md:p-2.5 md:px-15 px-2 shadow-md ${tabActive[tabActive.length - 1]==='chat' && 'hidden md:block'}`}>
         {/*left*/}
         <div className = "flex items-center md:pb-0 px-2 md:px-0 mx-auto justify-between">
           {currentUser && <div className="md:hidden flex text-center">
