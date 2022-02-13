@@ -4,17 +4,15 @@
 import axios from 'axios'
 import { useState } from 'react'
 import Link from "next/link"
+import { useAuth } from '../contexts/AuthContext'
 
-function ProfileToFollow({name, pic, college, id, userId}) {
+function ProfileToFollow({name, username ,pic, college, id, page}) {
+  const { currentUser } = useAuth();
   const [buttonText, setButtonText] = useState('Follow')
 
-  if(college.length > 24){
-    college = college.substring(0, 24) + '...';
-}
-
   function followUser(){
-    setButtonText(".....................")
-    axios.put(`http://localhost:5000/api/users/${id}/follow`, {userId}).then((res)=>{
+    setButtonText(buttonText==="Follow"?"Unfollow":"Follow")
+    axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${id}/follow`, {userId: currentUser._id}).then((res)=>{
     if(res.data === "user has been followed"){
         setButtonText('Unfollow')
       }else if(res.data === "user has been unfollowed"){
@@ -24,18 +22,37 @@ function ProfileToFollow({name, pic, college, id, userId}) {
   }
 
   return (
-    <div className='flex items-center bg-white dark:bg-bdark-100 rounded-lg shadow-md px-2 py-4 mb-2 text-gray-500 dark:text-gray-400 w-full'>
-      <div className='max-h-9 w-9 rounded-full overflow-hidden'>
-        <Link href={`/${name}`}><img
+    page ?
+    <div className="flex flex-col items-center justify-center bg-white dark:bg-bdark-100 text-gray-500 dark:text-gray-400 p-2 rounded-lg shadow-md dark:shadow-lg m-4">
+      <div className='h-16 w-16 rounded-full overflow-hidden my-2'>
+        <Link href={`/${username}`}><img
+          alt={`${name}'s profile picture`}
+          className='object-cover rounded-full cursor-pointer h-16 w-16'
+          src={pic}
+        /></Link>
+      </div>
+      <div className='w-full px-4 flex flex-col items-center justify-center overflow-hidden'>
+        <Link href={`/${username}`}><p className="cursor-pointer text-sm truncate w-full text-center">{name}</p></Link>
+        <Link href={`/${username}`}><p className="cursor-pointer text-xs truncate w-full text-center">@{username}</p></Link>
+        <p className='text-xs font-extralight truncate w-full text-center'>{college}</p>
+      </div>
+      <div className={`my-2 py-1.5 px-4 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-xs ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={followUser}>{buttonText}</div>
+    </div>
+    :
+    <div className='flex items-center justify-between border-b dark:border-bdark-200 px-2 py-4 mb-2 text-gray-500 dark:text-gray-400 w-full'>
+      <div className='h-9 w-9 rounded-full overflow-hidden'>
+        <Link href={`/${username}`}><img
+          alt={`${name}'s profile picture`}
           className='object-cover rounded-full cursor-pointer'
           src={pic}
         /></Link>
       </div>
-      <div className='ml-3'>
-        <Link href={`/${name}`}><p className="cursor-pointer">{name}</p></Link>
-        <p className='text-xs font-light'>{college}</p>
+      <div className='ml-3 flex-1 overflow-hidden'>
+        <Link href={`/${username}`}><p className="cursor-pointer text-sm truncate">{name}</p></Link>
+        <Link href={`/${username}`}><p className="cursor-pointer text-xs truncate">{username}</p></Link>
+        <p className='text-xs font-extralight truncate'>{college}</p>
       </div>
-      <div className={`py-1 px-1.5 absolute right-6 mb-5 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-xs ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={followUser}>{buttonText}</div>
+      <div className={`ml-1 py-1 px-1.5 dark:text-gray-200 rounded-full shadow-md dark:shadow-lg hover:shadow-lg dark:hover:shadow-xl cursor-pointer text-xs ${buttonText==='Follow'?'bg-pink-500 text-white':'bg-blue-grey-50 dark:bg-bdark-50'}`} onClick={followUser}>{buttonText}</div>
     </div>
   )
 }

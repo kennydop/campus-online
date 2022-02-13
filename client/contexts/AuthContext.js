@@ -1,63 +1,25 @@
 import { useContext, useState, useEffect, createContext, useCallback } from "react"
-import { auth, firebaseApp } from "../firebase/firebase"
 import axios from "axios"
 import { useRouter } from "next/router"
+
 const AuthContext = createContext()
 
 export function useAuth() {
 	return useContext(AuthContext)
 }
 
-const uprotectedRoutes = ['/login', '/signup', '/[profile]']
+const uprotectedRoutes = ['/login', '/signup', '/forgotpassword', '/', '/[profile]', '/p/[post]']
 
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState()
+	const [refreshPosts, setRefreshPosts] = useState()
 	const [loading, setLoading] = useState(true)
 	const router = useRouter()
 
-	async function signup(email, password, username) {
-		axios.post("http://localhost:5000/api/auth/register", {username, password, email}, {withCredentials: true, credentials: 'include'}).then((res)=>{
-      console.log(res)
-      setCurrentUser(res.data)  
-      return currentUser
-    }).catch((error)=>{
-      console.log(error)
-      throw error
-    })
-	}
-
-	function login(username, password) {
-    axios.post("http://localhost:5000/api/auth/login", {username, password}, {withCredentials: true, credentials: 'include'}).then((res)=>{
-      console.log(res)  
-      setCurrentUser(res.data)
-      return currentUser
-    }).catch((error)=>{
-      return error
-    })
-	}
-	
-	function loginWithProvider(pvd){
-		var provider;
-		switch(pvd){
-			case 'facebook':
-				provider = new firebaseApp.auth.FacebookAuthProvider();
-				break;
-			case 'google':
-				provider = new firebaseApp.auth.GoogleAuthProvider();
-				break;
-			case 'twitter':
-				provider = new firebaseApp.auth.TwitterAuthProvider();
-				break;
-		}
-
-		return auth.signInWithRedirect(provider)
-	}
 
 	function logout() {
-		axios.get("http://localhost:5000/api/auth/logout", { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then(()=>{
-      setCurrentUser(null)
-      router.replace("/")
-    })
+    router.replace("/login")
+    axios.get("http://localhost:5000/api/auth/logout", { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'})
 	}
 
   const verifyUser = useCallback(() => {
@@ -97,11 +59,12 @@ export function AuthProvider({ children }) {
     verifyUser()
   }, [verifyUser])
 
+
 	const value = {
 		currentUser,
-		loginWithProvider,
-		login,
-		signup,
+    refreshPosts,
+    setRefreshPosts,
+    setCurrentUser,
 		logout,
 	}
 	

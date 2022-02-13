@@ -4,155 +4,279 @@ import { useRef, useState, useEffect } from 'react';
 import { SiteLayout } from '../Layouts/Layouts';
 import { useAuth } from '../contexts/AuthContext';
 import { useActiveTab } from "../contexts/ActiveTabContext";
-
-const messages = [
-	{
-		key: '1',
-		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fcd.png?alt=media&token=1e9fb961-e29f-4d1a-be38-8afb63a75f9a',
-		sender: 'Ni_🌸_na',
-		time: '11/20/2029 9:15',
-		text: 'Have you played Coro Dash yet?',
-		read: false,
-	},
-	{
-		key: '2',
-		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fdownload.jfif?alt=media&token=fe85d6f9-fa5d-4f00-a660-442113a7acdd',
-		sender: 'Danings',
-		time: '11/19/2029 8:00',
-		text: 'Well......',
-		read: false,
-	},
-	{
-		key: '3',
-		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fchats%2Fperry.jpg?alt=media&token=6a441fe1-dc74-42d9-a524-81025960afd6',
-		sender: 'Perry',
-		time: '10/22/2021 13:40',
-		text: "I've been calling your phone 🤦🏾‍♂️",
-		read: true,
-	},
-	{
-		key: '4',
-		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fchats%2Fable.jpg?alt=media&token=51c8ccff-93b7-4797-853f-46e31dc6dc86',
-		sender: '__.__able',
-		time: '10/22/2021 7:05',
-		text: 'Meanie😂',
-		read: true,
-	},
-	{
-		key: '5',
-		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fchats%2Fbestman.jpg?alt=media&token=f7f32db7-fb24-49dd-94cb-2815f6ed55d4',
-		sender: 'best.man_',
-		time: '10/22/2021 8:15',
-		text: "GOAT's trending!!",
-		read: false,
-	},
-	{
-		key: '6',
-		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fchats%2Fpriscilla.jpg?alt=media&token=d7cb130e-137e-4911-a0b2-343c8dc40174',
-		sender: 'pri.scilla_💖',
-		time: '10/22/2021 10:11',
-		text: 'I am soo happy rn 😂',
-		read: true,
-	},
-	{
-		key: '7',
-		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fchats%2Fela.jpg?alt=media&token=ea7c76ed-1486-4ce2-88a0-0e04cd3893fb',
-		sender: '_ella🦋',
-		time: '10/21/2021 12:00',
-		text: "I'm leading the Coro Dash board 🎉",
-		read: true,
-	},
-	{
-		key: '8',
-		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fchats%2Ftom.jpg?alt=media&token=2ea4feb3-09d4-45ea-b4fe-4946a9c9bc7d',
-		sender: 'tom🏳‍🌈',
-		time: '10/21/2021 11:54',
-		text: "When's it?",
-		read: true,
-	},
-	{
-		key: '9',
-		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fchats%2Fenyo.jpg?alt=media&token=d8f06195-d1dd-41b7-9838-c253e1ffd1a5',
-		sender: 'enyo_',
-		time: '10/20/2021 1:08',
-		text: 'You good?',
-		read: true,
-	},
-	{
-		key: '10',
-		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fchats%2Fricky.jpg?alt=media&token=4de0a759-b5ce-42d8-812b-26da8017fa5f',
-		sender: 'kunta',
-		time: '10/19/2021 12:00',
-		text: 'exactly what I was saying',
-		read: true,
-	},
-	{
-		key: '11',
-		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Fmoon.jpg?alt=media&token=319ab979-efbf-4a6b-a5c6-da76b933e1be',
-		sender: '🌝mo.on🌚',
-		time: '10/19/2021 1:11',
-		text: 'Thank you',
-		read: true,
-	},
-	{
-		key: '12',
-		img: 'https://firebasestorage.googleapis.com/v0/b/campus-online-311.appspot.com/o/req%2Frue.jpg?alt=media&token=bd05af33-a8ca-457e-b67b-d0e86387c4f5',
-		sender: 'rue',
-		time: '10/19/2021 4:56',
-		text: 'Cool',
-		read: true,
-	},
-]
+import axios from 'axios';
+import SearchChat from '../components/SearchChat';
+import { ArrowLeftIcon, SearchIcon } from '@heroicons/react/outline';
+import Message from '../components/Message';
+import Link from 'next/link';
+import { io } from "socket.io-client";
+import TimePast from '../components/TimePast';
+import FlipMove from 'react-flip-move';
 
 function Chats(){
 	const {currentUser} = useAuth();
-	const messageRef = useRef(null);
-	const [ showChat, setShowChat ] = useState(false);
+	const [ messages, setMessages ] = useState([]);
+	const [ chats, setChats ] = useState([]);
 	const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+  const [searchRes, setSearchRes] = useState(null);
+  const [openChat, setOpenChat] = useState();
+  const [activeChat, setActiveChat] = useState();
+  const [reciever, setReciever] = useState({});
+  const [newMessage, setNewMessage] = useState();
+  const scrollRef = useRef()
+  const socket = useRef();
 
-    useEffect(()=>{
-        if(tabActive==='chat')return; 
-        setPrevPrevTab(prevTab); 
-        setPrevTab(tabActive); 
-        setTabActive('chat');
-    },[])
-	
+  useEffect(() => {
+    const getChats = async () => {
+      try {
+        axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/chats/" + currentUser._id).then((res)=>{
+          setChats(res.data);
+        })
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getChats();
+  }, []);
+  
+  useEffect(() => {
+    socket.current = io("http://localhost:5000", {withCredentials: true})
+    socket.current.on("getMessage", async (data) => {
+      setNewMessage(data)
+    });
+  }, []);
+
+  useEffect(()=>{
+    socket.current.emit("addUser", currentUser._id);
+  }, [socket.current, currentUser])
+  
+  useEffect(()=>{
+    if(newMessage){
+      const sameUser = activeChat?.members.includes(newMessage.from)
+      sameUser && setMessages((oldValues) => {return [...oldValues, {from: newMessage.from, message: newMessage.message, read: newMessage.read, createdAt: newMessage.createdAt}]});
+      var targetId = chats.findIndex(c=>c.members && c.members.find(m=>m===newMessage.from))
+      var newChats = chats
+      if(targetId !== -1){
+        const target = newChats[targetId]
+        target.messages = [...target?.messages, {from: newMessage.from, message: newMessage.message, read: newMessage.read, createdAt: newMessage.createdAt}]
+        //remove targetted chat and push to top
+        newChats.splice(targetId, 1)
+        newChats.unshift(target)
+        newChats = [...newChats, {updated: Date.now()}]
+        setChats(newChats)
+      }else{
+        try{
+          async function getChats(){
+            await axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/chats/" + currentUser._id).then((res)=>{
+              setChats([...res.data, {updated: Date.now()}])
+            })
+          }
+          getChats()
+        }catch(error){
+          console.log(error)
+        }
+      }
+    }
+  }, [newMessage])
+
+  useEffect(()=>{
+    // scrollRef.current?.scrollIntoView({behavior: "smooth"})
+    scrollRef.current?.scrollIntoView()
+  },[messages, openChat===true])
+  
+  useEffect(()=>{
+      if(tabActive==='chat')return; 
+      setPrevPrevTab(prevTab); 
+      setPrevTab(tabActive); 
+      setTabActive('chat');
+  },[])
+  
+  useEffect(()=>{
+    var textarea = document.getElementById("_p");
+    textarea.oninput = function() {
+      textarea.style.height = ""; /* Reset the height*/
+      textarea.style.height = textarea.scrollHeight + "px";
+    }
+  },[document.getElementById("_p")])
+
 	const sendMessage = async (e) => {
 		e.preventDefault()
+    const to = activeChat.members.find((m) => m !== currentUser._id)
+    const msg = e.target.elements._p.value.trim()
+    if(!msg)return
+    axios.post(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/chats", {
+      chatId: activeChat._id ? activeChat._id : null,
+      from: currentUser._id,
+      to: to,
+      message: msg
+    }).then((res)=>{
+      if(res.data.members){
+        setActiveChat(res.data)
+        setMessages(res.data.messages)
+        setChats([res.data, ...chats])
+      }else{
+        setMessages([...messages, res.data])
+        var targetId = chats.findIndex(c=>c?._id === activeChat._id)
+        var newChats = chats
+        const target = newChats[targetId]
+        target.messages = [...messages, res.data]
+        newChats.splice(targetId, 1)
+        newChats.unshift(target)
+        newChats = [...newChats, {updated: Date.now()}]
+        setChats(newChats)
+      }
+    }).then(()=>{
+      socket.current.emit("sendMessage", {
+        from: currentUser._id,
+        to: to,
+        message: msg,
+      })
+    })
+
+    e.target.elements._p.value = ""
+    var textarea = document.getElementById("_p");
+    textarea.style.height = "";
+    textarea.style.height = textarea.scrollHeight + "px";
 	}
+	
+  const setCurrentChat = async (chat, id, reciever) => {
+    setReciever({username: "...", lastSeen: "....."})
+    setMessages([])
+    if(reciever){
+      setReciever(reciever)
+    }else{
+      axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users/" + chat.members.find(m=>m!==currentUser._id)).then((res)=>{
+        setReciever(res.data);
+      })
+    }
+    if(id){
+      const target = chats.findIndex(c=>c.members && c.members.find(m=>m===id))
+      console.log("opening chat target = ", target)
+      if(target !== -1){
+        setActiveChat(chats[target])
+        setMessages(chats[target].messages)
+        setOpenChat(true)
+        readMsgs(target)
+      }else{
+        setActiveChat({members: [currentUser._id, id]})
+        setMessages([])
+        setOpenChat(true)
+      }
+    }else if(chat){
+      setActiveChat(chat)
+      setMessages(chat.messages)
+      setOpenChat(true)
+      readMsgs(chats.findIndex(c=>c._id && c._id === chat._id))
+    }
+	}
+
+  async function search(e){
+    if(e.target.value.trim()===""){
+      setSearchRes([])
+      return
+    }
+    axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/users?search="+e.target.value.trim()).then((res)=>{
+      setSearchRes(res.data)
+    })
+  }
+
+  function clearSearch(){
+    document.querySelector("#chatSearch").textContent = ""
+    setSearchRes([])
+  }
+  
+  function readMsgs(id){
+    // socket.current.emit("readMsgs", chats[id]._id);
+    var target = chats[id]
+    console.log(target)
+    var newChat = chats
+    target.messages.forEach(m => {
+      if(m.read === false){
+        m.read=true
+      }
+    })
+    newChat[id] = target
+    setChats(newChat)
+    console.log(newChat)
+  }
 
 	return(	
 		<div className='flex bg-blue-grey-50 dark:bg-bdark-200 minus-header justify-center items-center'>
-			<div className='flex h-full w-full lg:h-5/6 lg:w-3/5 rounded-lg overflow-hidden lg:border border-pink-500'>
-				<div className='w-full md:w-2/5 md:left-0 h-full overflow-y-auto bg-white dark:bg-bdark-100 shadow-md'>
-					{messages.map(message=>
-						<Chat key={message.key} img={message.img} sender={message.sender} text={message.text} time={message.time} read={message.read}/>
-					)}
+			<div className='flex h-full w-full lg:h-5/6 lg:w-3/5 rounded-none md:rounded-lg overflow-hidden lg:border border-pink-500'>
+				<div className={`md:w-2/5 md:left-0 h-full overflow-y-auto bg-white dark:bg-bdark-100 shadow-md transition-all ease-linear duration-200 ${openChat?'w-0':'w-screen'}`}>
+					<div className="top-0 z-50 py-3 bg-white dark:bg-bdark-100 border-b border-pink-500 mt-4 md:mt-0">
+            <div className='flex items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 px-1.5 py-1 mx-5'>
+              <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
+              <input id="chatSearch" onChange={search} className = "ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 w-full" type = "text" placeholder="Search"/>
+            </div>
+            <div className='z-50 w-full'>
+              <SearchChat hits={searchRes} clearSearch={clearSearch} setCurrentChat={setCurrentChat}/>
+            </div>
+          </div>
+          <>
+          {chats?.length !== 0 ?
+            <FlipMove>
+            {chats.map(chat=>
+            !chat.updated &&
+              <div key={chat._id} onClick={()=>setCurrentChat(chat, null, null)}>
+                <Chat sender={chat.members.find(m=> m !== currentUser._id)} message={chat.messages[chat.messages.length - 1]} unread={chat.messages.filter(m=>m.from !== currentUser._id && m.read===false)}/>
+              </div>
+            )}
+            </FlipMove>
+            :
+            <div className='text-gray-500 dark:text-gray-400 w-full h-full flex flex-col justify-center items-center'>
+              Chats appear here
+            </div>
+          }
+          </>
 					<div className='mt-14 md:mt-0'></div>
 				</div>
-				<div className='hidden md:block w-full md:w-3/5 h-full border-l border-pink-500 overflow-y-auto relative'>
-					<div className='h-88p'>
-
-					</div>
-					<div className='shadow-mdt h-12p w-full bg-white dark:bg-bdark-100 flex items-center justify-center'>
-						<form className='flex flex-1 items-center justify-center'>
-							<input className='outline-none bg-blue-grey-50 dark:bg-bdark-200 placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 rounded-full focus:ring-1 focus:ring-gray-500 h-8 p-2 overflow-hidden w-10/12' 
-								ref={messageRef}
-								type='text'
-								placeholder="Type a message"/>
-							<button hidden onClick={sendMessage}></button>
-						</form>
-					</div>
-				</div>
-			</div>
+				<div className={`md:w-3/5 flex flex-col justify-between h-full border-l border-pink-500 overflow-y-auto relative transition-all ease-linear duration-200 ${openChat?'w-screen':'w-0'}`}>
+          <div className={`sticky top-0 z-50 py-2 bg-white dark:bg-bdark-100 border-b border-pink-500 flex items-center justify-between ${openChat?'block':'hidden'}`}>
+            <div className='block md:hidden z-50' onClick={()=>setOpenChat(false)}><ArrowLeftIcon className='cursor-pointer h-5 ml-3 text-center mx-auto text-gray-500 dark:text-gray-400'/></div>
+            <div className='flex flex-col items-center justify-center mx-auto text-gray-500 -ml-5 flex-1'>
+              <Link href={`/${reciever}`}><p className='fit-content cursor-pointer text-center'>{reciever.username}</p></Link>
+              <TimePast lastSeen={reciever.lastSeen} />
+            </div>
+          </div>
+          {openChat ?
+            messages?.length === 0 ?
+            <div className='text-gray-500 dark:text-gray-400 w-full flex flex-col justify-center items-center'>
+              Messages appear here
+            </div>
+            :
+            <div className='flex flex-col p-2'>
+              {
+                <FlipMove style={{ display: 'flex', flexDirection: 'column'}}>
+                  {messages?.map(message=>
+                    <Message key={message.createdAt} from={message.from} msg={message.message} ts={message.ts} read={message.read} sent={message.createdAt}/>
+                  )}
+                </FlipMove>
+              }
+              <div ref={scrollRef}></div>
+            </div>
+            :
+            <div className='text-gray-500 dark:text-gray-400 w-full flex flex-col justify-center items-center h-full'>
+              Select a chat
+            </div>
+          }
+          <div className={`sticky bottom-0 z-50 py-4 border-t border-pink-500 w-full bg-white dark:bg-bdark-100 flex items-center justify-center ${openChat?'block':'hidden'}`}>
+            <form className='flex items-center justify-center bg-blue-grey-50 dark:bg-bdark-200 rounded-lg focus:ring-1 focus:ring-gray-500 w-11/12' onSubmit={sendMessage}>
+              <textarea id="_p" className='max-h-32 overflow-y-auto hide-scrollbar no-ta-resize outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 h-10 p-2 overflow-hidden bg-transparent w-full' 
+                placeholder="Type a message"/>
+              <button className='text-center text-pink-500 mr-4 hover:font-bold font-semibold transition-all duration-150' type='submit'>Send</button>
+            </form>
+          </div>
+			  </div>
 		</div>
+	</div>
 	)
 }
 Chats.getLayout = function getLayout(page) {
-    return (
-        <SiteLayout>
-            {page}
-        </SiteLayout>
-    )
+  return (
+    <SiteLayout>
+        {page}
+    </SiteLayout>
+  )
 }
 export default Chats

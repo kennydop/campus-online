@@ -88,13 +88,17 @@ import { PlusIcon } from "@heroicons/react/outline"
 function Stories({userId}) {
   const [ stories, setStories ] = useState()
   const { currentUser } = useAuth()
+  const storiesRef = useRef(null);
 
   useEffect(()=>{
-    axios.get(`http://localhost:5000/api/stories/${userId}`).then((res)=>{
-      setStories(res.data)
-    })
+    async function getStories(){
+      axios.get(`http://localhost:5000/api/stories/${userId}`).then((res)=>{
+        setStories(res.data)
+      })
+    }
+    getStories()
   },[])
-    const storiesRef = useRef(null);
+  
     function sideScroll(element, speed, distance, step){
         let scrollAmount = 0;
         const slideTimer = setInterval(() => {

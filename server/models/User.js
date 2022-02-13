@@ -8,32 +8,52 @@ const Session = new mongoose.Schema({
   },
 });
 
-const UserSchema = new mongoose.Schema(
-  {
+const Token = new mongoose.Schema({
+  passwordResetToken: {
+    type: String,
+  },
+  active:{
+    type: Boolean,
+    default: true,
+  }
+});
+
+
+const UserSchema = new mongoose.Schema({
     username: {
       type: String,
-      // require: true,
       min: 3,
       max: 20,
       unique: true,
     },
+    name: {
+      type: String,
+      min: 3,
+      max: 20,
+    },
     email: {
       type: String,
-      // required: true,
       max: 50,
       unique: true,
     },
+    gender: {
+      type: String,
+    },
     profilePicture: {
       type: String,
-      default: "",
     },
     coverPicture: {
       type: String,
-      default: "",
     },
     provider: {
       type: String,
       default: "email"
+    },
+    providerId:{
+      type: String
+    },
+    providerToken:{
+      type: String
     },
     college: {
       type: String,
@@ -52,23 +72,11 @@ const UserSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      max: 50,
-    },
-    city: {
-      type: String,
-      max: 50,
-    },
-    from: {
-      type: String,
-      max: 50,
+      max: 60,
     },
     relationship: {
       type: String,
       enum: ['Single', 'In a relationship', 'Married'],
-    },
-    posts: {
-      type: Number,
-      default: 0
     },
     birthday: {
       type: String,
@@ -76,8 +84,20 @@ const UserSchema = new mongoose.Schema(
     level: {
       type: String,
     },
+    lastSeen: {
+      type: String,
+    },
+    posts: {
+      type: Number,
+    },
+    preferences: {
+      type: {},
+    },
     refreshToken: {
       type: [Session],
+    },
+    passwordResetToken: {
+      type: [Token],
     },
   },
   { timestamps: true }
@@ -86,8 +106,10 @@ const UserSchema = new mongoose.Schema(
 UserSchema.set("toJSON", {
   transform: function (doc, ret, options) {
     delete ret.refreshToken
+    delete ret.passwordResetToken
     delete ret.updatedAt
     delete ret.__v
+    delete ret.provider
     return ret
   },
 })

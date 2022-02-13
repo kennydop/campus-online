@@ -11,14 +11,12 @@
   "dependencies": {
     "@heroicons/react": "^1.0.2",
     "axios": "^0.24.0",
-    "firebase": "^8.8.1",
     "next": "^11.1.2",
     "next-themes": "0.0.15",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-firebase-hooks": "^3.0.4",
-    "react-firebaseui": "^5.0.2",
-    "react-flip-move": "^3.0.4"
+    "react-flip-move": "^3.0.4",
+    "socket.io-client": "^4.4.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.3.1",
