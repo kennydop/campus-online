@@ -6,12 +6,9 @@ import axios from "axios";
 import Posts from "../components/Posts";
 
 export default function Global({trending}) {
-  const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+  const { setTabActive } = useActiveTab()
 
   useEffect(()=>{
-    if(tabActive==='global')return; 
-    setPrevPrevTab(prevTab); 
-    setPrevTab(tabActive); 
     setTabActive('global');
   },[])
     

@@ -6,16 +6,13 @@ import { useAuth } from "../contexts/AuthContext";
 import { SiteLayout } from "../Layouts/Layouts";
 
 function Suggestions() {
-  const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+  const { setTabActive } = useActiveTab()
   const { currentUser } = useAuth();
   const [ suggestions, setSuggestions ] = useState()
 
   
   useEffect(()=>{
-      if(tabActive==='trending')return; 
-      setPrevPrevTab(prevTab); 
-      setPrevTab(tabActive); 
-      setTabActive('trending');
+    setTabActive('suggestions');
   },[])
 
   useEffect(()=>{

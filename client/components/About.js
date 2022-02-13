@@ -41,10 +41,10 @@ function About({ admin, user }) {
 					</div>
 					<div className='text-gray-500 dark:text-gray-400'>{user.relationship}</div>
 				</div>}
-				{(user.posts && user.posts !== 0) && 
+				{(user.posts !== 0) && 
 				<div className='flex items-center justify-start mb-2 pl-3 h-12 space-x-3 rounded-lg'>
 					<div className='h-10 w-10 rounded-full bg-gray-100 dark:bg-bdark-50 flex items-center justify-center'>
-							<TemplateIcon className='h-7 text-purple-500'/>
+            <TemplateIcon className='h-7 text-purple-500'/>
 					</div>
 					<div className='text-gray-500 dark:text-gray-400'>{user.posts === 1 ? `${user.posts} Post` : `${user.posts} Posts`}</div>
 				</div>}

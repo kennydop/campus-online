@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { createNewComment, createNewPost, deleteComment, deletePost, getAPost, getFeedPosts, getGlobalPosts, getUserPosts, handlePostLike, trending, trendingPosts, updatePost } from "../controllers/postsControllers.js";
+import { createNewComment, createNewPost, deleteComment, deletePost, getAPost, getFeedPosts, getGlobalPosts, getUserPosts, handlePostLike, pollVote, trending, trendingPosts, updatePost } from "../controllers/postsControllers.js";
 import { verifyUser } from "../authStrategies/authenticate.js";
 
 const router = Router();
@@ -37,5 +37,8 @@ router.put("/:id/comment", createNewComment)
 
 // delete comment
 router.delete("/:id/comment", verifyUser, deleteComment)
+
+//poll vote
+router.put("/:id/vote", pollVote)
 
 export default router;

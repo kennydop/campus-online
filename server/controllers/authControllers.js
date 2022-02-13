@@ -4,38 +4,38 @@ import jwt from "jsonwebtoken";
 import sendEmail from "../utils/sendEmail.js"
 
 export const createNewUser = async (req, res) => {
-    try {
-      User.register(
-        new User({ username: req.body.username,
-          email: req.body.email,
-          name: req.body.name,
-        }),
-        req.body.password,
-        (error, user) => {
-          if (error) {
-            if(error.code){
-              res.status(200).json({success: false, name: "UserExistsError", message: "A user with the given email is already registered"})
-            }else{
-              res.status(200).json({success: false, name: "UserExistsError", message: "A user with the given username is already registered"})
-            }
-          } else {
-            const token = getToken({ _id: user._id, username: user.username})
-            const refreshToken = getRefreshToken({ _id: user._id, username: user.username })
-            user.refreshToken.push({ refreshToken })
-            user.save((error, user) => {
-              if (error) {
-                res.status(500).json(error)
-                console.log(error)
-              } else {
-                res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
-                res.send({ token, _id: user._id, username: user.username, name: user.name, email: user.email, preferences: user.preferences })
-              }
-            })
+  try {
+    User.register(
+      new User({ username: req.body.username,
+        email: req.body.email,
+        name: req.body.name,
+      }),
+      req.body.password,
+      (error, user) => {
+        if (error) {
+          if(error.code){
+            res.status(200).json({success: false, name: "UserExistsError", message: "A user with the given email is already registered"})
+          }else{
+            res.status(200).json({success: false, name: "UserExistsError", message: "A user with the given username is already registered"})
           }
+        } else {
+          const token = getToken({ _id: user._id, username: user.username})
+          const refreshToken = getRefreshToken({ _id: user._id, username: user.username })
+          user.refreshToken.push({ refreshToken })
+          user.save((error, user) => {
+            if (error) {
+              res.status(500).json(error)
+              console.log(error)
+            } else {
+              res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS)
+              res.send({ token, _id: user._id, username: user.username, name: user.name, email: user.email, preferences: user.preferences })
+            }
+          })
         }
-      )
-  } catch (error) {
-      res.status(500).json(error)
+      }
+    )
+  }catch (error) {
+    res.status(500).json(error)
   }
 }
 

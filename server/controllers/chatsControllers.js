@@ -51,8 +51,34 @@ export async function getMessages(req, res){
 export async function getChats(req, res){
   try{
     const chats = await Chat.find({members: {$in: [req.params.id]}}).sort({updatedAt: -1});
-    console.log(":::::::::::CHATS::::::::::::::::::::::CHATS:::::::::::::::::::::", chats)
     res.status(200).json(chats)
+  }catch(error){
+    console.log(error)
+    res.send(error)
+  }
+}
+
+export async function getChat(req, res){
+  try{
+    console.log(":::::::::::::", req.query.user, req.query.reciever)
+    const chats = await Chat.findOne({members: {$in: [req.query.user, req.query.reciever ]}});
+    res.status(200).json(chats)
+  }catch(error){
+    console.log(error)
+    res.send(error)
+  }
+}
+
+export async function getUnreadChats(req, res){
+  try{
+    const chats = await Chat.find({members: {$in: [req.params.id]}});
+    const unreadChats = chats.filter(c=>c.messages[c.messages.length-1].read === false)
+    const unread = []
+    unreadChats.forEach((c)=>{
+      unread.push(c.members.find(m=>m!==req.params.id))
+    })
+    console.log(unread)
+    res.status(200).json(unread)
   }catch(error){
     console.log(error)
     res.send(error)

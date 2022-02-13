@@ -10,7 +10,7 @@ function AccountSettings({colleges}) {
   const [ _user, _setUser ] = useState()
   const [error, setError] = useState();
 	const [updateLoading, setUpdateLoading] = useState(false);
-  const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+  const { tabActive, setTabActive } = useActiveTab()
   
   const getOrdinalNum = (n) => n + (n > 0 ? ['th', 'st', 'nd', 'rd'][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10] : '')
 
@@ -31,20 +31,6 @@ function AccountSettings({colleges}) {
     }
     getUser()
   }, [tabActive])
-
-  function openPPDialog(){
-    if(tabActive==='updatePP')return; 
-    setPrevPrevTab(prevTab); 
-    setPrevTab(tabActive); 
-    setTabActive('updatePP'); 
-  }
-
-  function openAccDelDialog(){
-    if(tabActive==='delAcc')return; 
-    setPrevPrevTab(prevTab); 
-    setPrevTab(tabActive); 
-    setTabActive('delAcc'); 
-  }
 
   function handleValueChange(e){
     if(e.target.value === ""){
@@ -121,14 +107,14 @@ function AccountSettings({colleges}) {
       <div className='relative my-3 fit-content mx-auto'>
         <img className = "h-28 w-28 lg:h-36 lg:w-36 object-cover rounded-full border-2 border-gray-400 dark:border-bdark-50 cursor-default" 
           src = {currentUser.profilePicture.startsWith("https://pbs.twimg.com/profile_images") ? currentUser.profilePicture.replace("normal", "400x400") : (currentUser.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image/upload/") ? currentUser.profilePicture.replace("w_100", "w_400") : currentUser.profilePicture)}/>
-        <div onClick={openPPDialog} className='absolute right-4 bottom-2 py-2 px-2 bg-gray-500 dark:bg-bdark-200 bg-opacity-90 rounded-full cursor-pointer transition hover:scale-105'>
+        <div onClick={()=>setTabActive('updatePP')} className='absolute right-4 bottom-2 py-2 px-2 bg-gray-500 dark:bg-bdark-200 bg-opacity-90 rounded-full cursor-pointer transition hover:scale-105'>
           <PencilIcon className='h-3 text-white dark:text-gray-400'/>
         </div>
       </div>
       <div className="flex items-center justify-center my-4">
         <form className="flex flex-col space-y-5 m-2 wsc md:w-fit-content" autoComplete='on' onSubmit={updateProfile}>
           <div className="flex items-center justify-center">
-            {error && <p className = "text-red-500 text-sm text-center" id = "injectError">{error}</p>}
+            {error && <p className = "longer-errorMsg" id = "injectError">{error}</p>}
           </div>
           <div className="grid xl:grid-cols-2 grid-cols-1">
             <div className="flex flex-col m-3">
@@ -183,7 +169,7 @@ function AccountSettings({colleges}) {
             <div className="flex flex-col m-3">
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Gender</p>
               <select id="gender" autoComplete="gender" value={_user?.gender} onChange={handleValueChange} className="infofield-edit">
-                <option> </option>
+              <option value="" disabled selected hidden></option>
                 <option>Male</option>
                 <option>Female</option>
               </select>
@@ -196,7 +182,7 @@ function AccountSettings({colleges}) {
             <div className="flex flex-col m-3">
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Level</p>
               <select id="level" autoComplete="grade" value={_user?.level} onChange={handleValueChange} className="infofield-edit">
-                <option> </option>
+              <option value="" disabled selected hidden></option>
                 <option>Level 100</option>
                 <option>Level 200</option>
                 <option>Level 300</option>
@@ -206,7 +192,7 @@ function AccountSettings({colleges}) {
             <div className="flex flex-col m-3">
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Relationship</p>
               <select id = 'relationship' value={_user?.relationship} onChange={handleValueChange} className = "infofield-edit">
-                <option> </option>
+              <option value="" disabled selected hidden></option>
                 <option>Single</option>
                 <option>In A Relationship</option>
                 <option>Married</option>
@@ -215,7 +201,7 @@ function AccountSettings({colleges}) {
             <div className="flex flex-col m-3">
               <p className="ml-2 text-gray-500 dark:text-gray-400 cursor-default">Programme of Study</p>
               <select className="infofield-edit">
-                <option> </option>
+              <option value="" disabled selected hidden></option>
                 <option>TBD</option>
                 <option>TBD</option>
               </select>
@@ -226,7 +212,7 @@ function AccountSettings({colleges}) {
             <textarea id="bio" defaultValue={user?.description} className="h-40 p-3 rounded-lg outline-none no-ta-resize bg-blue-grey-50 dark:bg-bdark-200 text-gray-500 dark:text-gray-400 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-1 ring-pink-500"/>
           </div>
           <div className="flex justify-between items-center m-3">
-            <div onClick={openAccDelDialog} className="text-red-600 cursor-pointer">Delete Account</div>
+            <button onClick={()=>setTabActive('delAcc')} className="clicky text-red-600 cursor-pointer outline-none">Delete Account</button>
             <button disabled={updateLoading || JSON.stringify(user) === JSON.stringify(_user)} className="infobutton-edit" type="submit">
               {updateLoading ? <div className="loader mx-auto animate-spin"></div> : <>Confirm</>}
             </button>

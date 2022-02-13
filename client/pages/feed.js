@@ -4,21 +4,12 @@ import Posts from "../components/Posts"
 import { FeedLayout } from "../Layouts/Layouts";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useEffect } from 'react';
-import { useAuth } from "../contexts/AuthContext";
-import { useRouter } from "next/router";
-import axios from "axios";
+import InLineQuickFollow from "../components/InLineQuickFollow";
 
-function Feed({trending}) {
-  const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
-  const { currentUser } = useAuth()
-  const router = useRouter()
+function Feed() {
+  const { setTabActive } = useActiveTab()
+
   useEffect(()=>{
-    if(!currentUser.token){
-      router.replace('/')
-    }
-    if(tabActive==='home')return; 
-    setPrevPrevTab(prevTab); 
-    setPrevTab(tabActive); 
     setTabActive('home');
   },[])
     
@@ -27,8 +18,9 @@ function Feed({trending}) {
       {/* <Stories userId={currentUser._id}/> */}
       <div className='mt-2'></div>
         <div className='flex flex-col'>
-          <div className='mx-auto mt-3'>
+          <div className='mx-auto mt-1 md:mt-3'>
             <AddPost/>
+            <InLineQuickFollow/>
             <Posts/>
           </div>
         <div className='pt-20'></div>
@@ -42,16 +34,6 @@ Feed.getLayout = function getLayout(page) {
       {page}
     </FeedLayout>
   )
-}
-
-export async function getServerSideProps() {
-  const trending = await (await axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/trending")).data
-  
-  return {
-    props: {
-      trending,
-    },
-  }
 }
 
 export default Feed

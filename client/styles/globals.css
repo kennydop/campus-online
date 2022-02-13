@@ -37,6 +37,10 @@
   .errorMsg{
     @apply text-red-500 text-sm text-center mb-2 w-60 break-normal;
   }
+  .longer-errorMsg{
+    @apply text-red-500 text-sm text-center
+  }
+  
   .authForm{
     @apply flex flex-col justify-center items-center lg:p-5 lg:bg-white lg:dark:bg-bdark-100 lg:shadow-md lg:dark:shadow-xl lg:rounded-lg;
   }
@@ -46,10 +50,46 @@
   }
 
   .side-bar{
-    @apply top-0 right-0 fixed z-50 bg-white dark:bg-bdark-100 h-screen shadow-md md:w-96 w-full overflow-hidden
+    @apply top-0 right-0 fixed z-60 bg-white dark:bg-bdark-100 md:h-screen minus-bnavbar shadow-md md:w-96 w-full overflow-hidden
+  }
+  
+  .poll-choice{
+    @apply rounded-l-full absolute h-11 px-3 bg-white border border-blue-grey-50 dark:bg-gray-400 flex items-center justify-center text-gray-400 dark:text-gray-300
+  }
+
+  .poll-btn{ 
+    @apply relative overflow-hidden rounded-full w-full h-12 border justify-center flex items-center my-1
+  }
+
+  .link{
+    @apply text-pink-500 hover:text-pink-200
   }
 
 }
+.infobutton:focus, .infobutton-edit:focus, .infobutton-white:focus, .clicky:focus{
+  animation: clicked .2s;
+  -webkit-animation: clicked .2s;
+}
+
+@keyframes clicked {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+}
+  50% {
+    opacity: .3;
+    transform: scale(.95);
+    -webkit-transform: scale(.95);
+    -moz-transform: scale(.95);
+    -ms-transform: scale(.95);
+    -o-transform: scale(.95);
+}
+}
+
 .centered {
   position: fixed;
   top: 50%;
@@ -145,6 +185,13 @@ select{
   text-align: center;
 }
 
+.w-inherit{
+  width: inherit;
+}
+
+.pl-26 {
+  padding-left: 6.5rem;
+}
 
 @variants dark{
   .shadow-all{
@@ -164,6 +211,9 @@ select{
 @variants responsive{
   .minus-header{
     height: calc(100vh - 50px);
+  }
+  .minus-bnavbar{
+    height: calc(100vh - 45px);
   }
   .w-tt {
     width: 23.5%;
@@ -203,16 +253,18 @@ select{
     border-bottom-left-radius: 0.5rem;
     border-top-right-radius: 0px;
   }
-  .text-xs {
-    font-size: 0.65rem;
-    line-height: 0.85rem;
+  .wpps{
+    max-width: calc(100% - 32px);
   }
-  .text-2xs{
-  font-size: 0.5rem;
-  line-height: 0.75rem;
+  .wppm{
+    max-width: calc(100% - 44px);
   }
-  .text-1\/5xs{
-  font-size: 0.5rem;
-  line-height: 0.75rem;
-  }
+}
+
+
+.progress{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
 }

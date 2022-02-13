@@ -8,14 +8,10 @@ import PreferencesSettings from "../components/PreferencesSettings";
 import axios from "axios";
 
 function Settings({colleges}) {
-	const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
+	const { setTabActive } = useActiveTab()
   const [ active, setActive ] = useState('account')
 
   useEffect(()=>{
-    console.log(colleges)
-    if(tabActive==='settings')return; 
-    setPrevPrevTab(prevTab); 
-    setPrevTab(tabActive); 
     setTabActive('settings');
   },[])
 

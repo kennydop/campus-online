@@ -25,6 +25,17 @@ module.exports = {
       },
       boxShadow: {
         'mdt': '-1.5px -3px 4px rgba(0, 0, 0, 0.1), -0.5px -1px 4px rgba(0, 0, 0, 0.06)',
+      },
+      fontSize: {
+        'xs': '.65rem',
+        'xxs': '.55rem',
+        '1\/5xs': '.5rem',
+        '2xs': '.4rem'
+      },
+      zIndex: {
+        '60': '60',
+        '70': '70',
+        '80': '80',
       }
     },
   },

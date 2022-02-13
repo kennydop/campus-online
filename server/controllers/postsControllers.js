@@ -3,22 +3,30 @@ import User from "../models/User.js";
 import cloudinary from "../utils/cloudinary.js";
 
 export const createNewPost = async (req, res) => {
+  var post = req.body
   try {
-    if(req.body.type !== "text"){
-      const uploadResponse = await cloudinary.uploader.upload(req.body.media, {
-        upload_preset: 'co_posts', resource_type: "auto"
-      });
-      const post = {...req.body, media: req.body.type === "image" ? uploadResponse.public_id+"."+uploadResponse.format : uploadResponse.public_id}
-      const newPost = new Post(post);
-      const savedPost = await newPost.save();
-      const v = await User.findByIdAndUpdate(req.body.authorId, {$inc: {posts: 1}}, {new: true})
-      console.log(v)
-      res.status(200).json(savedPost);
-    }else{
-      const newPost = new Post(req.body);
-      const savedPost = await newPost.save();
-      res.status(200).json(savedPost);
+    if(post.media === false){
+      delete post.media
     }
+    if(post.media){
+      const uploadResponse = await cloudinary.uploader.upload(post.media, {
+        upload_preset: 'co_posts', resource_type: "auto"
+      })
+      post.media = post.type !== "image" ? uploadResponse.public_id : uploadResponse.public_id+"."+uploadResponse.format
+    }
+    if(post.type === "poll"){
+      post.poll.expireAt = converToExpiryTime(post.poll.exp)
+      delete post.product
+    }else if(post.type === "product"){
+      delete post.poll
+    }else{
+      delete post.poll
+      delete post.product
+    }
+    const newPost = new Post(post);
+    const savedPost = await newPost.save();
+    await User.findByIdAndUpdate(post.authorId, {$inc: {posts: 1}}, {new: true})
+    res.status(200).json(savedPost);
 	} catch (error) {
 		res.status(500).json(error);
     console.log(error)
@@ -42,12 +50,20 @@ export const updatePost = async (req, res) => {
 export const deletePost = async (req, res) => {
 	try {
     const post = await Post.findById(req.params.id)
-    await User.findByIdAndUpdate(post.authorId, {$inc: {posts: -1}}, {new: true})
+    if(post.media){
+      if(post.type !== "video"){
+        await cloudinary.uploader.destroy(post.media.split("upload/")[1].split('.')[0]);
+      }else{
+        await cloudinary.uploader.destroy(post.media.split("upload/")[1]);
+      }
+    }
 		await Post.findByIdAndDelete(req.params.id).then(()=>
-			res.status(200).json("the post has been deleted")
+      res.status(200).json("the post has been deleted")
     )
-	} catch (error) {
-	res.status(403).json(error);
+    await User.findByIdAndUpdate(post.authorId, {$inc: {posts: -1}}, {new: true})
+	}catch (error){
+    console.log(error)
+	  res.status(403).json(error);
 	}
 }
 
@@ -206,4 +222,41 @@ export const trendingPosts = async (req, res) => {
   }catch(error){
     res.status(404).json(error)
   }
+}
+
+export const pollVote = async (req, res)=>{
+  try{
+    var post = await Post.findById(req.params.id)
+    const index = post.poll.choices.findIndex(c=>c._id.valueOf() === req.body.id)
+    if(index !== -1){
+      post.poll.choices[index].votes.push(req.body.user)
+      post.poll.votes.push(req.body.user)
+    }
+    const savedPost = await post.save()
+    res.status(200).json(savedPost)
+  }catch(error){
+    console.log(error)
+    res.status(404).json(error)
+  }
+}
+
+function converToExpiryTime(str){
+  const numberOf = parseInt(str.split(' ')[0])
+  const time = str.split(' ')[1]
+  var expTime = 8.64e+7
+  switch (time){
+    case "minute(s)":
+      expTime = numberOf * 60000
+      break
+    case "hour(s)":
+      expTime = numberOf * 3.6e+6
+      break
+    case "day(s)":
+      expTime = numberOf * 8.64e+7
+      break
+    default:
+      expTime = 1 * 8.64e+7
+      break
+  }
+  return new Date().getTime() + expTime
 }

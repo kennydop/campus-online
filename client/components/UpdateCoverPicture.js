@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import { useActiveTab } from "../contexts/ActiveTabContext";
+import { defaultCoverPicture } from "../images/defaults"
 import { XIcon } from "@heroicons/react/solid";
 
-function UpdateProfilePicture() {
+function UpdateCoverPicture() {
   const { currentUser, setCurrentUser } = useAuth();
+  const [ user, setUser ] = useState();
   const [bigFile, setBigFile] = useState(false);
   const [loading, setLoading] = useState(false);
   const [buttonText, setButtonText] = useState('Remove');
@@ -15,12 +17,22 @@ function UpdateProfilePicture() {
   const [url, setUrl] = useState();
   const { setTabActive } = useActiveTab()
 
+  useEffect(()=>{
+    async function getMyProfile(){
+      setLoading(true)
+      axios.get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}`).then((res)=>{
+        setUser(res.data)
+        setLoading(false)
+      })
+    }
+    getMyProfile();
+  },[])
 
   const handleImageChange = (e) => {
     setError('');
     selected = e.target.files[0];
     if (selected && selected.type.substr(0, 5) === "image") {
-      if(selected?.size > 6000000){setBigFile(true)}
+      if(selected?.size > 7000000){setBigFile(true)}
       let reader = new FileReader();
       reader.onloadend = () => {
         setImgPreview(reader.result);
@@ -42,7 +54,7 @@ function UpdateProfilePicture() {
       setLoading(false)
       return;
     }
-    const img = url ? {profilePicture: url} : {removePP: true}
+    const img = url ? {coverPicture: url} : {removeCP: true}
     axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}`, 
       img, 
       { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
@@ -57,10 +69,10 @@ function UpdateProfilePicture() {
   return (
     <div className="flex flex-col justify-center items-center p-3 w-screen apfl md:apfc md:w-100 centered bg-blue-grey-50 dark:bg-bdark-200 md:bg-white md:dark:bg-bdark-100 md:rounded-lg shadow-md z-50">
       <div onClick={()=>{setTabActive('go back')}} className="absolute top-3 right-3 cursor-pointer"><XIcon className="h-5 text-red-500"/></div>
-      <div className = "mb-3 h-36 w-36 border-2 dark:border-gray-400 border-gray-500 rounded-full relative overflow-hidden">
+      <div className = "mb-3 w-full max-h-44 relative overflow-hidden">
           <img 
-          src={imgPreview ? imgPreview : currentUser.profilePicture}
-          className = "object-cover h-36 w-36"
+          src={imgPreview ? imgPreview : (user?.coverPicture ? user.coverPicture : defaultCoverPicture)}
+          className = "object-cover w-full"
           />
         </div>
         <label className = "text-pink-500 hover:font-bold cursor-pointer my-3">
@@ -69,7 +81,7 @@ function UpdateProfilePicture() {
         </label>
       <div className = "flex flex-col items-center justify-center">
       {error && <p className="errorMsg">{error}</p>}
-      <button disabled={loading || (!imgPreview && currentUser.profilePicture.startsWith("https://ui-avatars.com/api/?name="))} className = "infobutton-edit" onClick = {handleUpload}>
+      <button disabled={(!user?.coverPicture && !imgPreview)|| loading} className = "infobutton-edit" onClick = {handleUpload}>
         {loading ? <div className="loader mx-auto animate-spin"></div> : <>{buttonText}</>}
       </button>
       </div>
@@ -77,4 +89,4 @@ function UpdateProfilePicture() {
   )
 }
 
-export default UpdateProfilePicture
+export default UpdateCoverPicture

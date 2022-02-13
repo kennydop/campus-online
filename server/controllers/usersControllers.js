@@ -17,20 +17,24 @@ export const updateUserInfo = async (req, res) => {
       }
       await College.findOneAndUpdate({name: req.body.college}, {$inc: {users: 1}}, {new: true})
     }
-    if(req.body.profilePicture && !req.body.profilePicture.startsWith("https://ui-avatars.com/api/?name=")){
+
+    if(req.body.coverPicture){
+      const uploadResponse = await cloudinary.uploader.upload(req.body.coverPicture, {
+        upload_preset: 'co_coverpics', resource_type: "image"
+      });
+      if(user.coverPicture){
+        await cloudinary.uploader.destroy(user.coverPicture.split("upload/")[1].split('.')[0]);
+      }
+      newPP = "https://res.cloudinary.com/kennydop/image/upload/"+uploadResponse.public_id+"."+uploadResponse.format
+      const {coverPicture, ...other} = req.body
+      info = {...other, coverPicture: newPP}
+    }else if(req.body.profilePicture && !req.body.profilePicture.startsWith("https://ui-avatars.com/api/?name=")){
       const uploadResponse = await cloudinary.uploader.upload(req.body.profilePicture, {
         upload_preset: 'co_profilepics', resource_type: "image"
       });
       if(user.profilePicture && user.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image")){
-        await cloudinary.uploader.destroy(user.profilePicture.split("w_200/")[1].split('.')[0], function(error, result) {
-          if(error){
-            console.log(error)
-          }else{
-            console.log(result) 
-          }
-        });
+        await cloudinary.uploader.destroy(user.profilePicture.split("w_200/")[1].split('.')[0]);
       }
-
       newPP = "https://res.cloudinary.com/kennydop/image/upload/ar_1:1,c_fill,g_auto:faces,w_200/"+uploadResponse.public_id+"."+uploadResponse.format
       const {profilePicture, ...other} = req.body
       info = {...other, profilePicture: newPP}
@@ -40,18 +44,15 @@ export const updateUserInfo = async (req, res) => {
         info = {...req.body, profilePicture: newPP}
       }
     }else{
-      if(Object.keys(req.body).length === 0){
+      if(req.body.removePP){
         if(user.profilePicture && user.profilePicture.startsWith("https://res.cloudinary.com/kennydop/image")){
-          await cloudinary.uploader.destroy(user.profilePicture.split("w_200/")[1].split('.')[0], function(error, result) {
-            if(error){
-              console.log(error)
-            }else{
-              console.log(result) 
-            }
-          });
+          await cloudinary.uploader.destroy(user.profilePicture.split("w_200/")[1].split('.')[0]);
         }
         newPP = `https://ui-avatars.com/api/?name=${encodeURIComponent((user.name))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`
         info = {profilePicture: newPP}
+      }else if(req.body.removeCP){
+        await cloudinary.uploader.destroy(user.coverPicture.split("upload/")[1].split('.')[0]);
+        info = {coverPicture: ""}
       }else{
         info = req.body
       }

@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect, createContext, useCallback } from "react"
 import axios from "axios"
 import { useRouter } from "next/router"
+import { co_loading } from "../images/defaults"
 
 const AuthContext = createContext()
 
@@ -12,7 +13,6 @@ const uprotectedRoutes = ['/login', '/signup', '/forgotpassword', '/', '/[profil
 
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState()
-	const [refreshPosts, setRefreshPosts] = useState()
 	const [loading, setLoading] = useState(true)
 	const router = useRouter()
 
@@ -21,8 +21,7 @@ export function AuthProvider({ children }) {
     router.replace("/login")
     axios.get("http://localhost:5000/api/auth/logout", { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'})
 	}
-
-  const verifyUser = useCallback(() => {
+  const verifyUser = () => {
     axios.put("http://localhost:5000/api/auth/refreshtoken", {}, {withCredentials: true, credentials: 'include'}).then(async (res)=>{
       setCurrentUser(res.data)
       if(!uprotectedRoutes.includes(router.pathname)){
@@ -49,28 +48,28 @@ export function AuthProvider({ children }) {
         setLoading(false)
       }
     })
-    // call refreshToken every 5 minutes to renew the authentication token.
-    setTimeout(verifyUser, 5 * 60 * 1000)
-
-  }, [setCurrentUser])
+  }
 
 
   useEffect(() => {
     verifyUser()
-  }, [verifyUser])
+  }, [])
 
 
 	const value = {
 		currentUser,
-    refreshPosts,
-    setRefreshPosts,
     setCurrentUser,
 		logout,
 	}
 	
 	return (
 		<AuthContext.Provider value={value}>
-		{!loading && children}
+		{loading ? 
+      <div className="flex h-screen w-screen items-center justify-center">
+        {co_loading}
+      </div>
+    :
+    children}
 		</AuthContext.Provider>
 		)
 	}
