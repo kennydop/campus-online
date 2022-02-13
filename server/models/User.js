@@ -115,6 +115,6 @@ UserSchema.set("toJSON", {
   },
 })
 
-UserSchema.plugin(passportLocalMongoose)
+UserSchema.plugin(passportLocalMongoose, {usernameQueryFields: ['email']})
 
 export default mongoose.model("User", UserSchema);

@@ -13,12 +13,13 @@ export function PostsProvider({children}) {
   const [feedPosts, setFeedPosts] = useState()
   const [globalPosts, setGlobalPosts] = useState()
   const { currentUser } = useAuth()
-  const { refreshFeedPosts, refreshGlobalPosts, setNewPosts, setFeedScroll, setGlobalScroll } = useUtils()
+  const { refreshFeedPosts, refreshGlobalPosts, setNewPosts, setFeedScroll, setGlobalScroll,  setRefreshFeedPosts, setRefreshGlobalPosts } = useUtils()
   
   useEffect(()=>{
     async function getGlobalPosts(){
       axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/global").then((res)=>{
         setGlobalPosts(res.data)
+        setRefreshGlobalPosts(false)
       })
     }
     refreshGlobalPosts && setGlobalScroll(0)
@@ -29,6 +30,7 @@ export function PostsProvider({children}) {
     async function getFeedPosts(){
       axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/home/"+currentUser._id).then((res)=>{
         setFeedPosts(res.data)
+        setRefreshFeedPosts(false)
         setNewPosts(0)
       })
     }
@@ -50,11 +52,25 @@ export function PostsProvider({children}) {
     })
   }
 
+  function updatePost(post){
+    setFeedPosts((oldVal)=>{
+      const i = oldVal.findIndex(p=>p._id === post._id)
+      oldVal[i]=post
+      return [...oldVal]
+    })
+    setGlobalPosts((oldVal)=>{
+      const i = oldVal.findIndex(p=>p._id === post._id)
+      oldVal[i]=post
+      return [...oldVal]
+    })
+  }
+
   const value={
     feedPosts,
     globalPosts,
     deletePost,
-    unfollowUser
+    unfollowUser,
+    updatePost
   }
   return (
     <PostsContext.Provider value={value}>

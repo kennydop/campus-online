@@ -48,7 +48,7 @@ const Post = forwardRef(({ _post, refreshUser, page }, ref) => {
   const moreRef = useRef();
   const router = useRouter()
   const { socket } = useSocket()
-  const { deletePost, unfollowUser } = usePosts()
+  const { deletePost, unfollowUser, updatePost } = usePosts()
 
   useOnClickOutside(moreRef, () =>setOpenOptions(false))
 
@@ -144,6 +144,7 @@ const Post = forwardRef(({ _post, refreshUser, page }, ref) => {
       setHasLiked(!hasLiked)
       axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/like?userId=${currentUser?._id}`).then((res)=>{
         setPost(res.data)
+        updatePost(res.data)
         socket.emit("sendLike", {id: post._id, sender: currentUser._id, updatedAt: new Date(), status: !prev})
         if(currentUser._id !== author._id){
           !prev && socket.emit('sendNotification', {
@@ -169,6 +170,7 @@ const Post = forwardRef(({ _post, refreshUser, page }, ref) => {
         comment: comRef.current.value
       }).then((res)=>{
         setPost(res.data)
+        updatePost(res.data)
         socket.emit("sendComment", {
           postId: post._id,
           authorId: currentUser._id,
@@ -195,6 +197,7 @@ const Post = forwardRef(({ _post, refreshUser, page }, ref) => {
     axios.delete(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/comment?comment=${cid}`, { headers: { Authorization: `Bearer ${currentUser?.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
       socket.emit('sendDeleteComment', {postId: post._id, commentId: cid})
       setPost(res.data)
+      updatePost(res.data)
     })
   }
 
@@ -238,6 +241,7 @@ const Post = forwardRef(({ _post, refreshUser, page }, ref) => {
     axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/posts/${post._id}/vote`,{id, user: currentUser._id}).then((res)=>{
       setPost(res.data)
       setVoted(true)
+      updatePost(res.data)
       currentUser._id !== author._id && socket.emit('sendNotification', {
         from: currentUser._id,
         to: author._id,

@@ -12,7 +12,7 @@ passport.use(
   new GoogleStrategy({
     clientID: process.env.GOOGLE_ID,
     clientSecret: process.env.GOOGLE_SECRET,
-    callbackURL: "/api/auth/google/callback"
+    callbackURL: process.env.BASE_URL+"/api/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     User.findOne({providerId: profile.id}, function (error, user) {
@@ -62,7 +62,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_ID,
       clientSecret: process.env.FACEBOOK_SECRET,
-      callbackURL: "/api/auth/facebook/callback",
+      callbackURL: process.env.BASE_URL+"/api/auth/facebook/callback",
       profileFields: ['id', 'email', 'gender', 'birthday', 'name', 'picture.type(large)' ],
     },
     function (accessToken, refreshToken, profile, done) {
@@ -116,7 +116,7 @@ passport.use(
     {
       consumerKey: process.env.TWITTER_ID,
       consumerSecret: process.env.TWITTER_SECRET,
-      callbackURL: "/api/auth/twitter/callback",
+      callbackURL: process.env.BASE_URL+"/api/auth/twitter/callback",
     },
     function (accessToken, refreshToken, profile, done) {
       User.findOne({providerId: profile.id}, function (error, user) {

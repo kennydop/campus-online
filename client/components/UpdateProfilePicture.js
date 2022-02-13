@@ -48,7 +48,7 @@ function UpdateProfilePicture({refreshUser}) {
       img, 
       { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
         setCurrentUser((oldValues) => {return {token: oldValues.token, ...res.data}})
-        refreshUser();
+        refreshUser && refreshUser();
         setTabActive("go back"); 
       }).catch((error)=>{
         setError(error.message)

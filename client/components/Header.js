@@ -89,7 +89,7 @@ function Header() {
 
   return (
     <>
-      <div className = "md:flex sticky inset-x-0 top-0 z-50 bg-white dark:bg-bdark-100 justify-center items-center p-2 md:p-2.5 md:px-15 px-2 shadow-md">
+      <div className = {`md:flex sticky inset-x-0 top-0 z-50 bg-white dark:bg-bdark-100 justify-center items-center p-2 md:p-2.5 md:px-15 px-2 shadow-md ${tabActive[tabActive.length - 1]==='chat' && 'hidden md:block'}`}>
         {/*left*/}
         <div className = "flex items-center md:pb-0 px-2 md:px-0 mx-auto justify-between">
           {currentUser && <div className="md:hidden flex text-center">
@@ -121,7 +121,7 @@ function Header() {
             <div onClick={()=>{setEnterSearchMode(true)}} className={`flex md:hidden rounded-full bg-blue-grey-50 dark:bg-bdark-200 p-1.5 transition duration-300 ease ${enterSearchMode? 'absolute w-11/12 items-start':'items-center'}`}>
               <form className="flex items-center" onSubmit={(e)=>{e.preventDefault(); setEnterSearchMode(false); router.push(`/trending?word=${e.target.elements.minSearch.value}`)}}>
                 <SearchIcon className = "h-5 cursor-pointer text-gray-500 dark:text-gray-400"/>
-                <input id="minSearch" type="search" onChange={search} className = {`md:hidden ml-2 bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 w-full h-full ${enterSearchMode?'inline-flex':'hidden'}`} type = "text" placeholder="Search"/>
+                <input id="minSearch" type="search" onChange={search} className = {`md:hidden ml-2 bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400 w-full h-full ${enterSearchMode?'inline-flex':'hidden'}`} placeholder="Search"/>
                 <button hidden type="submit"></button>
               </form>
             </div>
@@ -131,7 +131,7 @@ function Header() {
           <div onClick={()=>{setEnterSearchMode(true)}} className = "flex items-center rounded-full bg-blue-grey-50 dark:bg-bdark-200 px-1.5 py-1 focus:shadow-md">
             <form className="flex items-center" onSubmit={(e)=>{e.preventDefault(); setEnterSearchMode(false); router.push(`/trending?word=${e.target.elements.jsearch.value}`)}}>
               <SearchIcon className = "h-5 text-gray-500 dark:text-gray-400"/>
-              <input id="jsearch" type="search" onChange={search} className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400" type = "text" placeholder="Search"/>
+              <input id="jsearch" type="search" onChange={search} className = "hidden md:inline-flex flex-shrink ml-2 items-center bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Search"/>
               <button hidden type="submit"></button>
             </form>
           </div>

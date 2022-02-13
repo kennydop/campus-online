@@ -19,7 +19,9 @@ export function AuthProvider({ children }) {
 
 	function logout() {
     router.replace("/login")
-    axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/auth/logout", { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'})
+    axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/auth/logout", { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then(()=>{
+      setCurrentUser(null)
+    });
 	}
 
   const verifyUser = useCallback(() => {
@@ -33,7 +35,7 @@ export function AuthProvider({ children }) {
           await router.replace({
             pathname: '/login',
             query: { returnUrl: router.pathname }
-          }).then(()=>{setLoading(false)})
+          }).then(()=>{setLoading(false); setCurrentUser(null)})
         }
       }else{
         setLoading(false)
@@ -44,7 +46,7 @@ export function AuthProvider({ children }) {
         await router.replace({
           pathname: '/login',
           query: { returnUrl: router.pathname }
-        }).then(()=>{setLoading(false)})
+        }).then(()=>{setLoading(false); setCurrentUser(null)})
       }else{
         setLoading(false)
       }
@@ -70,8 +72,11 @@ export function AuthProvider({ children }) {
 		<AuthContext.Provider value={value}>
 		{loading ? 
       <div className="flex h-screen w-screen items-center justify-center">
+      <div>
         {co_loading}
+        <div className="co-loader mt-1 fit-content mx-auto"><span></span><span></span><span></span></div>
       </div>
+    </div>
     :
     children}
 		</AuthContext.Provider>

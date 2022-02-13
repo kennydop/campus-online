@@ -8,7 +8,7 @@ export function FeedLayout({children}) {
     <>
       <Header/>
       <ButtomNavbar/>
-      <div className='flex flex-grow bg-blue-grey-50 dark:bg-bdark-200 justify-center h-full'>
+      <div className='flex flex-grow bg-blue-grey-50 dark:bg-bdark-200 justify-center h-full min-h-screen'>
         <TrendingBox/>
         {children}
         <PeopleYouMightKnow/>

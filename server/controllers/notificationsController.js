@@ -41,8 +41,6 @@ export async function readNotifications(id){
     notificationBatch.save((error, data)=>{
       if(error){
         console.log(error)
-      }else{
-        console.log(data)
       }
     })
   }catch(error){
@@ -68,7 +66,6 @@ export async function getUnreadNotifications(req, res){
 export async function sendNotification(req, res){
   try{
     const unread = await Notification.find({$and:[{members: {$in: [req.params.id]}}, {"messages.message[messages.length-1].read": false}]});
-    console.log(unread)
     res.status(200).json(unread.length)
   }catch(error){
     console.log(error)
@@ -98,7 +95,7 @@ const postLikeHandler = async (data) => {
   const noti = {
     userId: data.to,
     notifications: {
-      message: `${post.likes.length > 2 ? " and " + (post.likes.length-1) + " others" : ""} liked your ${post.type === "image" ? "picture" : post.type === "product" ? "ad": post.type} "${post.description.slice(0, 20)}..."`,
+      message: `${post.likes.length > 2 ? " and " + (post.likes.length-1) + " others" : ""} liked your ${post.type === "image" ? "picture" : post.type === "product" ? "ad": post.type} "${post.description.slice(0, 30)}"`,
       thumbnail: post.media && (post.type !== "video" ? `https://res.cloudinary.com/kennydop/image/upload/w_100,q_auto/${post.media}` : `https://res.cloudinary.com/kennydop/video/upload/c_scale,w_100/${post.media}`),
       from: data.from,
       type: data.type,
@@ -112,7 +109,6 @@ const postLikeHandler = async (data) => {
     exists.save()
   }else{
     exists = await new Notification(noti)
-    console.log(noti)
     console.log(exists)
     exists.save()
   }
@@ -124,7 +120,7 @@ const postCommentHandler = async (data) => {
   const noti = {
     userId: data.to,
     notifications: {
-      message: `${post.comments.length > 2 ? " and " + (post.comments.length-1) + " others" : ""} commented on your ${post.type === "image" ? "picture" : post.type === "product" ? "ad": post.type} "${post.description.slice(0, 20)}...": ${data.comment.slice(0, 20)}`,
+      message: `${post.comments.length > 2 ? " and " + (post.comments.length-1) + " others" : ""} commented on your ${post.type === "image" ? "picture" : post.type === "product" ? "ad": post.type} "${post.description.slice(0, 30)}": ${data.comment.slice(0, 20)}`,
       thumbnail: post.media && (post.type !== "video" ? `https://res.cloudinary.com/kennydop/image/upload/w_100,q_auto/${post.media}` : `https://res.cloudinary.com/kennydop/video/upload/c_scale,w_100/${post.media}`),
       from: data.from,
       type: data.type,
@@ -148,7 +144,7 @@ const pollVoteHandler = async (data) => {
   const noti = {
     userId: data.to,
     notifications: {
-      message: `${post.poll.votes.length > 2 ? " and " + (post.poll.votes.length-1) + " others" : ""} voted in your poll "${post.description.slice(0, 20)}"`,
+      message: `${post.poll.votes.length > 2 ? " and " + (post.poll.votes.length-1) + " others" : ""} voted in your poll "${post.description.slice(0, 30)}"`,
       thumbnail: post.media && `https://res.cloudinary.com/kennydop/image/upload/w_100,q_auto/${post.media}`,
       from: data.from,
       type: data.type,

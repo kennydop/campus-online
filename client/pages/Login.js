@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import { AtSymbolIcon, LockClosedIcon } from "@heroicons/react/outline";
+import { UserIcon, LockClosedIcon } from "@heroicons/react/outline";
 import AuthLeft from '../components/AuthLeft'
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -63,16 +63,14 @@ function Login() {
           </div>
           {error && <p className = "errorMsg" id = "injectError">{error}</p>}
           <div className="relative">
-            <AtSymbolIcon className="infoicons"/>
+          <UserIcon className="infoicons"/>
             <input
               ref={username}
-              type="name"
+              type="text"
               minLength="3"
-              pattern="^[A-Za-z0-9_]{3,15}$"
-              title="please use only letters, numbers and underscores"
               required={true}
-              placeholder="Username"
-              autoComplete="name"
+              placeholder="Username or Email"
+              autoComplete="email"
               className="infofield"
             />
           </div>
