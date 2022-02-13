@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-target-blank */
 import { CheckCircleIcon, DuplicateIcon, MailIcon, XIcon } from "@heroicons/react/outline"
 import { useState } from "react"
 import { useActiveTab } from "../contexts/ActiveTabContext"

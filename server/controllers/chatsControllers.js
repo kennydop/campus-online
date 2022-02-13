@@ -77,7 +77,6 @@ export async function getUnreadChats(req, res){
     unreadChats.forEach((c)=>{
       unread.push(c.members.find(m=>m!==req.params.id))
     })
-    console.log(unread)
     res.status(200).json(unread)
   }catch(error){
     console.log(error)

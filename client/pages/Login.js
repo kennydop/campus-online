@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import { AtSymbolIcon, LockClosedIcon } from "@heroicons/react/outline";
@@ -39,7 +40,7 @@ function Login() {
       })
     }
     catch(error){
-      console.log(error)
+      setError(error)
       setLoginLoading(false)
     }
   }

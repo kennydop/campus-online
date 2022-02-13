@@ -26,14 +26,14 @@ function Comment ({ comment, admin, delCom}){
   return (
     <div className='flex items-start my-2.5 w-full relative'>
       <div className='h-7 w-7 md:h-9 md:w-9 rounded-full flex-shrink-0 mr-1 md:mr-2'>
-        <Link href={`/${author?.username}`}><img src={author?.profilePicture} className='h-7 w-7 md:h-9 md:w-9 rounded-full object-cover cursor-pointer'/></Link>
+        <Link href={`/u/${author?.username}`} passHref><img src={author?.profilePicture} className='h-7 w-7 md:h-9 md:w-9 rounded-full object-cover cursor-pointer'/></Link>
       </div>
       <div className='wpps md:wppm'>
         <div className="relative py-1 px-2 rounded-lg bg-blue-grey-50 dark:bg-bdark-200">
           <div className="flex justify-between items-center">
             <span className='space-x-2 truncate'>
-              <Link href={`/${author?.username}`}><span className='text-sm text-gray-600 font-semibold dark:text-gray-400 truncate cursor-pointer'>{author?.name}</span></Link>
-              <Link href={`/${author?.username}`}><span className='text-gray-600 dark:text-gray-400 text-sm truncate cursor-pointer'>@{author?.username}</span></Link>
+              <Link href={`/u/${author?.username}`} passHref><span className='text-sm text-gray-600 font-semibold dark:text-gray-400 truncate cursor-pointer'>{author?.name}</span></Link>
+              <Link href={`/u/${author?.username}`} passHref><span className='text-gray-600 dark:text-gray-400 text-sm truncate cursor-pointer'>@{author?.username}</span></Link>
             </span>
             {admin && <div onClick={()=>setDel(true)}><DotsVerticalIcon className="h-4 ml-2 text-gray-500 dark:text-gray-400 cursor-pointer"/></div>}
           </div>

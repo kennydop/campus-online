@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import { EyeIcon } from "@heroicons/react/solid"
 import { useState, forwardRef } from "react"
 import { useAuth } from "../contexts/AuthContext"

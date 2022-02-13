@@ -72,7 +72,7 @@ const UserSchema = new mongoose.Schema({
     },
     description: {
       type: String,
-      max: 60,
+      max: 81,
     },
     relationship: {
       type: String,

@@ -17,14 +17,15 @@ export function UtilsContext({children}){
   const [refreshGlobalPosts, setRefreshGlobalPosts] = useState()
   const [feedScroll, setFeedScroll] = useState()
   const [globalScroll, setGlobalScroll] = useState()
-  const [suggestions, setSuggestions] = useState()
+  const [suggestions, setSuggestions] = useState([])
   const [trending, setTrending] = useState()
   const { currentUser } = useAuth()
   const {theme, resolvedTheme, setTheme} = useTheme()
 
+  //getting unread chats
   useEffect(()=>{
     async function getUnreadChats(){
-      if(!unreadChats && currentUser){
+      if(unreadChats.length === 0 && currentUser){
         axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/chats/unread/"+currentUser._id).then((res)=>{
           setUnreadChats(res.data)
         })
@@ -55,6 +56,7 @@ export function UtilsContext({children}){
     }
   },[currentUser])
 
+  //getting suggestions
   useEffect(()=>{
     if(currentUser){
       async function getSuggestionsForLoggedInUser(){
@@ -71,8 +73,9 @@ export function UtilsContext({children}){
       }
       getSuggestionsForNotLoggedInUser()
     }
-  },[])
+  },[currentUser])
 
+  //getting trending
   useEffect(()=>{
     async function getTrending(){
       axios.get(process.env.NEXT_PUBLIC_SERVER_BASE_URL+"/api/posts/trending").then(res=>{
@@ -81,6 +84,20 @@ export function UtilsContext({children}){
     }
     getTrending()
   },[])
+
+  const setFollowedSuggestion = (id)=>{
+    suggestions.map(s=>{
+      if(s._id !== id)return
+      s.isfollowing = true;
+    })
+  }
+  
+  const setUnfollowedSuggestion = (id)=>{
+    suggestions.map(s=>{
+      if(s._id !== id)return
+      s.isfollowing = false;
+    })
+  }
 
   const value = {
     unreadChats,
@@ -98,7 +115,9 @@ export function UtilsContext({children}){
     setRefreshFeedPosts,
     setRefreshGlobalPosts,
     setFeedScroll,
-    setGlobalScroll
+    setGlobalScroll,
+    setFollowedSuggestion,
+    setUnfollowedSuggestion
   }
   
   return(

@@ -1,7 +1,6 @@
 import {Router} from "express";
 import { verifyUser } from "../authStrategies/authenticate.js";
 import { deleteUser, getAUser, handleFollow, updateUserInfo, getFollowSuggestions, getNotLoggedInFollowSuggestions, searchUser, checkFollow } from "../controllers/usersControllers.js";
-import College from "../models/College.js";
 
 const router = Router();
 
@@ -12,7 +11,7 @@ router.get("/currentUser", verifyUser, (req, res) => {res.send(req.user)})
 router.put("/:id", verifyUser, updateUserInfo);
 
 //delete user
-router.delete("/:id", deleteUser);
+router.delete("/:id", verifyUser, deleteUser);
 
 //get a user
 router.get("/:id", getAUser);

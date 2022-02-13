@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import helmet from "helmet"
-import morgan from "morgan";
+// import morgan from "morgan";
 import { createServer } from "http";
 import { Server } from "socket.io"
 import userRoute from "./routes/users.js";
@@ -43,7 +43,7 @@ mongoose.connect(process.env.MONGO_URL,
 //middleware
 app.use(express.json({ limit: '70mb' }));
 app.use(helmet());
-app.use(morgan("common")); // remove before deploying
+// app.use(morgan("common")); // remove before deploying
 app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(cors(corsOptions));
 app.use(
@@ -163,6 +163,6 @@ io.on("connection", async (socket) => {
 
 });
 
-server.listen(5000, () => {
+server.listen(process.env.PORT || 5000, () => {
   console.log("Backend server is running!");
 });

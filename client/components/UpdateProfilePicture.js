@@ -1,10 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { XIcon } from "@heroicons/react/solid";
 
-function UpdateProfilePicture() {
+function UpdateProfilePicture({refreshUser}) {
   const { currentUser, setCurrentUser } = useAuth();
   const [bigFile, setBigFile] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,6 +48,7 @@ function UpdateProfilePicture() {
       img, 
       { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
         setCurrentUser((oldValues) => {return {token: oldValues.token, ...res.data}})
+        refreshUser();
         setTabActive("go back"); 
       }).catch((error)=>{
         setError(error.message)
@@ -59,6 +61,7 @@ function UpdateProfilePicture() {
       <div onClick={()=>{setTabActive('go back')}} className="absolute top-3 right-3 cursor-pointer"><XIcon className="h-5 text-red-500"/></div>
       <div className = "mb-3 h-36 w-36 border-2 dark:border-gray-400 border-gray-500 rounded-full relative overflow-hidden">
           <img 
+          alt="profile picture"
           src={imgPreview ? imgPreview : currentUser.profilePicture}
           className = "object-cover h-36 w-36"
           />

@@ -23,7 +23,7 @@ export function PostsProvider({children}) {
     }
     refreshGlobalPosts && setGlobalScroll(0)
     currentUser && getGlobalPosts()
-  },[refreshGlobalPosts === true])
+  },[refreshGlobalPosts === true, currentUser])
 
   useEffect(()=>{
     async function getFeedPosts(){
@@ -34,7 +34,7 @@ export function PostsProvider({children}) {
     }
     refreshFeedPosts && setFeedScroll(0)
     currentUser && getFeedPosts()
-  },[refreshFeedPosts === true])
+  },[refreshFeedPosts === true, currentUser])
 
   function deletePost(id){
     setFeedPosts((oldVal)=>{

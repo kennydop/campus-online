@@ -4,7 +4,7 @@ import { useState } from "react";
 import {useRouter} from 'next/router';
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
-import NotFound from "./404"
+import NotFound from "../components/404"
 
 function AddProfileImg() { 
   const [imgPreview, setImgPreview] = useState(null);
@@ -43,7 +43,7 @@ function AddProfileImg() {
       setLoading(false)
       return;
     }
-    const bgColors = ["000D6B", "125C13", "3E065F", "082032", "FF414D"]
+    const bgColors = ["000D6B", "125C13", "3E065F", "FFDA21", "FF414D"]
     axios.put(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/api/users/${currentUser._id}`, 
       { profilePicture: url ? url : `https://ui-avatars.com/api/?name=${encodeURIComponent((currentUser.name))}&background=${bgColors[Math.floor(Math.random() * bgColors.length)]}&color=ffff`}, 
       { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then((res)=>{
@@ -56,7 +56,7 @@ function AddProfileImg() {
   }
 
   return (
-    !currentUser.profilePicture ?
+    !currentUser?.profilePicture ?
     <div className = "h-screen flex flex-col items-center justify-center dark:bg-bdark-100">
       <div className = "mb-6 text-center">
         <h1 className = "mb-5 text-lg font-bold text-gray-500 dark:text-gray-400">Finish Setting up your Account</h1>

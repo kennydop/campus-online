@@ -54,7 +54,7 @@
   }
   
   .poll-choice{
-    @apply rounded-l-full absolute h-11 px-3 bg-white border border-blue-grey-50 dark:bg-gray-400 flex items-center justify-center text-gray-400 dark:text-gray-300
+    @apply rounded-l-full absolute h-11 px-3 bg-white border border-blue-grey-50 dark:border-bdark-200 dark:bg-bdark-100 flex items-center justify-center text-gray-400 dark:text-gray-300
   }
 
   .poll-btn{ 
