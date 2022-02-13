@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { UserIcon, MailIcon, LockClosedIcon} from "@heroicons/react/outline";
 import AuthLeft from "../components/AuthLeft";
 import {useRouter} from 'next/router';
@@ -9,49 +9,27 @@ import { useAuth } from "../contexts/AuthContext";
 
 function Signup() {
 	const { signup, loginWithProvider } = useAuth()
-	const [name, setName] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setpassword] = useState("");
+	const username = useRef();
+	const email = useRef();
+	const password = useRef();
 	const [error, setError] = useState();
 	const [signUpLoading, setSignUpLoading] = useState(false);
 	const router = useRouter();
 
-	async function registerWithEmail () {
+	async function registerWithEmail (e) {
+    e.preventDefault();
 		setError('');
 		setSignUpLoading(true);
-		if(!name){
-			setError("Please enter a Username");
-			setSignUpLoading(false)
-		}
-		else if(!email){
-			setError("Please enter your Email");
+    try{
+      await signup(email.current.value, password.current.value, username.current.value)
+      router.replace('/addprofileimg')
+    }
+    catch(error){
+      setSignUpLoading(false)
+      console.log(error)
+    }
 			setSignUpLoading(false);
 		}
-		else if(!password){
-			setError("Please enter a Password");
-			setSignUpLoading(false);
-		}
-		else{
-			try{
-				await signup(email, password, name)
-				router.replace('/addprofileimg')
-			}
-			catch(error){
-				switch (error.code) {
-					case 'auth/network-request-failed':
-						setError('Please check your internet connection')
-					break;
-					case "auth/invalid-email":
-						setError('Invalid Email')
-					break;
-					default:
-						setError('Unable to create account, try again please')
-					break;
-				}
-			}
-			setSignUpLoading(false);
-		}
-	}
 	
 	async function loginWithSocials(pvd){
 		try{
@@ -73,7 +51,7 @@ function Signup() {
 		<div className="w-screen flex justify-center items-center bg-blue-grey-50 dark:bg-bdark-200 overflow-auto">
 			<AuthLeft/>
 			<div className = "flex h-screen self-center w-screen lg:w-2/5 items-center justify-center bg-white dark:bg-bdark-100 lg:bg-transparent lg:dark:bg-transparent">
-				<form autoComplete='on' className="authForm">
+				<form autoComplete='on' className="authForm" onSubmit={registerWithEmail}>
 					<div className="mb-4" >
 						<svg xmlns="http://www.w3.org/2000/svg" width="187.676" height="35.77" viewBox="0 0 187.676 35.77">
 						<g id="Group_1" data-name="Group 1" transform="translate(-2.324 0)">
@@ -87,8 +65,9 @@ function Signup() {
 					<div>
 						<UserIcon className="infoicons"/>
 						<input
-						value={name}
-						onChange={e=> setName(e.target.value)}
+						ref={username}
+            minLength="3"
+            required={true}
 						type="text"
 						placeholder="Create Username"
 						autoComplete="name"
@@ -98,26 +77,28 @@ function Signup() {
 					<div>
 						<MailIcon className="infoicons"/>
 						<input
-						value={email}
-						onChange={e=> setEmail(e.target.value)}
-						type="text"
+						ref={email}
+						type="email"
+            required={true}
 						placeholder="Enter Email"
 						autoComplete="email"
 						className="infofield"
-						/>
+            pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
+            title="example@example.com"
+            />
 					</div>
 					<div>
 						<LockClosedIcon className="infoicons"/>
 						<input
-						value={password}
-						onChange={e=> setpassword(e.target.value)}
+						ref={password}
 						type="password"
+            required={true}
 						placeholder="Create Password"
 						autoComplete="new-password"
 						className="infofield"/>
 					</div>
 					<p className="self-center mb-6 text-sm text-gray-500 dark:text-gray-400">Already have an account? <a className = "text-pink-500 hover:font-bold cursor-pointer" onClick={()=>{router.push('/')}}>Login</a></p>
-					<button disabled={signUpLoading} className="infobutton prevent-default" type = "button" onClick={registerWithEmail}>
+					<button disabled={signUpLoading} className="infobutton prevent-default" type = "submit">
 						{signUpLoading ? <div className="loader mx-auto animate-spin"></div> : <>Sign Up</>}
 					</button>
 					<div className = "flex flex-col mt-5 items-center justify center">

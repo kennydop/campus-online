@@ -1,6 +1,6 @@
 function PostPlaceholder({type}) {
     return (
-        <div className='w-screen p-1.5 md:w-105'>
+        <div className='w-screen p-1.5 md:w-102'>
             <div className='p-2 rounded-lg shadow-md bg-white dark:bg-bdark-100 flex flex-grow flex-col'>
                 <div className='py-1 text-center flex space-x-4 border-b border-gray-200 dark:border-bdark-200'>
                     <div className='h-10 w-10 rounded-full bg-gray-200 dark:bg-bdark-50 animate-pulse'/>

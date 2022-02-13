@@ -1,9 +1,0 @@
-react.js (html,css,javascript)
-next.js
-tailwind css
-flexbox
-hero icons
-firebase
-react firebase hooks
-next themes
-react flip move

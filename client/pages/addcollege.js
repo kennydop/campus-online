@@ -14,11 +14,15 @@ function AddCollege({colleges}) {
     const [confirmCollegeLoading, setconfirmCollegeLoading] = useState(false);
 
     useEffect(()=>{
-        if(college){
-            fillColleges();
-        }else{
-            refillColleges()
-        }
+      if(currentUser.college){
+        router.replace('/')
+        return
+      }
+      if(college){
+          fillColleges();
+      }else{
+          refillColleges()
+      }
     },[])
     async function refillColleges(){
         if(!filledColleges){

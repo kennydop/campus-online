@@ -4,11 +4,17 @@ import Stories from "../components/Stories";
 import { FeedLayout } from "../Layouts/Layouts";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useEffect } from 'react';
+import { useAuth } from "../contexts/AuthContext";
+import { useRouter } from "next/router";
 
 function Feed() {
     const { tabActive, prevTab, setTabActive, setPrevTab, setPrevPrevTab } = useActiveTab()
-
+    const { currentUser } = useAuth()
+    const router = useRouter()
     useEffect(()=>{
+      if(!currentUser.token){
+        router.replace('/')
+      }
         if(tabActive==='home')return; 
         setPrevPrevTab(prevTab); 
         setPrevTab(tabActive); 
@@ -17,7 +23,8 @@ function Feed() {
     
     return (
         <div>
-            <Stories />
+            {/* <Stories userId={currentUser._id}/> */}
+            <div className='mt-6'></div>
             <FeedContent />
         </div>
     )

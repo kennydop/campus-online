@@ -1,26 +1,39 @@
-import { useContext, useState, useEffect, createContext } from "react"
+import { useContext, useState, useEffect, createContext, useCallback } from "react"
 import { auth, firebaseApp } from "../firebase/firebase"
-
+import axios from "axios"
+import { useRouter } from "next/router"
 const AuthContext = createContext()
 
 export function useAuth() {
 	return useContext(AuthContext)
 }
 
+const uprotectedRoutes = ['/login', '/signup', '/[profile]']
+
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState()
 	const [loading, setLoading] = useState(true)
-	
-	async function signup(email, password, name) {
-		return auth.createUserWithEmailAndPassword(email, password).then((userAuth)=>{
-			userAuth.user.updateProfile({
-				displayName: name,
-			})
-		})
+	const router = useRouter()
+
+	async function signup(email, password, username) {
+		axios.post("http://localhost:5000/api/auth/register", {username, password, email}, {withCredentials: true, credentials: 'include'}).then((res)=>{
+      console.log(res)
+      setCurrentUser(res.data)  
+      return currentUser
+    }).catch((error)=>{
+      console.log(error)
+      throw error
+    })
 	}
-	
-	function login(email, password) {
-		return auth.signInWithEmailAndPassword(email, password)
+
+	function login(username, password) {
+    axios.post("http://localhost:5000/api/auth/login", {username, password}, {withCredentials: true, credentials: 'include'}).then((res)=>{
+      console.log(res)  
+      setCurrentUser(res.data)
+      return currentUser
+    }).catch((error)=>{
+      return error
+    })
 	}
 	
 	function loginWithProvider(pvd){
@@ -41,19 +54,49 @@ export function AuthProvider({ children }) {
 	}
 
 	function logout() {
-		return auth.signOut()
+		axios.get("http://localhost:5000/api/auth/logout", { headers: { Authorization: `Bearer ${currentUser.token}`}, withCredentials: true, credentials: 'include'}).then(()=>{
+      setCurrentUser(null)
+      router.replace("/")
+    })
 	}
-	
-	
-	useEffect(() => {
-		const unsubscribe = auth.onAuthStateChanged(user => {
-			setCurrentUser(user)
-			setLoading(false)
-		})
-		
-		return unsubscribe
-	}, [])
-	
+
+  const verifyUser = useCallback(() => {
+    axios.put("http://localhost:5000/api/auth/refreshtoken", {}, {withCredentials: true, credentials: 'include'}).then(async (res)=>{
+      setCurrentUser(res.data)
+      if(!uprotectedRoutes.includes(router.pathname)){
+        if(res.data.token){
+          setLoading(false)
+        }else{
+          setLoading(true)
+          await router.replace({
+            pathname: '/login',
+            query: { returnUrl: router.pathname }
+          }).then(()=>{setLoading(false)})
+        }
+      }else{
+        setLoading(false)
+      }
+    }).catch(async (error)=>{
+      if(!uprotectedRoutes.includes(router.pathname)){
+        setLoading(true)
+        await router.replace({
+          pathname: '/login',
+          query: { returnUrl: router.pathname }
+        }).then(()=>{setLoading(false)})
+      }else{
+        setLoading(false)
+      }
+    })
+    // call refreshToken every 5 minutes to renew the authentication token.
+    setTimeout(verifyUser, 5 * 60 * 1000)
+
+  }, [setCurrentUser])
+
+
+  useEffect(() => {
+    verifyUser()
+  }, [verifyUser])
+
 	const value = {
 		currentUser,
 		loginWithProvider,

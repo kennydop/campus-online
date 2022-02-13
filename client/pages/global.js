@@ -17,7 +17,8 @@ export default function Global() {
     
     return (
         <div>
-            <Stories/>
+            {/* <Stories/> */}
+            <div className='mt-6'></div>
             <FeedContent />
         </div>
     )

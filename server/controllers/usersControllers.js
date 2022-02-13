@@ -1,24 +1,15 @@
 import User from "../models/User.js";
-import bcrypt from "bcrypt";
 
 // update user info
 export const updateUserInfo = async (req, res) => {
     if (req.body.userId === req.params.id || req.body.isAdmin) {
-        if (req.body.password) {
-            try {
-            const salt = await bcrypt.genSalt(10);
-            req.body.password = await bcrypt.hash(req.body.password, salt);
-            } catch (error) {
-                return res.status(500).json(error);
-            }
-        }
-        try {
-            await User.findByIdAndUpdate(req.params.id, {$set: req.body,});
-            const user = await User.findById(req.params.id);
-            res.status(200).json(user);
-        } catch (error) {
-            return res.status(500).json(error);
-        }
+      try {
+        await User.findByIdAndUpdate(req.params.id, {$set: req.body,});
+        const user = await User.findById(req.params.id);
+        res.status(200).json(user);
+      } catch (error) {
+        return res.status(500).json(error);
+      }
     } else {
     return res.status(403).json("You can update only your account!");
     }
@@ -41,11 +32,19 @@ export const deleteUser = async (req, res) => {
 // get a user
 export const getAUser = async (req, res) => {
     try {
-        const userId = req.query.userId;
-        const username = req.query.username;
-        const user = username ? await User.findOne({username: username}) : await User.findById(userId);
-        const { password, updatedAt, ...other } = user._doc;
-        res.status(200).json(other);
+        var user = await User.findOne({username: req.params.id});
+        if (!user){
+          user = await User.findById(req.params.id)
+        }
+        if(req.query.currentUser){
+          console.log(req.query.currentUser)
+          const following = await user.followers.includes(req.query.currentUser)
+          const {refreshToken, updatedAt, __v, ...other} = user._doc
+          const uts = {...other, isfollowing: following}
+          res.status(200).json(uts)
+        }else{
+          res.status(200).json(user);
+        }
     } catch (error) {
         res.status(500).json(error);
     }
@@ -74,6 +73,19 @@ export const handleFollow = async (req, res) => {
         res.status(403).json("you cant follow yourself");
     }
 }
+// check if following a user
+export const checkFollow = async (req, res) => {
+  try {
+    const user = User.find({username: req.body.currentUser})
+    if(user.followings.includes(req.body.userToCheck)){
+      res.status(200).json("you are already following this user")
+    }else{
+      res.status(200).json("you are not following this user")
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
 
 //get suggested to follows
 export const getFollowSuggestions = async (req, res) => {
@@ -84,7 +96,16 @@ export const getFollowSuggestions = async (req, res) => {
             {_id: {$ne: req.params.id}},
             {followers: {$ne: req.params.id}}
         ]});
-        console.log(matches)
+        res.status(200).json(matches);
+    }catch(error){
+        res.status(500).json(error);
+        console.log(error);
+    }
+}
+//not logged in suggestions
+export const getNotLoggedInFollowSuggestions = async (req, res) => {
+    try{
+        const matches = await User.find();
         res.status(200).json(matches);
     }catch(error){
         res.status(500).json(error);

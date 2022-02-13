@@ -1,4 +1,12 @@
 import mongoose from "mongoose";
+import passportLocalMongoose from "passport-local-mongoose";
+
+const Session = new mongoose.Schema({
+  refreshToken: {
+    type: String,
+    default: "",
+  },
+});
 
 const UserSchema = new mongoose.Schema(
   {
@@ -14,11 +22,6 @@ const UserSchema = new mongoose.Schema(
       // required: true,
       max: 50,
       unique: true,
-    },
-    password: {
-      type: String,
-      // required: true,
-      min: 6,
     },
     profilePicture: {
       type: String,
@@ -63,8 +66,32 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ['Single', 'In a relationship', 'Married'],
     },
+    posts: {
+      type: Number,
+      default: 0
+    },
+    birthday: {
+      type: String,
+    },
+    level: {
+      type: String,
+    },
+    refreshToken: {
+      type: [Session],
+    },
   },
   { timestamps: true }
 );
+
+UserSchema.set("toJSON", {
+  transform: function (doc, ret, options) {
+    delete ret.refreshToken
+    delete ret.updatedAt
+    delete ret.__v
+    return ret
+  },
+})
+
+UserSchema.plugin(passportLocalMongoose)
 
 export default mongoose.model("User", UserSchema);
